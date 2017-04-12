@@ -14,6 +14,8 @@
 		FBA79EAB1E9A038700179A54 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBA79EA91E9A038700179A54 /* LaunchScreen.storyboard */; };
 		FBA79EB61E9A038700179A54 /* MSALiOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EB51E9A038700179A54 /* MSALiOSTests.swift */; };
 		FBA79EC11E9A038700179A54 /* MSALiOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EC01E9A038700179A54 /* MSALiOSUITests.swift */; };
+		FBBE35A81E9C477600460053 /* MSAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBBE359B1E9C476300460053 /* MSAL.framework */; };
+		FBBE35A91E9C477600460053 /* MSAL.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FBBE359B1E9C476300460053 /* MSAL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +33,84 @@
 			remoteGlobalIDString = FBA79E9C1E9A038700179A54;
 			remoteInfo = MSALiOS;
 		};
+		FBBE35981E9C476300460053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D6DFF3A21E2579360012891A;
+			remoteInfo = "MSAL (iOS Static Lib)";
+		};
+		FBBE359A1E9C476300460053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D65A6F431E3FD30A00C69FBA;
+			remoteInfo = "MSAL (iOS Framework)";
+		};
+		FBBE359C1E9C476300460053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D65A6FC11E3FF47D00C69FBA;
+			remoteInfo = "MSAL iOS Unit Tests";
+		};
+		FBBE359E1E9C476300460053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D65A6F501E3FD32D00C69FBA;
+			remoteInfo = "MSAL (Mac Framework)";
+		};
+		FBBE35A01E9C476300460053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D65A6FD01E3FF49C00C69FBA;
+			remoteInfo = "MSAL Mac Unit Tests";
+		};
+		FBBE35A21E9C476300460053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D61A64331E5A29580086D120;
+			remoteInfo = "MSAL Test App (iOS)";
+		};
+		FBBE35A41E9C476300460053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D61A646C1E5AA7120086D120;
+			remoteInfo = "MSAL Test App (Mac)";
+		};
+		FBBE35A61E9C476300460053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 962E37BC1E720C5D00DE71FE;
+			remoteInfo = "MSAL Test Automation (iOS)";
+		};
+		FBBE35AA1E9C477600460053 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D65A6F421E3FD30A00C69FBA;
+			remoteInfo = "MSAL (iOS Framework)";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FBBE35AC1E9C477600460053 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				FBBE35A91E9C477600460053 /* MSAL.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		FBA79E9D1E9A038700179A54 /* MSALiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MSALiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,6 +126,9 @@
 		FBA79EBC1E9A038700179A54 /* MSALiOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MSALiOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBA79EC01E9A038700179A54 /* MSALiOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSALiOSUITests.swift; sourceTree = "<group>"; };
 		FBA79EC21E9A038700179A54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FBBE358D1E9C476300460053 /* MSAL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MSAL.xcodeproj; path = "microsoft-authentication-library-for-objc/MSAL/MSAL.xcodeproj"; sourceTree = "<group>"; };
+		FBBE35B11E9D76B800460053 /* MSALiOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MSALiOS-Bridging-Header.h"; sourceTree = "<group>"; };
+		FBBE35B41E9DAE6C00460053 /* MSALiOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MSALiOS.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBBE35A81E9C477600460053 /* MSAL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +160,7 @@
 		FBA79E941E9A038700179A54 = {
 			isa = PBXGroup;
 			children = (
+				FBBE358D1E9C476300460053 /* MSAL.xcodeproj */,
 				FBA79E9F1E9A038700179A54 /* MSALiOS */,
 				FBA79EB41E9A038700179A54 /* MSALiOSTests */,
 				FBA79EBF1E9A038700179A54 /* MSALiOSUITests */,
@@ -97,12 +181,14 @@
 		FBA79E9F1E9A038700179A54 /* MSALiOS */ = {
 			isa = PBXGroup;
 			children = (
+				FBBE35B41E9DAE6C00460053 /* MSALiOS.entitlements */,
 				FBA79EA01E9A038700179A54 /* AppDelegate.swift */,
 				FBA79EA21E9A038700179A54 /* ViewController.swift */,
 				FBA79EA41E9A038700179A54 /* Main.storyboard */,
 				FBA79EA71E9A038700179A54 /* Assets.xcassets */,
 				FBA79EA91E9A038700179A54 /* LaunchScreen.storyboard */,
 				FBA79EAC1E9A038700179A54 /* Info.plist */,
+				FBBE35B11E9D76B800460053 /* MSALiOS-Bridging-Header.h */,
 			);
 			path = MSALiOS;
 			sourceTree = "<group>";
@@ -125,6 +211,21 @@
 			path = MSALiOSUITests;
 			sourceTree = "<group>";
 		};
+		FBBE358E1E9C476300460053 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FBBE35991E9C476300460053 /* libMSAL.a */,
+				FBBE359B1E9C476300460053 /* MSAL.framework */,
+				FBBE359D1E9C476300460053 /* "MSAL-iOS-Unit-Tests".xctest */,
+				FBBE359F1E9C476300460053 /* MSAL.framework */,
+				FBBE35A11E9C476300460053 /* "MSAL-Mac-Unit-Tests".xctest */,
+				FBBE35A31E9C476300460053 /* MSAL Test App.app */,
+				FBBE35A51E9C476300460053 /* MSAL Test App.app */,
+				FBBE35A71E9C476300460053 /* MSAL Test Automation (iOS).app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -135,10 +236,12 @@
 				FBA79E991E9A038700179A54 /* Sources */,
 				FBA79E9A1E9A038700179A54 /* Frameworks */,
 				FBA79E9B1E9A038700179A54 /* Resources */,
+				FBBE35AC1E9C477600460053 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FBBE35AB1E9C477600460053 /* PBXTargetDependency */,
 			);
 			name = MSALiOS;
 			productName = MSALiOS;
@@ -194,7 +297,13 @@
 					FBA79E9C1E9A038700179A54 = {
 						CreatedOnToolsVersion = 8.3;
 						DevelopmentTeam = QPA5Y64RGS;
+						LastSwiftMigration = 0830;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 					FBA79EB01E9A038700179A54 = {
 						CreatedOnToolsVersion = 8.3;
@@ -221,6 +330,12 @@
 			mainGroup = FBA79E941E9A038700179A54;
 			productRefGroup = FBA79E9E1E9A038700179A54 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = FBBE358E1E9C476300460053 /* Products */;
+					ProjectRef = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				FBA79E9C1E9A038700179A54 /* MSALiOS */,
@@ -229,6 +344,65 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		FBBE35991E9C476300460053 /* libMSAL.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libMSAL.a;
+			remoteRef = FBBE35981E9C476300460053 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBBE359B1E9C476300460053 /* MSAL.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = MSAL.framework;
+			remoteRef = FBBE359A1E9C476300460053 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBBE359D1E9C476300460053 /* "MSAL-iOS-Unit-Tests".xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "\"MSAL-iOS-Unit-Tests\".xctest";
+			remoteRef = FBBE359C1E9C476300460053 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBBE359F1E9C476300460053 /* MSAL.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = MSAL.framework;
+			remoteRef = FBBE359E1E9C476300460053 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBBE35A11E9C476300460053 /* "MSAL-Mac-Unit-Tests".xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "\"MSAL-Mac-Unit-Tests\".xctest";
+			remoteRef = FBBE35A01E9C476300460053 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBBE35A31E9C476300460053 /* MSAL Test App.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "MSAL Test App.app";
+			remoteRef = FBBE35A21E9C476300460053 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBBE35A51E9C476300460053 /* MSAL Test App.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "MSAL Test App.app";
+			remoteRef = FBBE35A41E9C476300460053 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBBE35A71E9C476300460053 /* MSAL Test Automation (iOS).app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = "MSAL Test Automation (iOS).app";
+			remoteRef = FBBE35A61E9C476300460053 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		FBA79E9B1E9A038700179A54 /* Resources */ = {
@@ -295,6 +469,11 @@
 			isa = PBXTargetDependency;
 			target = FBA79E9C1E9A038700179A54 /* MSALiOS */;
 			targetProxy = FBA79EBD1E9A038700179A54 /* PBXContainerItemProxy */;
+		};
+		FBBE35AB1E9C477600460053 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "MSAL (iOS Framework)";
+			targetProxy = FBBE35AA1E9C477600460053 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -417,11 +596,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = MSALiOS/MSALiOS.entitlements;
 				DEVELOPMENT_TEAM = QPA5Y64RGS;
 				INFOPLIST_FILE = MSALiOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.activedirectory.MSALiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MSALiOS/MSALiOS-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -430,11 +614,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = MSALiOS/MSALiOS.entitlements;
 				DEVELOPMENT_TEAM = QPA5Y64RGS;
 				INFOPLIST_FILE = MSALiOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.activedirectory.MSALiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MSALiOS/MSALiOS-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -516,6 +704,7 @@
 				FBA79EC71E9A038700179A54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FBA79EC81E9A038700179A54 /* Build configuration list for PBXNativeTarget "MSALiOSTests" */ = {
 			isa = XCConfigurationList;
@@ -524,6 +713,7 @@
 				FBA79ECA1E9A038700179A54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FBA79ECB1E9A038700179A54 /* Build configuration list for PBXNativeTarget "MSALiOSUITests" */ = {
 			isa = XCConfigurationList;
@@ -532,6 +722,7 @@
 				FBA79ECD1E9A038700179A54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
