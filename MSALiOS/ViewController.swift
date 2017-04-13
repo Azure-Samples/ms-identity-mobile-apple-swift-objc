@@ -41,7 +41,7 @@ var msalResult =  MSALResult.init()
                 
                 
             } else {
-                self.loggingText.text = "Could not create Public Client instance."
+                self.loggingText.text = "Could not create Public Client instance: \(error?.localizedDescription ?? "No Error provided")"
             }
         }
             }
@@ -62,23 +62,36 @@ var msalResult =  MSALResult.init()
     
     urlSession.dataTask(with: request) { data, response, error in
         
-        
-            
-        let result = try JSONSerialization.jsonObject(with: responseData, options: [])
+        let result = try? JSONSerialization.jsonObject(with: data!, options: [])
         DispatchQueue.main.async {
             if result != nil {
                 
-                self.loggingText.text(result?.description)
+                self.loggingText.text = result.debugDescription
+                
 
             }
+        }
         }.resume()
-    }
 }
 
 @IBAction func signoutButton(_ sender: UIButton) {
+    
+    if let application = try? MSALPublicClientApplication.init(clientId: kClientID, authority: kAuthority) {
+        
+        DispatchQueue.main.async {
+        do {
+            try application.remove(self.msalResult.user)
+            self.signoutButton.isEnabled = false;
+            self.callGraphApiButton.isEnabled = false;
+            
+        } catch let error {
+            self.loggingText.text = "Received error signing user out: \(error.localizedDescription)"
+                        }
+        }
     }
     
-
+}
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
