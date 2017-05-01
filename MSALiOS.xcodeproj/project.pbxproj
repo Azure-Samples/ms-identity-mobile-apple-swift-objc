@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB34F80E1EB7E425001CBC9B /* MSAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB34F80D1EB7E425001CBC9B /* MSAL.framework */; };
 		FBA79EA11E9A038700179A54 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EA01E9A038700179A54 /* AppDelegate.swift */; };
 		FBA79EA31E9A038700179A54 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EA21E9A038700179A54 /* ViewController.swift */; };
 		FBA79EA61E9A038700179A54 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBA79EA41E9A038700179A54 /* Main.storyboard */; };
@@ -14,8 +15,6 @@
 		FBA79EAB1E9A038700179A54 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBA79EA91E9A038700179A54 /* LaunchScreen.storyboard */; };
 		FBA79EB61E9A038700179A54 /* MSALiOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EB51E9A038700179A54 /* MSALiOSTests.swift */; };
 		FBA79EC11E9A038700179A54 /* MSALiOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EC01E9A038700179A54 /* MSALiOSUITests.swift */; };
-		FBBE35A81E9C477600460053 /* MSAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBBE359B1E9C476300460053 /* MSAL.framework */; };
-		FBBE35A91E9C477600460053 /* MSAL.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FBBE359B1E9C476300460053 /* MSAL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,30 +88,10 @@
 			remoteGlobalIDString = 962E37BC1E720C5D00DE71FE;
 			remoteInfo = "MSAL Test Automation (iOS)";
 		};
-		FBBE35AA1E9C477600460053 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FBBE358D1E9C476300460053 /* MSAL.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D65A6F421E3FD30A00C69FBA;
-			remoteInfo = "MSAL (iOS Framework)";
-		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		FBBE35AC1E9C477600460053 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				FBBE35A91E9C477600460053 /* MSAL.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
+		FB34F80D1EB7E425001CBC9B /* MSAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MSAL.framework; path = Carthage/Build/iOS/MSAL.framework; sourceTree = "<group>"; };
 		FBA79E9D1E9A038700179A54 /* MSALiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MSALiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBA79EA01E9A038700179A54 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBA79EA21E9A038700179A54 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -127,7 +106,6 @@
 		FBA79EC01E9A038700179A54 /* MSALiOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MSALiOSUITests.swift; sourceTree = "<group>"; };
 		FBA79EC21E9A038700179A54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FBBE358D1E9C476300460053 /* MSAL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MSAL.xcodeproj; path = "microsoft-authentication-library-for-objc/MSAL/MSAL.xcodeproj"; sourceTree = "<group>"; };
-		FBBE35B11E9D76B800460053 /* MSALiOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MSALiOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		FBBE35B41E9DAE6C00460053 /* MSALiOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MSALiOS.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -136,7 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FBBE35A81E9C477600460053 /* MSAL.framework in Frameworks */,
+				FB34F80E1EB7E425001CBC9B /* MSAL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +135,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FB34F80C1EB7E425001CBC9B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FB34F80D1EB7E425001CBC9B /* MSAL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		FBA79E941E9A038700179A54 = {
 			isa = PBXGroup;
 			children = (
@@ -165,6 +151,7 @@
 				FBA79EB41E9A038700179A54 /* MSALiOSTests */,
 				FBA79EBF1E9A038700179A54 /* MSALiOSUITests */,
 				FBA79E9E1E9A038700179A54 /* Products */,
+				FB34F80C1EB7E425001CBC9B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -188,7 +175,6 @@
 				FBA79EA71E9A038700179A54 /* Assets.xcassets */,
 				FBA79EA91E9A038700179A54 /* LaunchScreen.storyboard */,
 				FBA79EAC1E9A038700179A54 /* Info.plist */,
-				FBBE35B11E9D76B800460053 /* MSALiOS-Bridging-Header.h */,
 			);
 			path = MSALiOS;
 			sourceTree = "<group>";
@@ -236,12 +222,11 @@
 				FBA79E991E9A038700179A54 /* Sources */,
 				FBA79E9A1E9A038700179A54 /* Frameworks */,
 				FBA79E9B1E9A038700179A54 /* Resources */,
-				FBBE35AC1E9C477600460053 /* Embed Frameworks */,
+				FB34F80B1EB7E20B001CBC9B /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				FBBE35AB1E9C477600460053 /* PBXTargetDependency */,
 			);
 			name = MSALiOS;
 			productName = MSALiOS;
@@ -431,6 +416,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		FB34F80B1EB7E20B001CBC9B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/MSAL.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		FBA79E991E9A038700179A54 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -469,11 +471,6 @@
 			isa = PBXTargetDependency;
 			target = FBA79E9C1E9A038700179A54 /* MSALiOS */;
 			targetProxy = FBA79EBD1E9A038700179A54 /* PBXContainerItemProxy */;
-		};
-		FBBE35AB1E9C477600460053 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "MSAL (iOS Framework)";
-			targetProxy = FBBE35AA1E9C477600460053 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -599,6 +596,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MSALiOS/MSALiOS.entitlements;
 				DEVELOPMENT_TEAM = QPA5Y64RGS;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MSALiOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
@@ -617,6 +618,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MSALiOS/MSALiOS.entitlements;
 				DEVELOPMENT_TEAM = QPA5Y64RGS;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MSALiOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
