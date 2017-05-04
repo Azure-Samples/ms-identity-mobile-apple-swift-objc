@@ -34,6 +34,9 @@ do {
     }
 ```
 
+## App Registration 
+
+You will need to have a native client application registered with Microsoft using our [App Registration Portal](http://apps.dev.microsoft.com). Once done, you will need to click "Edit Manifest" and add the redirect URI of `msal2a814505-ab4a-41f7-bd09-3fc614ac077c://auth`.
 
 ## Installation
 
