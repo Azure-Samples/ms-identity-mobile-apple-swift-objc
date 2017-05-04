@@ -38,6 +38,16 @@ do {
 
 You will need to have a native client application registered with Microsoft using our [App Registration Portal](http://apps.dev.microsoft.com). Once done, you will need to click "Edit Manifest" and add the redirect URI of `msal2a814505-ab4a-41f7-bd09-3fc614ac077c://auth`.
 
+It may look something like this
+
+```Javascript
+    "preAuthorizedApplications": [],
+    "replyUrls": [
+        "msal2a814505-ab4a-41f7-bd09-3fc614ac077c://auth",
+        "http://localhost"
+    ],
+```
+
 ## Installation
 
 We use [Carthage](https://github.com/Carthage/Carthage) for package management during the preview period of MSAL. This package manager integrates very nicely with XCode while maintaining our ability to make changes to the library. The sample is set up to use Carthage.
