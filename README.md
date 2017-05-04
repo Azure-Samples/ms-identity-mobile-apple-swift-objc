@@ -41,9 +41,10 @@ We use [Carthage](https://github.com/Carthage/Carthage) for package management d
 
 ##### If you're building for iOS, tvOS, or watchOS
 
-1. We have already created a [Cartfile][] that lists the MSAL library for this project on Github. We use the `/dev` branch.
-1. Run `carthage update`. This will fetch dependencies into a [Carthage/Checkouts][] folder, then build the MSAL library.
-1. On your application targets’ “General” settings tab, in the “Linked Frameworks and Libraries” section, drag and drop the `MSAL.framework` from the [Carthage/Build][] folder on disk.
+1. Install Carthage on your Mac using a download from their website or if using Homebrew `brew install carthage`.
+1. We have already created a `Cartfile` that lists the MSAL library for this project on Github. We use the `/dev` branch.
+1. Run `carthage update`. This will fetch dependencies into a `Carthage/Checkouts` folder, then build the MSAL library.
+1. On your application targets’ “General” settings tab, in the “Linked Frameworks and Libraries” section, drag and drop the `MSAL.framework` from the `Carthage/Build` folder on disk.
 1. On your application targets’ “Build Phases” settings tab, click the “+” icon and choose “New Run Script Phase”. Create a Run Script in which you specify your shell (ex: `/bin/sh`), add the following contents to the script area below the shell:
 
   ```sh
