@@ -1,14 +1,15 @@
+--- 
+Services: active-directory
+platforms: iOS
+author: brandwe
+---
+
 Microsoft Authentication Library Graph API Sample for Apple iOS in Swift
 =====================================
 
 | [Getting Started](https://aka.ms/aaddev)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [API Reference]() | [Support](README.md#community-help-and-support)
 | --- | --- | --- | --- |
 
---- 
-Services: active-directory
-platforms: iOS
-author: brandwe
----
 The MSAL preview library for iOS and macOS gives your app the ability to begin using the [Microsoft Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
 
 * How to get a token
