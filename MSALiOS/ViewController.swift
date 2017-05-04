@@ -46,7 +46,6 @@ struct User {
 class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate {
     
 var msalResult =  MSALResult.init()
-var currentUser = User.init()
 
     
 @IBOutlet weak var loggingText: UITextView!
@@ -92,7 +91,6 @@ var currentUser = User.init()
             DispatchQueue.main.async {
             if result != nil {
                 self.msalResult = result!
-                self.currentUser.user = self.msalResult.user
                 self.loggingText.text = "Access token is \(self.msalResult.accessToken!)"
                 self.signoutButton.isEnabled = true;
                 self.callGraphApiButton.isEnabled = true;
@@ -157,12 +155,12 @@ var currentUser = User.init()
              @param  completionBlock The completion block that will be called when the authentication
              flow completes, or encounters an error.
              */
-            application.acquireTokenSilent(forScopes: kScopes, user: currentUser.user) { (result, error) in
+            application.acquireTokenSilent(forScopes: kScopes, user: msalResult.user) { (result, error) in
                 DispatchQueue.main.async {
                     if result != nil {
                         self.msalResult = result!
                         self.loggingText.text = "Refreshing token silently)"
-                        self.loggingText.text = "Access token is \(self.msalResult.accessToken!)"
+                        self.loggingText.text = "Refreshed Access token is \(self.msalResult.accessToken!)"
                         self.signoutButton.isEnabled = true;
                         self.callGraphApiButton.isEnabled = true;
                         self.silentRefreshButton.isEnabled = true;

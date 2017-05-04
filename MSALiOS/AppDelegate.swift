@@ -70,14 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         print("Received callback!")
         
-        if MSALPublicClientApplication.isMSALResponse(url) {
-        
         MSALPublicClientApplication.handleMSALResponse(url)
-            
-        } else {
-            
-            print("URL does not match redirect URI of the application")
-        }
         
         
         return true
