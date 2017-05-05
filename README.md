@@ -7,7 +7,7 @@ author: brandwe
 Microsoft Authentication Library Graph API Sample for Apple iOS in Swift
 =====================================
 
-| [Getting Started](https://aka.ms/aaddev)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [API Reference]() | [Support](README.md#community-help-and-support)
+| [Getting Started](https://apps.dev.microsoft.com/portal/register-app)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [Docs](https://aka.ms/aaddev) | [Support](README.md#community-help-and-support)
 | --- | --- | --- | --- |
 
 The MSAL preview library for iOS and macOS gives your app the ability to begin using the [Microsoft Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
@@ -41,17 +41,8 @@ do {
 
 ## App Registration 
 
-You will need to have a native client application registered with Microsoft using our [App Registration Portal](http://apps.dev.microsoft.com). Once done, you will need to click "Edit Manifest" and add the redirect URI of `msal2a814505-ab4a-41f7-bd09-3fc614ac077c://auth`.
+You will need to have a native client application registered with Microsoft using our [App Registration Portal](http://apps.dev.microsoft.com). Once done, you will need add the redirect URI of `msal2a814505-ab4a-41f7-bd09-3fc614ac077c://auth` in the portal.
 
-It may look something like this
-
-```Javascript
-    "preAuthorizedApplications": [],
-    "replyUrls": [
-        "msal2a814505-ab4a-41f7-bd09-3fc614ac077c://auth",
-        "http://localhost"
-    ],
-```
 
 ## Installation
 
