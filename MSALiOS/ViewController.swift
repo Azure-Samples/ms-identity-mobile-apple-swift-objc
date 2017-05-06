@@ -86,7 +86,7 @@ var msalResult =  MSALResult.init()
              */
         application.acquireToken(forScopes: kScopes) { (result, error) in
             DispatchQueue.main.async {
-            if result != nil {
+            if error == nil {
                 self.msalResult = result!
                 self.loggingText.text = "Access token is \(self.msalResult.accessToken!)"
                 self.signoutButton.isEnabled = true;
@@ -94,7 +94,7 @@ var msalResult =  MSALResult.init()
                 self.silentRefreshButton.isEnabled = true;
                 
                 
-            } else if error != nil {
+            } else  {
                 self.loggingText.text = "Could not acquire token: \(error ?? "No error informarion" as! Error)"
                 }
         }
@@ -169,7 +169,7 @@ var msalResult =  MSALResult.init()
             
             /**
              
-             Acquire a token for a new user silently
+             Acquire a token for an existing user silently
              
              - forScopes: Permissions you want included in the access token received
              in the result in the completionBlock. Not all scopes are
@@ -182,7 +182,7 @@ var msalResult =  MSALResult.init()
             
             application.acquireTokenSilent(forScopes: kScopes, user: msalResult.user) { (result, error) in
                 DispatchQueue.main.async {
-                    if result != nil {
+                    if error == nil {
                         self.msalResult = result!
                         self.loggingText.text = "Refreshing token silently)"
                         self.loggingText.text = "Refreshed Access token is \(self.msalResult.accessToken!)"
@@ -190,7 +190,7 @@ var msalResult =  MSALResult.init()
                         self.callGraphApiButton.isEnabled = true;
                         self.silentRefreshButton.isEnabled = true;
                     
-                    }  else if error != nil {
+                    }  else  {
                         self.loggingText.text = "Could not acquire token: \(error ?? "No error informarion" as! Error)"
                     }
                 }
@@ -252,7 +252,8 @@ var msalResult =  MSALResult.init()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        
     }
 
     override func didReceiveMemoryWarning() {
