@@ -40,14 +40,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     let kScopes: [String] = ["https://graph.microsoft.com/user.read"]
     let kAuthority = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
     
-var msalResult =  MSALResult.init()
+    var msalResult =  MSALResult.init()
 
-    
-@IBOutlet weak var loggingText: UITextView!
-@IBOutlet weak var signoutButton: UIButton!
-@IBOutlet weak var callGraphApiButton: UIButton!
-@IBOutlet weak var silentRefreshButton: UIButton!
-    
+    @IBOutlet weak var loggingText: UITextView!
+    @IBOutlet weak var signoutButton: UIButton!
+    @IBOutlet weak var callGraphApiButton: UIButton!
+    @IBOutlet weak var silentRefreshButton: UIButton!
     
     /**
      This button will invoke the authorization flow.
@@ -71,7 +69,6 @@ var msalResult =  MSALResult.init()
      
      */
 
-    
     do {
         let application = try MSALPublicClientApplication.init(clientId: kClientID, authority: kAuthority)
     
@@ -84,6 +81,7 @@ var msalResult =  MSALResult.init()
              - completionBlock: The completion block that will be called when the authentication
              flow completes, or encounters an error.
              */
+        
         application.acquireToken(forScopes: kScopes) { (result, error) in
             DispatchQueue.main.async {
             if error == nil {
@@ -92,7 +90,6 @@ var msalResult =  MSALResult.init()
                 self.signoutButton.isEnabled = true;
                 self.callGraphApiButton.isEnabled = true;
                 self.silentRefreshButton.isEnabled = true;
-                
                 
             } else  {
                 self.loggingText.text = "Could not acquire token: \(error ?? "No error informarion" as! Error)"
@@ -136,8 +133,6 @@ var msalResult =  MSALResult.init()
             if result != nil {
                 
                 self.loggingText.text = result.debugDescription
-                
-
             }
         }
         }.resume()
@@ -186,22 +181,29 @@ var msalResult =  MSALResult.init()
                         self.msalResult = result!
                         self.loggingText.text = "Refreshing token silently)"
                         self.loggingText.text = "Refreshed Access token is \(self.msalResult.accessToken!)"
-                        self.signoutButton.isEnabled = true;
-                        self.callGraphApiButton.isEnabled = true;
-                        self.silentRefreshButton.isEnabled = true;
                     
-                    }  else  {
+                    } else if (error! as NSError).code == MSALErrorCode.interactionRequired.rawValue {
+                        
+                        application.acquireToken(forScopes: self.kScopes, user: self.msalResult.user) { (result, error) in
+                            DispatchQueue.main.async {
+                                if error == nil {
+                                    self.msalResult = result!
+                                    self.loggingText.text = "Access token is \(self.msalResult.accessToken!)"
+                                    
+                                } else  {
+                                    self.loggingText.text = "Could not acquire new token: \(error ?? "No error informarion" as! Error)"
+                                }
+                            }
+                        }
+                        
+                    } else {
                         self.loggingText.text = "Could not acquire token: \(error ?? "No error informarion" as! Error)"
                     }
-                }
+                 }
               }
-            
-        } catch let error {
-            
+        } catch {
             self.loggingText.text = "Unable to acquire token. Got error: \(error)"
         }
-        
-        
     }
     /**
      This button will invoke the signout APIs to clear the token cache.
@@ -252,8 +254,6 @@ var msalResult =  MSALResult.init()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -268,13 +268,8 @@ var msalResult =  MSALResult.init()
             signoutButton.isEnabled = false;
             callGraphApiButton.isEnabled = false;
             silentRefreshButton.isEnabled = false;
-            
-            
         }
     }
-    
-        
-
 
 }
 

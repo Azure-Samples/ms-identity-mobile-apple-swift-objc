@@ -51,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         logger.setCallback { (logLevel, message, containsPII) in
             
+            
             if (!containsPII) {
                 
                 print("%@", message!)
