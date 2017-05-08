@@ -191,6 +191,9 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                     
                     } else if (error! as NSError).code == MSALErrorCode.interactionRequired.rawValue {
                         
+                        // Notice we supply the user here. This ensures we acquire token for the same user
+                        // as we originally authenticated.
+                        
                         application.acquireToken(forScopes: self.kScopes, user: self.msalResult.user) { (result, error) in
                             DispatchQueue.main.async {
                                 if error == nil {
