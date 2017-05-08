@@ -138,7 +138,14 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         }.resume()
 }
     /**
-     This button will invoke the signout APIs to clear the token cache.
+     This button will invoke a refresh of the token silently. 
+     
+     Note the fact that we also look for InteractionRequired as an error code and 
+     prompt the user interactively. Often times the inability to use a refresh token
+     is from either a password change, refersh token expiring, or other event that
+     can be remedied by the user signing in again. This shouldn't be necessary at every
+     AcquireTokenSilent. If you are experiencing that in your application, make 
+     sure you are using the cache correctly and using the same authority.
      */
     @IBAction func silentRefreshButton(_ sender: UIButton) {
         
