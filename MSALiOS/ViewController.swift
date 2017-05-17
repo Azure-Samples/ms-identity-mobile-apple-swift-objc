@@ -63,7 +63,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         
         if  try self.applicationContext.users().isEmpty {
             throw NSError.init(domain: "MSALErrorDomain", code: MSALErrorCode.interactionRequired.rawValue, userInfo: nil)
-        }
+        } else {
         
         /**
          
@@ -93,7 +93,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
                 }
             }
+        }
     }  catch let error as NSError {
+        
+        // interactionRequired means we need to ask the user to sign-in. This usually happens
+        // when the user's Refresh Token is expired or if the user has changed their password
+        // among other possible reasons.
         
         if error.code == MSALErrorCode.interactionRequired.rawValue {
             
@@ -112,6 +117,8 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         }
         
     } catch {
+        
+        // This is the catch all error.
         
         self.loggingText.text = "Unable to acquire token. Got error: \(error)"
         
