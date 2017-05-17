@@ -40,12 +40,13 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     let kScopes: [String] = ["https://graph.microsoft.com/user.read"]
     let kAuthority = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
     
-    var msalResult =  MSALResult.init()
+    var accessToken = String()
+    var applicationContext = MSALPublicClientApplication.init()
+    
 
     @IBOutlet weak var loggingText: UITextView!
     @IBOutlet weak var signoutButton: UIButton!
     @IBOutlet weak var callGraphApiButton: UIButton!
-    @IBOutlet weak var silentRefreshButton: UIButton!
     
     /**
      This button will invoke the authorization flow.
@@ -53,60 +54,75 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
 @IBAction func authorizationButton(_ sender: UIButton) {
     
-    /**
-     
-     Initialize a MSALPublicClientApplication with a given clientID and authority
-     
-     - clientId:     The clientID of your application, you should get this from the app portal.
-     - authority:    A URL indicating a directory that MSAL can use to obtain tokens. In Azure AD
-     it is of the form https://<instance/<tenant>, where <instance> is the
-     directory host (e.g. https://login.microsoftonline.com) and <tenant> is a
-     identifier within the directory itself (e.g. a domain associated to the
-     tenant, such as contoso.onmicrosoft.com, or the GUID representing the
-     TenantID property of the directory)
-     - error:       The error that occurred creating the application object, if any, if you're
-     not interested in the specific error pass in nil.
-     
-     */
-
+    
     do {
-        let application = try MSALPublicClientApplication.init(clientId: kClientID, authority: kAuthority)
-    
-            /**
-             Acquire a token for a new user using interactive authentication
-             
-             - forScopes: Permissions you want included in the access token received
-             in the result in the completionBlock. Not all scopes are
-             gauranteed to be included in the access token returned.
-             - completionBlock: The completion block that will be called when the authentication
-             flow completes, or encounters an error.
-             */
         
-        application.acquireToken(forScopes: kScopes) { (result, error) in
-            DispatchQueue.main.async {
-            if error == nil {
-                self.msalResult = result!
-                self.loggingText.text = "Access token is \(self.msalResult.accessToken!)"
-                self.signoutButton.isEnabled = true;
-                self.callGraphApiButton.isEnabled = true;
-                self.silentRefreshButton.isEnabled = true;
-                
-            } else  {
-                self.loggingText.text = "Could not acquire token: \(error ?? "No error informarion" as! Error)"
+        // We check to see if we have a current logged in user. If we don't, then we need to sign someone in.
+        // We throw an interactionRequired so that we trigger the interactive signin.
+        
+        
+        if  try self.applicationContext.users().isEmpty {
+            throw NSError.init(domain: "MSALErrorDomain", code: MSALErrorCode.interactionRequired.rawValue, userInfo: nil)
+        }
+        
+        /**
+         
+         Acquire a token for an existing user silently
+         
+         - forScopes: Permissions you want included in the access token received
+         in the result in the completionBlock. Not all scopes are
+         gauranteed to be included in the access token returned.
+         - User: A user object that we retrieved from the application object before that the
+         authentication flow will be locked down to.
+         - completionBlock: The completion block that will be called when the authentication
+         flow completes, or encounters an error.
+         */
+        
+        try self.applicationContext.acquireTokenSilent(forScopes: self.kScopes, user: applicationContext.users().first) { (result, error) in
+
+                if error == nil {
+                    self.accessToken = (result?.accessToken)!
+                    self.loggingText.text = "Refreshing token silently)"
+                    self.loggingText.text = "Refreshed Access token is \(self.accessToken)"
+                    
+                    self.signoutButton.isEnabled = true;
+                    self.callGraphApiButton.isEnabled = true;
+
+                } else {
+                    self.loggingText.text = "Could not acquire token silently: \(error ?? "No error informarion" as! Error)"
+
                 }
-        }
             }
-    }
+    }  catch let error as NSError {
         
-        catch {
-                        self.loggingText.text = "Unable to create application \(error)"
+        if error.code == MSALErrorCode.interactionRequired.rawValue {
+            
+            self.applicationContext.acquireToken(forScopes: self.kScopes) { (result, error) in
+                    if error == nil {
+                        self.accessToken = (result?.accessToken)!
+                        self.loggingText.text = "Access token is \(self.accessToken)"
+                        self.signoutButton.isEnabled = true;
+                        self.callGraphApiButton.isEnabled = true;
+                        
+                    } else  {
+                        self.loggingText.text = "Could not acquire token: \(error ?? "No error informarion" as! Error)"
+                    }
+            }
+            
         }
-}
+        
+    } catch {
+        
+        self.loggingText.text = "Unable to acquire token. Got error: \(error)"
+        
+    }
+    }
+
     
     /**
-     This button will invoke the call to the Microsoft Graph API. It uses the 
+     This button will invoke the call to the Microsoft Graph API. It uses the
      built in Swift libraries to create a connection.
-     Pay attention to the error case below. It shows you how to 
+     Pay attention to the error case below. It shows you how to
      detect a `UserInteractionRequired` Error case and present the `acquireToken()`
      method again for the user to sign in. This usually happens if
      the Refresh Token has expired or the user has changed their
@@ -123,31 +139,44 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     var request = URLRequest(url: url!)
     
     // Set the Authorization header for the request. We use Bearer tokens, so we specify Bearer + the token we got from the result
-    request.setValue("Bearer \(msalResult.accessToken!)", forHTTPHeaderField: "Authorization")
+    request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
     let urlSession = URLSession(configuration: sessionConfig, delegate: self, delegateQueue: OperationQueue.main)
     
     urlSession.dataTask(with: request) { data, response, error in
         
         let result = try? JSONSerialization.jsonObject(with: data!, options: [])
-        DispatchQueue.main.async {
-            if result != nil {
+                    if result != nil {
                 
                 self.loggingText.text = result.debugDescription
             }
-        }
         }.resume()
 }
-    /**
-     This button will invoke a refresh of the token silently. 
+      /**
+     This button will invoke the signout APIs to clear the token cache.
      
-     Note the fact that we also look for InteractionRequired as an error code and 
-     prompt the user interactively. Often times the inability to use a refresh token
-     is from either a password change, refersh token expiring, or other event that
-     can be remedied by the user signing in again. This shouldn't be necessary at every
-     AcquireTokenSilent. If you are experiencing that in your application, make 
-     sure you are using the cache correctly and using the same authority.
      */
-    @IBAction func silentRefreshButton(_ sender: UIButton) {
+
+@IBAction func signoutButton(_ sender: UIButton) {
+    
+        do {
+            
+            /**
+             Removes all tokens from the cache for this application for the provided user
+             
+             - user:    The user to remove from the cache
+             */
+            
+            try self.applicationContext.remove(self.applicationContext.users().first)
+            self.signoutButton.isEnabled = false;
+            self.callGraphApiButton.isEnabled = false;
+            
+        } catch let error {
+            self.loggingText.text = "Received error signing user out: \(error)"
+            }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         do {
             
@@ -167,103 +196,13 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
              
              */
             
-            let application = try MSALPublicClientApplication.init(clientId: kClientID, authority: kAuthority)
+            self.applicationContext = try MSALPublicClientApplication.init(clientId: kClientID, authority: kAuthority)
             
-            /**
-             
-             Acquire a token for an existing user silently
-             
-             - forScopes: Permissions you want included in the access token received
-             in the result in the completionBlock. Not all scopes are
-             gauranteed to be included in the access token returned.
-             - User: A user object that we retrieved from the application object before that the
-             authentication flow will be locked down to.
-             - completionBlock: The completion block that will be called when the authentication
-             flow completes, or encounters an error.
-             */
-            
-            application.acquireTokenSilent(forScopes: kScopes, user: msalResult.user) { (result, error) in
-                DispatchQueue.main.async {
-                    if error == nil {
-                        self.msalResult = result!
-                        self.loggingText.text = "Refreshing token silently)"
-                        self.loggingText.text = "Refreshed Access token is \(self.msalResult.accessToken!)"
-                    
-                    } else if (error! as NSError).code == MSALErrorCode.interactionRequired.rawValue {
-                        
-                        // Notice we supply the user here. This ensures we acquire token for the same user
-                        // as we originally authenticated.
-                        
-                        application.acquireToken(forScopes: self.kScopes, user: self.msalResult.user) { (result, error) in
-                            DispatchQueue.main.async {
-                                if error == nil {
-                                    self.msalResult = result!
-                                    self.loggingText.text = "Access token is \(self.msalResult.accessToken!)"
-                                    
-                                } else  {
-                                    self.loggingText.text = "Could not acquire new token: \(error ?? "No error informarion" as! Error)"
-                                }
-                            }
-                        }
-                        
-                    } else {
-                        self.loggingText.text = "Could not acquire token: \(error ?? "No error informarion" as! Error)"
-                    }
-                 }
-              }
         } catch {
-            self.loggingText.text = "Unable to acquire token. Got error: \(error)"
+            
+            self.loggingText.text = "Unable to create Application Context"
+            
         }
-    }
-    /**
-     This button will invoke the signout APIs to clear the token cache.
-     
-     */
-
-@IBAction func signoutButton(_ sender: UIButton) {
-    
-    /**
-     
-     Initialize a MSALPublicClientApplication with a given clientID and authority
-     
-     - clientId:     The clientID of your application, you should get this from the app portal.
-     - authority:    A URL indicating a directory that MSAL can use to obtain tokens. In Azure AD
-     it is of the form https://<instance/<tenant>, where <instance> is the
-     directory host (e.g. https://login.microsoftonline.com) and <tenant> is a
-     identifier within the directory itself (e.g. a domain associated to the
-     tenant, such as contoso.onmicrosoft.com, or the GUID representing the
-     TenantID property of the directory)
-     - error:      The error that occurred creating the application object, if any, if you're
-     not interested in the specific error pass in nil.
-     
-     */
-    
-    if let application = try? MSALPublicClientApplication.init(clientId: kClientID, authority: kAuthority) {
-        
-        DispatchQueue.main.async {
-        do {
-            
-            /**
-             Removes all tokens from the cache for this application for the provided user
-             
-             - user:    The user to remove from the cache
-             */
-            
-            try application.remove(self.msalResult.user)
-            self.signoutButton.isEnabled = false;
-            self.callGraphApiButton.isEnabled = false;
-            self.silentRefreshButton.isEnabled = false;
-            
-        } catch let error {
-            self.loggingText.text = "Received error signing user out: \(error)"
-                        }
-        }
-    }
-    
-}
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
     }
 
     override func didReceiveMemoryWarning() {
@@ -273,11 +212,11 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     
     override func viewWillAppear(_ animated: Bool) {
         
-        if self.msalResult.accessToken == nil {
+        if self.accessToken.isEmpty {
             
             signoutButton.isEnabled = false;
             callGraphApiButton.isEnabled = false;
-            silentRefreshButton.isEnabled = false;
+            
         }
     }
 

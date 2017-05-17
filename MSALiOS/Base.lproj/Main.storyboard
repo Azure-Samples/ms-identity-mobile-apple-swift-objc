@@ -53,14 +53,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9u4-b8-vmX">
-                                <rect key="frame" x="156" y="220" width="48" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Logout"/>
-                                <connections>
-                                    <action selector="signoutButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kZT-P8-0Zy"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5nx-eD-Bm8">
                                 <rect key="frame" x="101" y="138" width="158" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -69,12 +61,12 @@
                                     <action selector="callGraphApi:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1ig-Iv-TEd"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xMn-7k-qhB">
-                                <rect key="frame" x="131" y="176" width="98" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9u4-b8-vmX">
+                                <rect key="frame" x="163" y="182" width="48" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Refresh Token"/>
+                                <state key="normal" title="Logout"/>
                                 <connections>
-                                    <action selector="silentRefreshButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="slZ-ue-3rh"/>
+                                    <action selector="signoutButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kZT-P8-0Zy"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -84,7 +76,6 @@
                         <outlet property="callGraphApiButton" destination="5nx-eD-Bm8" id="ORd-Oa-aJm"/>
                         <outlet property="loggingText" destination="qXW-2z-J7K" id="uqO-Yw-AsK"/>
                         <outlet property="signoutButton" destination="9u4-b8-vmX" id="OCh-qk-ldv"/>
-                        <outlet property="silentRefreshButton" destination="xMn-7k-qhB" id="5qr-mj-3Yo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
