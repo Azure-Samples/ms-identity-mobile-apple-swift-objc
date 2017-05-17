@@ -36,9 +36,9 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2rX-Vv-T1i">
-                                <rect key="frame" x="147" y="100" width="66" height="30"/>
+                                <rect key="frame" x="157" y="100" width="47" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Authorize"/>
+                                <state key="normal" title="Sign In"/>
                                 <connections>
                                     <action selector="authorizationButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="EQW-yP-Znq"/>
                                 </connections>
