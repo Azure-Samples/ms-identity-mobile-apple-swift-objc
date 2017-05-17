@@ -32,10 +32,13 @@ import MSAL
 
 class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate {
     
-    let kIssuer = "https://login.microsoftonline.com/brandwedir.onmicrosoft.com/v2.0"
+    // Update the below to your client ID you received in the portal. The below is for running the demo only
+    
     let kClientID = "2a814505-ab4a-41f7-bd09-3fc614ac077c"
-    let kRedirectURI = "msal://com.xerners/"
-    let kLogoutURI = "https://login.microsoftonline.com/common/oauth2/v2.0/logout"
+    
+    // These settings you don't need to edit unless you wish to attempt deeper scenarios with the app.
+    
+    let kIssuer = "https://login.microsoftonline.com/brandwedir.onmicrosoft.com/v2.0"
     let kGraphURI = "https://graph.microsoft.com/v1.0/me/"
     let kScopes: [String] = ["https://graph.microsoft.com/user.read"]
     let kAuthority = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
