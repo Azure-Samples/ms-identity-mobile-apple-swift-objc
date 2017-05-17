@@ -46,13 +46,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
     @IBOutlet weak var loggingText: UITextView!
     @IBOutlet weak var signoutButton: UIButton!
-    @IBOutlet weak var callGraphApiButton: UIButton!
     
     /**
      This button will invoke the authorization flow.
     */
 
-@IBAction func authorizationButton(_ sender: UIButton) {
+@IBAction func callGraphButton(_ sender: UIButton) {
     
     
     do {
@@ -86,7 +85,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                     self.loggingText.text = "Refreshed Access token is \(self.accessToken)"
                     
                     self.signoutButton.isEnabled = true;
-                    self.callGraphApiButton.isEnabled = true;
+                    self.getContentWithToken()
 
                 } else {
                     self.loggingText.text = "Could not acquire token silently: \(error ?? "No error informarion" as! Error)"
@@ -107,7 +106,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                         self.accessToken = (result?.accessToken)!
                         self.loggingText.text = "Access token is \(self.accessToken)"
                         self.signoutButton.isEnabled = true;
-                        self.callGraphApiButton.isEnabled = true;
+                        self.getContentWithToken()
                         
                     } else  {
                         self.loggingText.text = "Could not acquire token: \(error ?? "No error informarion" as! Error)"
@@ -137,7 +136,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
      
      */
 
-@IBAction func callGraphApi(_ sender: UIButton) {
+ func getContentWithToken() {
     
     let sessionConfig = URLSessionConfiguration.default
     
@@ -175,7 +174,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
             
             try self.applicationContext.remove(self.applicationContext.users().first)
             self.signoutButton.isEnabled = false;
-            self.callGraphApiButton.isEnabled = false;
             
         } catch let error {
             self.loggingText.text = "Received error signing user out: \(error)"
@@ -222,7 +220,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         if self.accessToken.isEmpty {
             
             signoutButton.isEnabled = false;
-            callGraphApiButton.isEnabled = false;
             
         }
     }
