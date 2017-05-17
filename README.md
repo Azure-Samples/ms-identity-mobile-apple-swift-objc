@@ -19,29 +19,24 @@ The MSAL preview library for iOS and macOS gives your app the ability to begin u
 
 ## Example
 
-```Swift
-do {
-    let application = try MSALPublicClientApplication.init(clientId: kClientID, authority: kAuthority)
-    application.acquireToken(forScopes: kScopes) { (result, error) in
-    DispatchQueue.main.async {
-    if result != nil {
-    // Set up your application for the user
-        } else {
-            print(error)
-        }
-      }
-    }
-}
-            
-        catch {
-            print(error)
+```swift
+    if let application = try? MSALPublicClientApplication.init(clientId: <your-client-id-here>) {
+        application.acquireToken(forScopes: kScopes) { (result, error) in
+            if result != nil {
+                    // Set up your app for the user
+            } else {
+                print(error?.localizedDescription)
+            }
         }
     }
+    else {
+            print("Unable to create application.")
+        } 
 ```
 
 ## App Registration 
 
-You will need to have a native client application registered with Microsoft using our [App Registration Portal](http://apps.dev.microsoft.com). Once done, you will need add the redirect URI of `msal2a814505-ab4a-41f7-bd09-3fc614ac077c://auth` in the portal.
+You will need to have a native client application registered with Microsoft using our [App Registration Portal](http://apps.dev.microsoft.com). You must do this even if you have previousdly registered your app with the legact portal. Once done, you will need add the redirect URI of `msal<your-client-id-here>://auth` in the portal.
 
 
 ## Installation
@@ -71,6 +66,34 @@ With the debug information copied into the built products directory, Xcode will 
 
 When archiving your application for submission to the App Store or TestFlight, Xcode will also copy these files into the dSYMs subdirectory of your application’s `.xcarchive` bundle.
 
+## Configure your application
+
+1. Add your application's redirect URI scheme to added in the portal to your `info.plist` file. It will be in the format of `msal<client-id>`
+```xml
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>msalyour-client-id-here</string>
+            </array>
+        </dict>
+    </array>
+```
+
+2. Configure your application defaults
+
+In the `ViewControler.swift` file, update the `kClientID` variable with your client ID.
+
+```swift
+    // Update the below to your client ID you received in the portal. The below is for running the demo only
+    
+    let kClientID = "<your-client-id-here>"
+```
 
 ## Community Help and Support
 
@@ -85,14 +108,6 @@ To provide a recommendation, visit our [User Voice page](https://feedback.azure.
 We enthusiastically welcome contributions and feedback. You can clone the repo and start contributing now. Read our [Contribution Guide](Contributing.md) for more information.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-## Security Library
-
-This library controls how users sign-in and access services. We recommend you always take the latest version of our library in your app when possible. We use [semantic versioning](http://semver.org) so you can control the risk associated with updating your app. As an example, always downloading the latest minor version number (e.g. x.*y*.x) ensures you get the latest security and feature enhanements but our API surface remains the same. You can always see the latest version and release notes under the Releases tab of GitHub.
-
-## Security Reporting
-
-If you find a security issue with our libraries or services please report it to [secure@microsoft.com](mailto:secure@microsoft.com) with as much detail as possible. Your submission may be eligible for a bounty through the [Microsoft Bounty](http://aka.ms/bugbounty) program. Please do not post security issues to GitHub Issues or any other public site. We will contact you shortly upon receiving the information. We encourage you to get notifications of when security incidents occur by visiting [this page](https://technet.microsoft.com/en-us/security/dd252948) and subscribing to Security Advisory Alerts.
 
 
 Copyright (c) Microsoft Corporation.  All rights reserved. Licensed under the MIT License (the "License");
