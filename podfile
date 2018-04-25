@@ -1,0 +1,12 @@
+platform :ios, '11.0'
+inhibit_all_warnings!
+
+target 'MSALiOS' do
+  pod 'MSAL', :git => 'git@github.com:AzureAD/microsoft-authentication-library-for-objc.git', :branch => 'master'
+end
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    puts target.name
+  end
+end
+
