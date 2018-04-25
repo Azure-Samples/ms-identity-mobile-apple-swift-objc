@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FB2510531EBBDB180044F3F7 /* MSAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2510521EBBDB180044F3F7 /* MSAL.framework */; };
+		27128699A82855F5EEFE422A /* libPods-MSALiOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87E239331F6E6C7461D48A0D /* libPods-MSALiOS.a */; };
+		FB2510531EBBDB180044F3F7 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
 		FBA79EA11E9A038700179A54 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EA01E9A038700179A54 /* AppDelegate.swift */; };
 		FBA79EA31E9A038700179A54 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EA21E9A038700179A54 /* ViewController.swift */; };
 		FBA79EA61E9A038700179A54 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBA79EA41E9A038700179A54 /* Main.storyboard */; };
@@ -16,7 +17,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FB2510521EBBDB180044F3F7 /* MSAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MSAL.framework; path = Carthage/Build/iOS/MSAL.framework; sourceTree = "<group>"; };
+		40D0B4B882ADA0F3137C5009 /* Pods-MSALiOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MSALiOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS.release.xcconfig"; sourceTree = "<group>"; };
+		87E239331F6E6C7461D48A0D /* libPods-MSALiOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MSALiOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC7606D8B504DD6B84372332 /* Pods-MSALiOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MSALiOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS.debug.xcconfig"; sourceTree = "<group>"; };
 		FBA79E9D1E9A038700179A54 /* MSALiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MSALiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBA79EA01E9A038700179A54 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBA79EA21E9A038700179A54 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -33,23 +36,35 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FB2510531EBBDB180044F3F7 /* MSAL.framework in Frameworks */,
+				FB2510531EBBDB180044F3F7 /* BuildFile in Frameworks */,
+				27128699A82855F5EEFE422A /* libPods-MSALiOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		254EA968D84BAD850B12DC99 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AC7606D8B504DD6B84372332 /* Pods-MSALiOS.debug.xcconfig */,
+				40D0B4B882ADA0F3137C5009 /* Pods-MSALiOS.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		FB34F80C1EB7E425001CBC9B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FB2510521EBBDB180044F3F7 /* MSAL.framework */,
+				87E239331F6E6C7461D48A0D /* libPods-MSALiOS.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		FB4650C21EBBCE6300E789AD /* Products */ = {
 			isa = PBXGroup;
+			children = (
+			);
 			name = Products;
 			sourceTree = "<group>";
 		};
@@ -60,6 +75,7 @@
 				FBA79E9F1E9A038700179A54 /* MSALiOS */,
 				FBA79E9E1E9A038700179A54 /* Products */,
 				FB34F80C1EB7E425001CBC9B /* Frameworks */,
+				254EA968D84BAD850B12DC99 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -92,10 +108,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FBA79EC51E9A038700179A54 /* Build configuration list for PBXNativeTarget "MSALiOS" */;
 			buildPhases = (
+				E4BFB2720143B70275A3DFFB /* [CP] Check Pods Manifest.lock */,
 				FBA79E991E9A038700179A54 /* Sources */,
 				FBA79E9A1E9A038700179A54 /* Frameworks */,
 				FBA79E9B1E9A038700179A54 /* Resources */,
-				FB34F80B1EB7E20B001CBC9B /* ShellScript */,
+				637CC1FE884FB7FAD1023692 /* [CP] Embed Pods Frameworks */,
+				0CAB994B5EB8B817DF2052F3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -167,19 +185,53 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		FB34F80B1EB7E20B001CBC9B /* ShellScript */ = {
+		0CAB994B5EB8B817DF2052F3 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/MSAL.framework",
 			);
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		637CC1FE884FB7FAD1023692 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E4BFB2720143B70275A3DFFB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MSALiOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -312,18 +364,16 @@
 		};
 		FBA79EC61E9A038700179A54 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AC7606D8B504DD6B84372332 /* Pods-MSALiOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MSALiOS/MSALiOS.entitlements;
 				DEVELOPMENT_TEAM = UBF8T346G9;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = MSALiOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.identity.client.sample.MSALiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -333,18 +383,16 @@
 		};
 		FBA79EC71E9A038700179A54 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 40D0B4B882ADA0F3137C5009 /* Pods-MSALiOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MSALiOS/MSALiOS.entitlements;
 				DEVELOPMENT_TEAM = UBF8T346G9;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = MSALiOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.identity.client.sample.MSALiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
