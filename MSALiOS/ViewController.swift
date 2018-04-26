@@ -176,6 +176,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
              */
             
             try self.applicationContext.remove(self.applicationContext.users().first)
+            self.loggingText.text = ""
             self.signoutButton.isEnabled = false;
             
         } catch let error {
