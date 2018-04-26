@@ -2,12 +2,14 @@
 Services: active-directory
 platforms: iOS
 author: brandwe
+level: 100
+client: iOS Mobile App
+service: Microsoft Graph
+endpoint: AAD V2
 ---
+# MSAL iOS Swift Microsoft Graph API Sample 
 
-Microsoft Authentication Library Graph API Sample for Apple iOS in Swift
-=====================================
-
-| [Getting Started](https://apps.dev.microsoft.com/)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [Docs](https://aka.ms/aaddev) | [Support](README.md#community-help-and-support)
+| [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-ios)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [API Reference](https://azuread.github.io/docs/objc/) | [Support](README.md#community-help-and-support)
 | --- | --- | --- | --- |
 
 The MSAL preview library for iOS and macOS gives your app the ability to begin using the [Microsoft Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
@@ -16,6 +18,10 @@ The MSAL preview library for iOS and macOS gives your app the ability to begin u
 * How to refresh a token
 * How to call the Microsoft Graph API
 * How to sign a user out of your application
+
+## Scenario
+
+This app is a multi-tenant app meaning it can be used by any Azure AD tenant or Microsoft Account.  It demonstrates how a developer can build apps to connect with enterprise users and access their Azure + O365 data via the Microsoft Graph.  During the auth flow, end users will be required to sign in and consent to the permissions of the application, and in some cases may require an admin to consent to the app.  The majority of the logic in this sample shows how to auth an end user and make a basic call to the Microsoft Graph.
 
 ## Example
 
@@ -34,38 +40,35 @@ The MSAL preview library for iOS and macOS gives your app the ability to begin u
         } 
 ```
 
-## App Registration 
+## Optional: Register your App  
 
-You will need to have a native client application registered with Microsoft using our [App Registration Portal](http://apps.dev.microsoft.com). You must do this even if you have previousdly registered your app with the legact portal. Once done, you will need add the redirect URI of `msal<your-client-id-here>://auth` in the portal.
+The app comes pre-configured for testing.  If you would like to register your own app, please follow 
+the steps below. 
 
+You will need to have a native client application registered with Microsoft using the 
+[App Registration Portal](https://apps.dev.microsoft.com/portal/register-app?appType=mobileAndDesktopApp&appTech=android). 
+
+To create an app,  
+1. Click the `Add an app` button inside the *Converged Apps* section.
+
+2. Name your app and select `Create`. 
+    - After the app is created, you'll land on your app management page. 
+
+3. Click `Add Platform`, then select `Native Application`. 
+    - The Redirect URI produced is needed when making Auth requests. If you're using MSAL, it will
+    be automatically constructed by the library. 
+
+4. Hit the `Save` button. 
 
 ## Installation
 
-We use [Carthage](https://github.com/Carthage/Carthage) for package management during the preview period of MSAL. This package manager integrates very nicely with XCode while maintaining our ability to make changes to the library. The sample is set up to use Carthage.
+Load the podfile using cocoapods. This will create a new XCode Workspace you will load.
 
-##### If you're building for iOS, tvOS, or watchOS
-
-1. Install Carthage on your Mac using a download from their website or if using Homebrew `brew install carthage`.
-1. We have already created a `Cartfile` that lists the MSAL library for this project on Github. We use the `/dev` branch.
-1. Run `carthage update`. This will fetch dependencies into a `Carthage/Checkouts` folder, then build the MSAL library.
-1. On your application targets’ “General” settings tab, in the “Linked Frameworks and Libraries” section, drag and drop the `MSAL.framework` from the `Carthage/Build` folder on disk.
-1. On your application targets’ “Build Phases” settings tab, click the “+” icon and choose “New Run Script Phase”. Create a Run Script in which you specify your shell (ex: `/bin/sh`), add the following contents to the script area below the shell:
-
-  ```sh
-  /usr/local/bin/carthage copy-frameworks
-  ```
-
-  and add the paths to the frameworks you want to use under “Input Files”, e.g.:
-
-  ```
-  $(SRCROOT)/Carthage/Build/iOS/MSAL.framework
-  ```
-  This script works around an [App Store submission bug](http://www.openradar.me/radar?id=6409498411401216) triggered by universal binaries and ensures that necessary bitcode-related files and dSYMs are copied when archiving.
-
-With the debug information copied into the built products directory, Xcode will be able to symbolicate the stack trace whenever you stop at a breakpoint. This will also enable you to step through third-party code in the debugger.
-
-When archiving your application for submission to the App Store or TestFlight, Xcode will also copy these files into the dSYMs subdirectory of your application’s `.xcarchive` bundle.
-
+```
+$ pod install
+...
+$ open QuickStart.xcworkspace
+```
 ## Configure your application
 
 1. Add your application's redirect URI scheme to added in the portal to your `info.plist` file. It will be in the format of `msal<client-id>`
@@ -79,7 +82,7 @@ When archiving your application for submission to the App Store or TestFlight, X
             <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>msalyour-client-id-here</string>
+                <string>msal+your-client-id-here</string>
             </array>
         </dict>
     </array>
@@ -95,19 +98,47 @@ In the `ViewControler.swift` file, update the `kClientID` variable with your cli
     let kClientID = "<your-client-id-here>"
 ```
 
-## Community Help and Support
+## Feedback, Community Help, and Support
 
-We use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) with the community to provide support. We highly recommend you ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before. 
+We use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) with the community to 
+provide support. We highly recommend you ask your questions on Stack Overflow first and browse 
+existing issues to see if someone has asked your question before. 
 
-If you find and bug or have a feature request, please raise the issue on [GitHub Issues](../../issues). 
+If you find and bug or have a feature request, please raise the issue 
+on [GitHub Issues](../../issues). 
 
-To provide a recommendation, visit our [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
+To provide a recommendation, visit 
+our [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
 
 ## Contribute
 
-We enthusiastically welcome contributions and feedback. You can clone the repo and start contributing now. Read our [Contribution Guide](Contributing.md) for more information.
+We enthusiastically welcome contributions and feedback. You can clone the repo and start 
+contributing now. Read our [Contribution Guide](Contributing.md) for more information.
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+This project has adopted the 
+[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). 
+For more information see 
+the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact 
+[opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
+## Security Library
+
+This library controls how users sign-in and access services. We recommend you always take the 
+latest version of our library in your app when possible. We 
+use [semantic versioning](http://semver.org) so you can control the risk associated with updating 
+your app. As an example, always downloading the latest minor version number (e.g. x.*y*.x) ensures 
+you get the latest security and feature enhanements but our API surface remains the same. You 
+can always see the latest version and release notes under the Releases tab of GitHub.
+
+## Security Reporting
+
+If you find a security issue with our libraries or services please report it 
+to [secure@microsoft.com](mailto:secure@microsoft.com) with as much detail as possible. Your 
+submission may be eligible for a bounty through the [Microsoft Bounty](http://aka.ms/bugbounty) 
+program. Please do not post security issues to GitHub Issues or any other public site. We will 
+contact you shortly upon receiving the information. We encourage you to get notifications of when 
+security incidents occur by 
+visiting [this page](https://technet.microsoft.com/en-us/security/dd252948) and subscribing 
+to Security Advisory Alerts.
 
 Copyright (c) Microsoft Corporation.  All rights reserved. Licensed under the MIT License (the "License");
