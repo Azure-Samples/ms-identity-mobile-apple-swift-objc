@@ -46,10 +46,10 @@ The app comes pre-configured for testing.  If you would like to register your ow
 the steps below. 
 
 You will need to have a native client application registered with Microsoft using the 
-[App Registration Portal](https://apps.dev.microsoft.com/portal/register-app?appType=mobileAndDesktopApp&appTech=android). 
+[App Registration Portal](https://apps.dev.microsoft.com/). 
 
 To create an app,  
-1. Click the `Add an app` button inside the *Converged Apps* section.
+1. Click the `Add an app` on the top right of the webpage.
 
 2. Name your app and select `Create`. 
     - After the app is created, you'll land on your app management page. 
@@ -67,7 +67,7 @@ Load the podfile using cocoapods. This will create a new XCode Workspace you wil
 ```
 $ pod install
 ...
-$ open QuickStart.xcworkspace
+$ open MSALiOS.xcworkspace
 ```
 ## Configure your application
 
