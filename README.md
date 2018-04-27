@@ -23,6 +23,8 @@ The MSAL preview library for iOS and macOS gives your app the ability to begin u
 
 This app is a multi-tenant app meaning it can be used by any Azure AD tenant or Microsoft Account.  It demonstrates how a developer can build apps to connect with enterprise users and access their Azure + O365 data via the Microsoft Graph.  During the auth flow, end users will be required to sign in and consent to the permissions of the application, and in some cases may require an admin to consent to the app.  The majority of the logic in this sample shows how to auth an end user and make a basic call to the Microsoft Graph.
 
+![Topology](./images/iosintro.png)
+
 ## Example
 
 ```swift
