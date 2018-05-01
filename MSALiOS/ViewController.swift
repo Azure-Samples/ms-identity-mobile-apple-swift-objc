@@ -38,10 +38,9 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     
     // These settings you don't need to edit unless you wish to attempt deeper scenarios with the app.
     
-    let kIssuer = "https://login.microsoftonline.com/brandwedir.onmicrosoft.com/v2.0"
     let kGraphURI = "https://graph.microsoft.com/v1.0/me/"
     let kScopes: [String] = ["https://graph.microsoft.com/user.read"]
-    let kAuthority = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+    let kAuthority = "https://login.microsoftonline.com/common/"
     
     var accessToken = String()
     var applicationContext = MSALPublicClientApplication.init()
@@ -84,7 +83,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
                 if error == nil {
                     self.accessToken = (result?.accessToken)!
-                    self.loggingText.text = "Refreshing token silently)"
                     self.loggingText.text = "Refreshed Access token is \(self.accessToken)"
                     
                     self.signoutButton.isEnabled = true;
@@ -176,6 +174,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
              */
             
             try self.applicationContext.remove(self.applicationContext.users().first)
+            self.loggingText.text = ""
             self.signoutButton.isEnabled = false;
             
         } catch let error {

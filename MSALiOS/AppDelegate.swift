@@ -90,13 +90,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      AppAuth authorization request and if so, will look for the code in the response.
      */
     
-    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        
-        print("Received callback!")
-        
-        MSALPublicClientApplication.handleMSALResponse(url)
-        
-        
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        if MSALPublicClientApplication.handleMSALResponse(url) == true {
+            print("Received callback!")
+        }
         return true
     }
 
