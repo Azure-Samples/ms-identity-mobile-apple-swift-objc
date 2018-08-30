@@ -2,7 +2,7 @@
   "Sample": {
     "Title": "Calling Microsoft Graph from an iOS app",
     "Level": 400,
-    "Client": "Android"
+    "Client": "iOS"
   },
   "AppRegistrations": [
     {
