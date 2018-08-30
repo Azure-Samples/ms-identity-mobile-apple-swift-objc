@@ -71,7 +71,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                                     not interested in the specific error pass in nil.
              */
 
-            self.applicationContext = try MSALPublicClientApplication.init(clientId: kClientID, authority: kAuthority)
+            self.applicationContext = try MSALPublicClientApplication(clientId: kClientID, authority: kAuthority)
 
         } catch let error {
             self.loggingText.text = "Unable to create Application Context \(error)"
@@ -80,11 +80,8 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
     override func viewWillAppear(_ animated: Bool) {
 
-        if self.accessToken.isEmpty {
-
-            signoutButton.isEnabled = false
-
-        }
+        super.viewWillAppear(animated)
+        signoutButton.isEnabled = !self.accessToken.isEmpty
     }
     
     /**
@@ -108,16 +105,22 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
         applicationContext.acquireToken(forScopes: kScopes) { (result, error) in
 
-            if error == nil {
-                self.accessToken = (result?.accessToken)!
-                self.updateLogging(text: "Access token is \(self.accessToken)")
-                self.updateSignoutButton(enabled: true)
-                self.getContentWithToken()
+            if let error = error {
 
-            } else {
-                self.updateLogging(text: "Could not acquire token: \(error ?? "No error informarion" as! Error)")
+                self.updateLogging(text: "Could not acquire token: \(error)")
+                return
             }
 
+            guard let result = result else {
+
+                self.updateLogging(text: "Could not acquire token: No result returned")
+                return
+            }
+
+            self.accessToken = result.accessToken!
+            self.updateLogging(text: "Access token is \(self.accessToken)")
+            self.updateSignoutButton(enabled: true)
+            self.getContentWithToken()
         }
     }
 
@@ -140,15 +143,9 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
         applicationContext.acquireTokenSilent(forScopes: kScopes, account: self.currentAccount()) { (result, error) in
 
-            if error == nil {
-                self.accessToken = (result?.accessToken)!
-                self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
-                self.updateSignoutButton(enabled: true)
-                self.getContentWithToken()
+            if let error = error {
 
-            } else {
-
-                let nsError = error! as NSError
+                let nsError = error as NSError
 
                 // interactionRequired means we need to ask the user to sign-in. This usually happens
                 // when the user's Refresh Token is expired or if the user has changed their password
@@ -162,24 +159,38 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                     }
 
                 } else {
-                    self.updateLogging(text: "Could not acquire token silently: \(error ?? "No error informarion" as! Error)")
+                    self.updateLogging(text: "Could not acquire token silently: \(error)")
                 }
-            }
-        }
 
+                return
+            }
+
+            guard let result = result else {
+
+                self.updateLogging(text: "Could not acquire token: No result returned")
+                return
+            }
+
+            self.accessToken = result.accessToken!
+            self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
+            self.updateSignoutButton(enabled: true)
+            self.getContentWithToken()
+        }
     }
 
     func currentAccount() -> MSALAccount? {
+
+        guard let applicationContext = self.applicationContext else { return nil }
 
         // We retrieve our current account by getting the first account from cache
         // In multi-account applications, account should be retrieved by home account identifier or username instead
 
         do {
 
-            let cachedAccounts = try self.applicationContext!.accounts()
+            let cachedAccounts = try applicationContext.accounts()
 
-            guard cachedAccounts.isEmpty else {
-                return cachedAccounts[0]
+            if !cachedAccounts.isEmpty {
+                return cachedAccounts.first
             }
 
         } catch let error as NSError {
@@ -226,12 +237,20 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
 
         URLSession.shared.dataTask(with: request) { data, response, error in
-        
-        let result = try? JSONSerialization.jsonObject(with: data!, options: [])
 
-            if result != nil {
-                self.updateLogging(text: result.debugDescription)
+            if let error = error {
+                self.updateLogging(text: "Couldn't get graph result: \(error)")
+                return
             }
+
+            guard let result = try? JSONSerialization.jsonObject(with: data!, options: []) else {
+
+                self.updateLogging(text: "Couldn't deserialize result JSON")
+                return
+            }
+
+            self.updateLogging(text: "Result from Graph: \(result))")
+
         }.resume()
     }
 
