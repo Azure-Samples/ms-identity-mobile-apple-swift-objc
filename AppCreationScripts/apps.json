@@ -1,0 +1,33 @@
+{
+  "Sample": {
+    "Title": "Calling Microsoft Graph from an iOS app",
+    "Level": 400,
+    "Client": "iOS"
+  },
+  "AppRegistrations": [
+    {
+      "x-ms-id": "active-directory-ios-swift-native-v2",
+      "x-ms-name": "ios-swift-native-v2",
+      "x-ms-version": "2.0",
+      "replyUrlsWithType": [
+        {
+          "url": "msal{AppId}://auth",
+          "type": "InstalledClient"
+        }
+      ],
+      "requiredResourceAccess": [
+        {
+          "x-ms-resourceAppName": "Microsoft Graph",
+          "resourceAppId": "00000003-0000-0000-c000-000000000000",
+          "resourceAccess": [
+            {
+              "id": "e1fe6dd8-ba31-4d61-89e7-88639da4683d",
+              "type": "Scope",
+              "x-ms-name": "user.read"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
