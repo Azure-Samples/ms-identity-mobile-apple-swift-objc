@@ -15,7 +15,6 @@
           "type": "InstalledClient"
         }
       ],
-      "oauth2AllowImplicitFlow": true,
       "requiredResourceAccess": [
         {
           "x-ms-resourceAppName": "Microsoft Graph",
