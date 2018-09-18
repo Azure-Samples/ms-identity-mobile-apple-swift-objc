@@ -71,7 +71,13 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                                     not interested in the specific error pass in nil.
              */
 
-            self.applicationContext = try MSALPublicClientApplication(clientId: kClientID, authority: kAuthority)
+            guard let authorityURL = URL(string: kAuthority) else {
+                self.loggingText.text = "Unable to create authority URL"
+                return
+            }
+
+            let authority = try MSALAuthority(url: authorityURL)
+            self.applicationContext = try MSALPublicClientApplication(clientId: kClientID, authority: authority)
 
         } catch let error {
             self.loggingText.text = "Unable to create Application Context \(error)"
@@ -187,7 +193,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
         do {
 
-            let cachedAccounts = try applicationContext.accounts()
+            let cachedAccounts = try applicationContext.allAccounts()
 
             if !cachedAccounts.isEmpty {
                 return cachedAccounts.first
