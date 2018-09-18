@@ -71,7 +71,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                                     not interested in the specific error pass in nil.
              */
 
-            let authority = try MSALAuthority(url: URL(string: kAuthority)!)
+            guard let authorityURL = URL(string: kAuthority) else {
+                self.loggingText.text = "Unable to create authority URL"
+                return
+            }
+
+            let authority = try MSALAuthority(url: authorityURL)
             self.applicationContext = try MSALPublicClientApplication(clientId: kClientID, authority: authority)
 
         } catch let error {
