@@ -45,24 +45,18 @@ This app is a multi-tenant app meaning it can be used by any Azure AD tenant or 
 ```
 
 ## Optional: Register your App  
+The app comes pre-configured for testing.  If you would like to register your own app, please follow the steps below.
 
-The app comes pre-configured for testing.  If you would like to register your own app, please follow 
-the steps below. 
-
-You will need to have a native client application registered with Microsoft using the 
-[App Registration Portal](https://apps.dev.microsoft.com/). 
+You will need to have a native client application registered with Microsoft using the [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) experience.
 
 To create an app,  
-1. Click the `Add an app` on the top right of the webpage.
-
-2. Name your app and select `Create`. 
-    - After the app is created, you'll land on your app management page. 
-
-3. Click `Add Platform`, then select `Native Application`. 
-    - The Redirect URI produced is needed when making Auth requests. If you're using MSAL, it will
-    be automatically constructed by the library. 
-
-4. Hit the `Save` button. 
+1. Click the **New registration** button on the top left of the page.
+2. On the app registration page,
+    - Name your app
+    - Under **Supported account types**, select **Accounts in any organizational directory and personal Microsoft accounts**
+    - Select **Register** to finish.
+3. After the app is created, you'll land on your app management page. Click **Authentication**, and look at the Redirect URI suggestions. Select the first item, which will be in this format: `<clientID>://auth`.
+4. Hit the **Save** button in the top left, to save these updates. 
 
 ## Installation
 
