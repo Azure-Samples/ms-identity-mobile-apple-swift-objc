@@ -55,7 +55,7 @@ To create an app,
     - Name your app
     - Under **Supported account types**, select **Accounts in any organizational directory and personal Microsoft accounts**
     - Select **Register** to finish.
-3. After the app is created, you'll land on your app management page. Click **Authentication**, and look at the Redirect URI suggestions. Select the first item, which will be in this format: `<clientID>://auth`.
+3. After the app is created, you'll land on your app management page. Click **Authentication**, and look at the Redirect URI suggestions. Select the first item, which will be in this format: `msal<clientID>://auth`.
 4. Hit the **Save** button in the top left, to save these updates. 
 
 ## Installation
