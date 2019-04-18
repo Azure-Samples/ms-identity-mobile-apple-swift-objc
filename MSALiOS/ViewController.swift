@@ -105,7 +105,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
             return
         }
         
-        acquireTokenSilently(currentAccount, scopes: kScopes)
+        acquireTokenSilently(currentAccount)
     }
 
     func acquireTokenInteractively() {
@@ -135,7 +135,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         }
     }
 
-    func acquireTokenSilently(_ account : MSALAccount!, scopes : [String]) {
+    func acquireTokenSilently(_ account : MSALAccount!) {
 
         guard let applicationContext = self.applicationContext else { return }
 
@@ -152,7 +152,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                                 flow completes, or encounters an error.
          */
         
-        let parameters = MSALSilentTokenParameters(scopes: scopes, account: account)
+        let parameters = MSALSilentTokenParameters(scopes: kScopes, account: account)
         
         applicationContext.acquireTokenSilent(with: parameters) { (result, error) in
 
