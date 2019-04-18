@@ -76,8 +76,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 return
             }
 
-            let authority = try MSALAuthority(url: authorityURL)
-            self.applicationContext = try MSALPublicClientApplication(clientId: kClientID, authority: authority)
+            let authority = try MSALAADAuthority(url: authorityURL)
+            
+            let msalConfiguration = MSALPublicClientApplicationConfig(clientId: kClientID)
+            msalConfiguration.authority = authority
+            
+            self.applicationContext = try MSALPublicClientApplication(configuration: msalConfiguration)
 
         } catch let error {
             self.loggingText.text = "Unable to create Application Context \(error)"
@@ -95,21 +99,24 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     */
 
     @IBAction func callGraphButton(_ sender: UIButton) {
-
-        if self.currentAccount() == nil {
+        
+        guard let currentAccount = self.currentAccount() else {
             // We check to see if we have a current logged in account.
             // If we don't, then we need to sign someone in.
-            self.acquireTokenInteractively()
-        } else {
-            self.acquireTokenSilently()
+            acquireTokenInteractively()
+            return
         }
+        
+        acquireTokenSilently(currentAccount)
     }
 
     func acquireTokenInteractively() {
 
         guard let applicationContext = self.applicationContext else { return }
-
-        applicationContext.acquireToken(forScopes: kScopes) { (result, error) in
+        
+        let parameters = MSALInteractiveTokenParameters(scopes: kScopes)
+        
+        applicationContext.acquireToken(with: parameters) { (result, error) in
 
             if let error = error {
 
@@ -123,14 +130,14 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 return
             }
 
-            self.accessToken = result.accessToken!
+            self.accessToken = result.accessToken
             self.updateLogging(text: "Access token is \(self.accessToken)")
             self.updateSignoutButton(enabled: true)
             self.getContentWithToken()
         }
     }
 
-    func acquireTokenSilently() {
+    func acquireTokenSilently(_ account : MSALAccount!) {
 
         guard let applicationContext = self.applicationContext else { return }
 
@@ -146,8 +153,10 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
          - completionBlock:     The completion block that will be called when the authentication
                                 flow completes, or encounters an error.
          */
-
-        applicationContext.acquireTokenSilent(forScopes: kScopes, account: self.currentAccount()) { (result, error) in
+        
+        let parameters = MSALSilentTokenParameters(scopes: kScopes, account: account)
+        
+        applicationContext.acquireTokenSilent(with: parameters) { (result, error) in
 
             if let error = error {
 
@@ -156,18 +165,24 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 // interactionRequired means we need to ask the user to sign-in. This usually happens
                 // when the user's Refresh Token is expired or if the user has changed their password
                 // among other possible reasons.
-
-                if (nsError.domain == MSALErrorDomain
-                    && nsError.code == MSALErrorCode.interactionRequired.rawValue) {
-
-                    DispatchQueue.main.async {
-                        self.acquireTokenInteractively()
+                
+                if (nsError.domain == MSALErrorDomain) {
+                    
+                    if (nsError.code == MSALError.interactionRequired.rawValue) {
+                        
+                        DispatchQueue.main.async {
+                            self.acquireTokenInteractively()
+                        }
+                        return
                     }
-
-                } else {
-                    self.updateLogging(text: "Could not acquire token silently: \(error)")
+                    
+                    if (nsError.code == MSALError.serverDeclinedScopes.rawValue) {
+                        // TODO: do we want to show it here?
+                        return;
+                    }
                 }
 
+                self.updateLogging(text: "Could not acquire token silently: \(error)")
                 return
             }
 
@@ -177,13 +192,13 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 return
             }
 
-            self.accessToken = result.accessToken!
+            self.accessToken = result.accessToken
             self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
             self.updateSignoutButton(enabled: true)
             self.getContentWithToken()
         }
     }
-
+    
     func currentAccount() -> MSALAccount? {
 
         guard let applicationContext = self.applicationContext else { return nil }

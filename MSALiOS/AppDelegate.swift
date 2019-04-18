@@ -46,8 +46,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          about the user being logged in.
          */
         
-        MSALLogger.shared().setCallback { (logLevel, message, containsPII) in
-
+        MSALGlobalConfig.loggerConfig.setLogCallback { (logLevel, message, containsPII) in
+            
             if (!containsPII) {
                 
                 print("%@", message!)
