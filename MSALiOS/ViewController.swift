@@ -78,9 +78,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
             let authority = try MSALAADAuthority(url: authorityURL)
             
-            let msalConfiguration = MSALPublicClientApplicationConfig(clientId: kClientID)
-            msalConfiguration.authority = authority
-            
+            let msalConfiguration = MSALPublicClientApplicationConfig(clientId: kClientID, redirectUri: nil, authority: authority)
             self.applicationContext = try MSALPublicClientApplication(configuration: msalConfiguration)
 
         } catch let error {
@@ -107,7 +105,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
             return
         }
         
-        acquireTokenSilently(currentAccount)
+        acquireTokenSilently(currentAccount, scopes: kScopes)
     }
 
     func acquireTokenInteractively() {
@@ -137,7 +135,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         }
     }
 
-    func acquireTokenSilently(_ account : MSALAccount!) {
+    func acquireTokenSilently(_ account : MSALAccount!, scopes : [String]) {
 
         guard let applicationContext = self.applicationContext else { return }
 
@@ -154,7 +152,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                                 flow completes, or encounters an error.
          */
         
-        let parameters = MSALSilentTokenParameters(scopes: kScopes, account: account)
+        let parameters = MSALSilentTokenParameters(scopes: scopes, account: account)
         
         applicationContext.acquireTokenSilent(with: parameters) { (result, error) in
 
@@ -174,11 +172,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                             self.acquireTokenInteractively()
                         }
                         return
-                    }
-                    
-                    if (nsError.code == MSALError.serverDeclinedScopes.rawValue) {
-                        // TODO: do we want to show it here?
-                        return;
                     }
                 }
 

@@ -84,10 +84,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      */
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        if MSALPublicClientApplication.handleMSALResponse(url) == true {
-            print("Received callback!")
+        
+        guard let sourceApplication = options[UIApplicationOpenURLOptionsKey.sourceApplication] as? String else {
+            print("No source application provided")
+            return false
         }
-        return true
+        
+        return MSALPublicClientApplication.handleMSALResponse(url, sourceApplication: sourceApplication)
     }
 
 
