@@ -33,7 +33,7 @@ import MSAL
 class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate {
     
     // Update the below to your client ID you received in the portal. The below is for running the demo only
-    let kClientID = "2a814505-ab4a-41f7-bd09-3fc614ac077c"
+    let kClientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
     
     // These settings you don't need to edit unless you wish to attempt deeper scenarios with the app.
     let kGraphURI = "https://graph.microsoft.com/v1.0/me/"
