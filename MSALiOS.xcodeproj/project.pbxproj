@@ -189,7 +189,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/MSAL/MSAL.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -198,7 +198,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CA99DF8CB4EFF07F56D45BE6 /* [CP] Check Pods Manifest.lock */ = {
