@@ -308,7 +308,7 @@ extension ViewController {
         // Add call Graph button
         callGraphButton  = UIButton()
         callGraphButton.translatesAutoresizingMaskIntoConstraints = false
-        callGraphButton.setTitle("Call Graph API", for: .normal)
+        callGraphButton.setTitle("Call Microsoft Graph API", for: .normal)
         callGraphButton.setTitleColor(.blue, for: .normal)
         callGraphButton.addTarget(self, action: #selector(callGraphAPI(_:)), for: .touchUpInside)
         self.view.addSubview(callGraphButton)
