@@ -54,7 +54,6 @@
 	<array>
 		<string>msauth</string>
 		<string>msauthv2</string>
-		<string>msauth</string>
 	</array>
 </dict>
 </plist>
