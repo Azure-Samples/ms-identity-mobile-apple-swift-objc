@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         // The MSAL Logger should be set as early as possible in the app launch sequence, before any MSAL
         // requests are made.
@@ -46,8 +46,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          about the user being logged in.
          */
         
-        MSALLogger.shared().setCallback { (logLevel, message, containsPII) in
-
+        MSALGlobalConfig.loggerConfig.setLogCallback { (logLevel, message, containsPII) in
+            
             if (!containsPII) {
                 
                 print("%@", message!)
@@ -83,11 +83,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      AppAuth authorization request and if so, will look for the code in the response.
      */
     
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        if MSALPublicClientApplication.handleMSALResponse(url) == true {
-            print("Received callback!")
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        
+        guard let sourceApplication = options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String else {
+            return false
         }
-        return true
+        
+        return MSALPublicClientApplication.handleMSALResponse(url, sourceApplication: sourceApplication)
     }
 
 

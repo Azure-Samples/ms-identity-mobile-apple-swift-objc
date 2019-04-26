@@ -149,6 +149,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -188,7 +189,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/MSAL/MSAL.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -197,7 +198,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MSALiOS/Pods-MSALiOS-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CA99DF8CB4EFF07F56D45BE6 /* [CP] Check Pods Manifest.lock */ = {
@@ -378,11 +379,11 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.identity.client.sample.MSALiOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.identitysample.MSALiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -399,10 +400,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.identity.client.sample.MSALiOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.identitysample.MSALiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

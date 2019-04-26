@@ -19,13 +19,9 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>msal2a814505-ab4a-41f7-bd09-3fc614ac077c</string>
+				<string>msauth.com.microsoft.identitysample.MSALiOS</string>
 			</array>
 		</dict>
 	</array>
@@ -53,6 +49,11 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>msauth</string>
+		<string>msauthv2</string>
 	</array>
 </dict>
 </plist>
