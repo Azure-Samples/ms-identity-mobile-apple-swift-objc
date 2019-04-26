@@ -35,7 +35,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     // Update the below to your client ID you received in the portal. The below is for running the demo only
     let kClientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
     
-    // These settings you don't need to edit unless you wish to attempt deeper scenarios with the app.
+    // Additional variables for Auth and Graph API
     let kGraphURI = "https://graph.microsoft.com/v1.0/me/"
     let kScopes: [String] = ["https://graph.microsoft.com/user.read"]
     let kAuthority = "https://login.microsoftonline.com/common"
@@ -149,7 +149,7 @@ extension ViewController {
             
             self.accessToken = result.accessToken
             self.updateLogging(text: "Access token is \(self.accessToken)")
-            self.updateSignoutButton(enabled: true)
+            self.updateSignOutButton(enabled: true)
             self.getContentWithToken()
         }
     }
@@ -206,7 +206,7 @@ extension ViewController {
             
             self.accessToken = result.accessToken
             self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
-            self.updateSignoutButton(enabled: true)
+            self.updateSignOutButton(enabled: true)
             self.getContentWithToken()
         }
     }
@@ -273,7 +273,8 @@ extension ViewController {
     }
     
     /**
-     This action will invoke the signout APIs to clear the token cache.
+     This action will invoke the remove account APIs to clear the token cache
+     to sign out a user from this application.
      */
     @objc func signOut(_ sender: UIButton) {
         
@@ -321,7 +322,7 @@ extension ViewController {
         // Add sign out button
         signOutButton = UIButton()
         signOutButton.translatesAutoresizingMaskIntoConstraints = false
-        signOutButton.setTitle("Sign out", for: .normal)
+        signOutButton.setTitle("Sign Out", for: .normal)
         signOutButton.setTitleColor(.blue, for: .normal)
         signOutButton.setTitleColor(.gray, for: .disabled)
         signOutButton.addTarget(self, action: #selector(signOut(_:)), for: .touchUpInside)
@@ -356,7 +357,7 @@ extension ViewController {
         }
     }
     
-    func updateSignoutButton(enabled : Bool) {
+    func updateSignOutButton(enabled : Bool) {
         if Thread.isMainThread {
             self.signOutButton.isEnabled = enabled
         } else {
