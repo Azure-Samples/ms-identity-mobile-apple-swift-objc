@@ -293,6 +293,7 @@ extension ViewController {
             try applicationContext.remove(account)
             self.loggingText.text = ""
             self.signOutButton.isEnabled = false
+            self.accessToken = ""
             
         } catch let error as NSError {
             
