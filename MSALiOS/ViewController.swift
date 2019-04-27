@@ -316,7 +316,7 @@ extension ViewController {
         
         callGraphButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         callGraphButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 50.0).isActive = true
-        callGraphButton.widthAnchor.constraint(equalToConstant: 150.0).isActive = true
+        callGraphButton.widthAnchor.constraint(equalToConstant: 300.0).isActive = true
         callGraphButton.heightAnchor.constraint(equalToConstant: 50.0).isActive = true
         
         // Add sign out button
