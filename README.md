@@ -44,10 +44,31 @@ This app is a multi-tenant app meaning it can be used by any Azure AD tenant or 
         } 
 ```
 
-## Optional: Register your App  
+## How to run this sample
+
+To run this sample, you'll need:
+
+* Xcode
+* An internet connection
+
+## Step 1: Clone or download this repository
+
+From Terminal:
+
+```terminal
+git clone https://github.com/Azure-Samples/active-directory-ios-swift-native-v2.git
+```
+or download and extract the repository.zip file, and navigate to 'MSALiOS.xcworkspace' from the active-directory-ios-swift-native-v2 folder
+
+## Step 2: (Optional) 1A: Register your App  
 The app comes pre-configured for testing.  If you would like to register your own app, please follow the steps below.
 
-You will need to have a native client application registered with Microsoft using the [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) experience.
+To Register,
+1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account.
+
+2. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations**
+
+3. You will need to have a native client application registered with Microsoft using the [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) experience.
 
 To create an app,  
 1. Click the **New registration** button on the top left of the page.
@@ -58,16 +79,18 @@ To create an app,
 3. After the app is created, you'll land on your app management page. Click **Authentication**, and look at the Redirect URI suggestions. Select the first item, which will be in this format: `msal<clientID>://auth`.
 4. Hit the **Save** button in the top left, to save these updates. 
 
-## Installation
+## 1B: Installation
 
 Load the podfile using cocoapods. This will create a new XCode Workspace you will load.
+
+From terminal navigate to the directory where the podfile is located
 
 ```
 $ pod install
 ...
 $ open MSALiOS.xcworkspace
 ```
-## Configure your application
+## 1C: Configure your application
 
 1. Add your application's redirect URI scheme to added in the portal to your `info.plist` file. It will be in the format of `msal<client-id>`
 ```xml
@@ -95,6 +118,10 @@ In the `ViewControler.swift` file, update the `kClientID` variable with your cli
     
     let kClientID = "<your-client-id-here>"
 ```
+
+## Step 3: Run the sample
+
+Click the Run Button in the top menu or go to Product from the menu tab and select Run.
 
 ## Feedback, Community Help, and Support
 
