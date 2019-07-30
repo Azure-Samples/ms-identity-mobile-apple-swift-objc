@@ -6,6 +6,13 @@ level: 100
 client: iOS Mobile App
 service: Microsoft Graph
 endpoint: AAD V2
+languages:
+  - swift  
+products:
+  - azure
+  - azure-active-directory  
+  - office-ms-graph
+description: "Shows how to use the MSAL library for iOS and macOS to get an access token and call a Microsoft Graph API."
 ---
 # MSAL iOS Swift Microsoft Graph API Sample 
 
