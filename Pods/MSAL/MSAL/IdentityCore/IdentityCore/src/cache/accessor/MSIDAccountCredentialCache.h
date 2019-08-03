@@ -25,19 +25,20 @@
 #import "MSIDCredentialType.h"
 #import "MSIDAccountType.h"
 
-@class MSIDCredentialCacheItem;
 @class MSIDAccountCacheItem;
-@class MSIDDefaultCredentialCacheKey;
-@protocol MSIDTokenCacheDataSource;
-@class MSIDDefaultCredentialCacheQuery;
-@class MSIDDefaultAccountCacheQuery;
-@class MSIDDefaultAccountCacheKey;
 @class MSIDAppMetadataCacheItem;
 @class MSIDAppMetadataCacheQuery;
+@class MSIDCredentialCacheItem;
+@class MSIDDefaultAccountCacheKey;
+@class MSIDDefaultAccountCacheQuery;
+@class MSIDDefaultCredentialCacheKey;
+@class MSIDDefaultCredentialCacheQuery;
+@protocol MSIDRequestContext;
+@protocol MSIDExtendedTokenCacheDataSource;
 
 @interface MSIDAccountCredentialCache : NSObject
 
-- (nonnull instancetype)initWithDataSource:(nonnull id<MSIDTokenCacheDataSource>)dataSource;
+- (nonnull instancetype)initWithDataSource:(nonnull id<MSIDExtendedTokenCacheDataSource>)dataSource;
 
 /*
  Gets all credentials matching the parameters specified in the query

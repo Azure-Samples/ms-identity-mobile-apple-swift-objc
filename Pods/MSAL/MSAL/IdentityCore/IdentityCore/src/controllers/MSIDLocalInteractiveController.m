@@ -66,11 +66,11 @@
 
 - (void)acquireToken:(MSIDRequestCompletionBlock)completionBlock
 {
-    MSID_LOG_INFO(self.requestParameters, @"Beginning interactive flow.");
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Beginning interactive flow.");
     
     if (!completionBlock)
     {
-        MSID_LOG_ERROR(self.requestParameters, @"Passed nil completionBlock. Interactive flow finished.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, self.requestParameters, @"Passed nil completionBlock. Interactive flow finished.");
         return;
     }
 
@@ -82,7 +82,7 @@
     {
         MSIDRequestCompletionBlock completionBlockWrapper = ^(MSIDTokenResult * _Nullable result, NSError * _Nullable error)
         {
-            MSID_LOG_INFO(self.requestParameters, @"Interactive flow finished result %@, error: %ld error domain: %@", _PII_NULLIFY(result), (long)error.code, error.domain);
+            MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Interactive flow finished result %@, error: %ld error domain: %@", _PII_NULLIFY(result), (long)error.code, error.domain);
             completionBlock(result, error);
         };
         
@@ -101,18 +101,18 @@
 
 - (void)handleWebMSAuthResponse:(MSIDWebWPJResponse *)response completion:(MSIDRequestCompletionBlock)completionBlock
 {
-    MSID_LOG_INFO(self.requestParameters, @"Handling msauth response.");
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Handling msauth response.");
     
     if (![NSString msidIsStringNilOrBlank:response.appInstallLink])
     {
-        MSID_LOG_INFO(self.requestParameters, @"Prompt broker install.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Prompt broker install.");
         [self promptBrokerInstallWithResponse:response completionBlock:completionBlock];
         return;
     }
 
     if (![NSString msidIsStringNilOrBlank:response.upn])
     {
-        MSID_LOG_INFO(self.requestParameters, @"Workplace join is required.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Workplace join is required.");
         
         NSMutableDictionary *additionalInfo = [NSMutableDictionary new];
         additionalInfo[MSIDUserDisplayableIdkey] = response.upn;

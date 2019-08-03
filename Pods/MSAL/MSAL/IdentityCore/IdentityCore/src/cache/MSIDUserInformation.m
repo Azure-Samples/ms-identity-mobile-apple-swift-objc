@@ -65,8 +65,7 @@
 
     if (error)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelWarning, nil, nil, @"Invalid ID token");
-        MSID_LOG_PII(MSIDLogLevelWarning, nil, nil, @"Invalid ID token, error %@", error.localizedDescription);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelWarning, nil, @"Invalid ID token, error %@", MSID_PII_LOG_MASKABLE(error));
     }
 
     return idTokenClaims;

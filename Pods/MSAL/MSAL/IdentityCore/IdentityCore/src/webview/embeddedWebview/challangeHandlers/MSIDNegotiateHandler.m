@@ -44,13 +44,13 @@
     if ([self hasValidKBRCredential:context])
     {
         // This means we have an unexpired credential, let system handle it
-        MSID_LOG_INFO(context, @"Perform default system handling for Negotiate");
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Perform default system handling for Negotiate");
         completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
     }
     else
     {
         // This challenge is rejected and the next authentication protection space should be tried by OS
-        MSID_LOG_INFO(context, @"Reject protection space, so the next one can be tried");
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Reject protection space, so the next one can be tried");
         completionHandler(NSURLSessionAuthChallengeRejectProtectionSpace, nil);
     }
     
@@ -65,7 +65,7 @@
     
     __block BOOL foundUnexpiredKBRCredential = NO;
     
-    MSID_LOG_INFO(context, @"Checking credentials to handle Negotiate challenge");
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Checking credentials to handle Negotiate challenge");
     
     // Go over all credentials that can be found
     gss_iter_creds(&minor, 0, GSS_KRB5_MECHANISM,
@@ -73,11 +73,11 @@
                        
                        if (credential == GSS_C_NO_CREDENTIAL)
                        {
-                           MSID_LOG_INFO(context, @"No more credentials found for GSS_KRB5_MECHANISM");
+                           MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"No more credentials found for GSS_KRB5_MECHANISM");
                            return;
                        }
                        
-                       MSID_LOG_INFO(context, @"Found a credential, now check its validity...");
+                       MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Found a credential, now check its validity...");
                        
                        // Copy the name describing the credential
                        gss_name_t credentialName = GSSCredentialCopyName(credential);
@@ -89,8 +89,7 @@
                            // Get the lifetime of this credential
                            uint32_t lifeTime = GSSCredentialGetLifetime(credential);
                            
-                           MSID_LOG_NO_PII(MSIDLogLevelInfo, nil, context, @"Found credential for GSS_KRB5_MECHANISM with lifetime %d", lifeTime);
-                           MSID_LOG_PII(MSIDLogLevelInfo, nil, context, @"Found credential for GSS_KRB5_MECHANISM with lifetime %d, displayable name %@", lifeTime, displayableName);
+                           MSID_LOG_WITH_CTX_PII(MSIDLogLevelInfo, context, @"Found credential for GSS_KRB5_MECHANISM with lifetime %d, displayable name %@", lifeTime, MSID_PII_LOG_EMAIL((__bridge id _Nonnull)(displayableName)));
                            
                            if (displayableName)
                            {
@@ -100,7 +99,7 @@
                            // Found an unexpired credential
                            if (lifeTime > 0)
                            {
-                               MSID_LOG_INFO(context, @"Found unexpired credential");
+                               MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Found unexpired credential");
                                
                                foundUnexpiredKBRCredential = YES;
                                releaseCredential(&credential);
@@ -110,7 +109,7 @@
                        }
                        else
                        {
-                           MSID_LOG_INFO_PII(context, @"Failed to get credential name, skip");
+                           MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Failed to get credential name, skip");
                        }
                        
                        releaseName(&credentialName);

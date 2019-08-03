@@ -22,15 +22,13 @@
 // THE SOFTWARE.
 
 #import "MSIDAccessToken.h"
+#import "MSIDLegacyCredentialCacheCompatible.h"
 
 @class MSIDLegacyTokenCacheItem;
 
-@interface MSIDLegacyAccessToken : MSIDAccessToken
+@interface MSIDLegacyAccessToken : MSIDAccessToken <MSIDLegacyCredentialCacheCompatible>
 
 @property (readwrite) NSString *accessTokenType;
 @property (readwrite) NSString *idToken;
-
-- (instancetype)initWithLegacyTokenCacheItem:(MSIDLegacyTokenCacheItem *)tokenCacheItem;
-- (MSIDLegacyTokenCacheItem *)legacyTokenCacheItem;
 
 @end

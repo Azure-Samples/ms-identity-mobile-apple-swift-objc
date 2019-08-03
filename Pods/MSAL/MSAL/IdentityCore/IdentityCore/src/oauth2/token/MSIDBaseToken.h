@@ -39,23 +39,24 @@
 
 @interface MSIDBaseToken : NSObject <NSCopying>
 {
-    MSIDAuthority *_authority;
     NSString *_clientId;
     NSDictionary *_additionalServerInfo;
     MSIDAccountIdentifier *_accountIdentifier;
 }
 
 @property (readonly) MSIDCredentialType credentialType;
-@property (readwrite) MSIDAuthority *authority;
 /*
- 'storageAuthority' is used only for latter token deletion.
- We can not use 'authority' because cache item could be saved with
-'preferred authority' and it might not be equal to provided 'authority'.
+ 'storageEnvironment' is used only for latter token deletion.
+ We can not use 'environment' because cache item could be saved with
+ 'preferred authority' and it might not be equal to provided 'authority'.
  */
-@property (readwrite) MSIDAuthority *storageAuthority;
+@property (readwrite) NSString *storageEnvironment;
+@property (readwrite) NSString *environment;
+@property (readwrite) NSString *realm;
 @property (readwrite) NSString *clientId;
 @property (readwrite) NSDictionary *additionalServerInfo;
 @property (readwrite) MSIDAccountIdentifier *accountIdentifier;
+@property (readwrite) NSString *speInfo;
 
 - (instancetype)initWithTokenCacheItem:(MSIDCredentialCacheItem *)tokenCacheItem;
 - (MSIDCredentialCacheItem *)tokenCacheItem;

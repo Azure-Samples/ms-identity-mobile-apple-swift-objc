@@ -29,6 +29,11 @@
 @class MSIDOauth2Factory;
 @class MSIDTokenResponseValidator;
 @class MSIDWebWPJResponse;
+@class MSIDAccountMetadataCacheAccessor;
+
+#if TARGET_OS_OSX
+@class MSIDExternalAADCacheSeeder;
+#endif
 
 typedef void (^MSIDInteractiveRequestCompletionBlock)(MSIDTokenResult * _Nullable result, NSError * _Nullable error, MSIDWebWPJResponse * _Nullable installBrokerResponse);
 
@@ -37,12 +42,18 @@ typedef void (^MSIDInteractiveRequestCompletionBlock)(MSIDTokenResult * _Nullabl
 @property (nonatomic, readonly, nonnull) MSIDInteractiveRequestParameters *requestParameters;
 @property (nonatomic, readonly, nonnull) MSIDTokenResponseValidator *tokenResponseValidator;
 @property (nonatomic, readonly, nonnull) id<MSIDCacheAccessor> tokenCache;
+@property (nonatomic, readonly, nonnull) MSIDAccountMetadataCacheAccessor *accountMetadataCache;
 @property (nonatomic, readonly, nonnull) MSIDOauth2Factory *oauthFactory;
+
+#if TARGET_OS_OSX
+@property (nonatomic, nullable) MSIDExternalAADCacheSeeder *externalCacheSeeder;
+#endif
 
 - (nullable instancetype)initWithRequestParameters:(nonnull MSIDInteractiveRequestParameters *)parameters
                                       oauthFactory:(nonnull MSIDOauth2Factory *)oauthFactory
                             tokenResponseValidator:(nonnull MSIDTokenResponseValidator *)tokenResponseValidator
-                                        tokenCache:(nonnull id<MSIDCacheAccessor>)tokenCache;
+                                        tokenCache:(nonnull id<MSIDCacheAccessor>)tokenCache
+                             accountMetadataCache:(nullable MSIDAccountMetadataCacheAccessor *)accountMetadataCache;
 
 - (void)executeRequestWithCompletion:(nonnull MSIDInteractiveRequestCompletionBlock)completionBlock;
 

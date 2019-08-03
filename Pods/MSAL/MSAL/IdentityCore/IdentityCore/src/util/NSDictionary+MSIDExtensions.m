@@ -55,14 +55,14 @@
         NSArray *queryElements = [query componentsSeparatedByString:@"="];
         if (queryElements.count > 2)
         {
-            MSID_LOG_WARN(nil, @"Query parameter must be a form key=value: %@", query);
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Query parameter must be a form key=value: %@", query);
             continue;
         }
         
         NSString *key = isFormEncoded ? [queryElements[0] msidTrimmedString].msidWWWFormURLDecode : [queryElements[0] msidTrimmedString].msidURLDecode;
         if ([NSString msidIsStringNilOrBlank:key])
         {
-            MSID_LOG_WARN(nil, @"Query parameter must have a key");
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Query parameter must have a key");
             continue;
         }
         
@@ -76,15 +76,6 @@
     }
     
     return queryDict;
-}
-
-+ (NSDictionary *)msidDictionaryFromJsonData:(NSData *)data error:(NSError **)error
-{
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data
-                                                         options:NSJSONReadingMutableContainers
-                                                           error:error];
-    
-    return json;
 }
 
 - (NSString *)msidURLEncode
@@ -124,9 +115,10 @@
                                      message,
                                      nil,
                                      nil, nil, context.correlationId, nil);
+            
+            MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"%@", message);
         }
         
-        MSID_LOG_ERROR(nil, @"%@", message);
         return NO;
     }
     
@@ -149,9 +141,10 @@
                                      message,
                                      nil,
                                      nil, nil, context.correlationId, nil);
+            
+            MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"%@", message);
         }
         
-        MSID_LOG_ERROR(nil, @"%@", message);
         return NO;
     }
     
@@ -165,8 +158,7 @@
 
     if (!serializedData)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelWarning, nil, context, @"Failed to serialize data with error %ld, %@", (long)serializationError.code, serializationError.domain);
-        MSID_LOG_PII(MSIDLogLevelWarning, nil, context, @"Failed to serialize data with error %@", serializationError);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelWarning, context, @"Failed to serialize data with error %@", MSID_PII_LOG_MASKABLE(serializationError));
         
         return nil;
     }
@@ -191,6 +183,87 @@
     }
 
     return cleanedDictionary;
+}
+
+- (NSDictionary *)msidNormalizedJSONDictionary
+{
+    NSMutableDictionary *normalizedDictionary = [NSMutableDictionary new];
+    
+    [self enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, __unused BOOL * _Nonnull stop) {
+        
+        if ([obj isKindOfClass:[NSDictionary class]])
+        {
+            normalizedDictionary[key] = [[self objectForKey:key] msidNormalizedJSONDictionary];
+        }
+        else if ([obj isKindOfClass:[NSArray class]])
+        {
+            NSMutableArray *normalizedArray = [NSMutableArray new];
+            
+            for (id arrayObject in (NSArray *)obj)
+            {
+                if ([arrayObject isKindOfClass:[NSDictionary class]])
+                {
+                    [normalizedArray addObject:[arrayObject msidNormalizedJSONDictionary]];
+                }
+                else if (![arrayObject isKindOfClass:[NSNull class]])
+                {
+                    [normalizedArray addObject:arrayObject];
+                }
+            }
+            
+            normalizedDictionary[key] = normalizedArray;
+        }
+        else if (![obj isKindOfClass:[NSNull class]])
+        {
+            normalizedDictionary[key] = [self objectForKey:key];
+        }
+    }];
+    
+    return normalizedDictionary;
+}
+
+- (NSString *)msidStringObjectForKey:(NSString *)key
+{
+    return [self msidObjectForKey:key ofClass:[NSString class]];
+}
+
+- (id)msidObjectForKey:(NSString *)key ofClass:(Class)requiredClass
+{
+    id object = [self objectForKey:key];
+    
+    if (object && [object isKindOfClass:requiredClass])
+    {
+        return object;
+    }
+    
+    return nil;
+}
+
+- (NSMutableDictionary *)mutableDeepCopy
+{
+    NSMutableDictionary *returnDict = [[NSMutableDictionary alloc] initWithCapacity:[self count]];
+    NSArray *keys = [self allKeys];
+    for (id key in keys)
+    {
+        id value = [self valueForKey:key];
+        id copy = nil;
+        if ([value respondsToSelector:@selector(mutableDeepCopy)])
+        {
+            copy = [value mutableDeepCopy];
+        }
+        else if ([value respondsToSelector:@selector(mutableCopy)])
+        {
+            copy = [value mutableCopy];
+        }
+        if (copy == nil)
+        {
+            copy = [value copy];
+        }
+        
+        [returnDict setObject:copy forKey:key];
+    }
+    
+    return returnDict;
 }
 
 @end

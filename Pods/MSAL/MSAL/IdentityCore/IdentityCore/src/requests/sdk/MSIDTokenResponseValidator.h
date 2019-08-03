@@ -28,12 +28,14 @@
 @class MSIDRequestParameters;
 @class MSIDOauth2Factory;
 @class MSIDTokenResult;
+@class MSIDAccountMetadataCacheAccessor;
 
 @interface MSIDTokenResponseValidator : NSObject
 
 - (nullable MSIDTokenResult *)validateAndSaveTokenResponse:(nonnull MSIDTokenResponse *)tokenResponse
                                               oauthFactory:(nonnull MSIDOauth2Factory *)factory
                                                 tokenCache:(nonnull id<MSIDCacheAccessor>)tokenCache
+                                      accountMetadataCache:(nullable MSIDAccountMetadataCacheAccessor *)metadataCache
                                          requestParameters:(nonnull MSIDRequestParameters *)parameters
                                                      error:(NSError * _Nullable * _Nullable)error;
 

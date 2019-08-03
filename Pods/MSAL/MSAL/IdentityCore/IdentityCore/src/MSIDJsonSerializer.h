@@ -26,4 +26,6 @@
 
 @interface MSIDJsonSerializer : NSObject <MSIDJsonSerializing>
 
+@property (nonatomic) BOOL normalizeJSON;
+
 @end

@@ -78,11 +78,11 @@
 
 - (void)acquireToken:(nonnull MSIDRequestCompletionBlock)completionBlock
 {
-    MSID_LOG_INFO(self.requestParameters, @"Beginning silent flow.");
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Beginning silent flow.");
     
     if (!completionBlock)
     {
-        MSID_LOG_ERROR(nil, @"Passed nil completionBlock");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Passed nil completionBlock");
         return;
     }
 
@@ -95,7 +95,7 @@
     {
         MSIDRequestCompletionBlock completionBlockWrapper = ^(MSIDTokenResult * _Nullable result, NSError * _Nullable error)
         {
-            MSID_LOG_INFO(self.requestParameters, @"Silent flow finished result %@, error: %ld error domain: %@", _PII_NULLIFY(result), (long)error.code, error.domain);
+            MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Silent flow finished result %@, error: %ld error domain: %@", _PII_NULLIFY(result), (long)error.code, error.domain);
             completionBlock(result, error);
         };
         

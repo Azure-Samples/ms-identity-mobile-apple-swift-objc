@@ -64,6 +64,56 @@
     return [NSString stringWithFormat:@"service=%@, type=%@, account=%@", _service, _type, _account];
 }
 
+#pragma mark - NSObject
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    MSIDCacheKey *key = [[self.class allocWithZone:zone] init];
+    key->_account = [_account copyWithZone:zone];
+    key->_service = [_service copyWithZone:zone];
+    key->_type = [_type copyWithZone:zone];
+    key->_generic = [_generic copyWithZone:zone];
+    key->_appKey = [_appKey copyWithZone:zone];
+    return key;
+}
+
+- (BOOL)isEqual:(id)object
+{
+    if (self == object)
+    {
+        return YES;
+    }
+    
+    if (![object isKindOfClass:MSIDCacheKey.class])
+    {
+        return NO;
+    }
+    
+    return [self isEqualToItem:(MSIDCacheKey *)object];
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = 0;
+    hash = hash * 31 + self.account.hash;
+    hash = hash * 31 + self.service.hash;
+    return hash;
+}
+
+- (BOOL)isEqualToItem:(MSIDCacheKey *)cacheKey
+{
+    if (!cacheKey)
+    {
+        return NO;
+    }
+    
+    BOOL result = YES;
+    
+    result &= (!self.account && !cacheKey.account) || [self.account isEqualToString:cacheKey.account];
+    result &= (!self.service && !cacheKey.service) || [self.service isEqualToString:cacheKey.service];
+    return result;
+}
+
 #pragma mark - Broker
 
 - (NSNumber *)appKeyHash

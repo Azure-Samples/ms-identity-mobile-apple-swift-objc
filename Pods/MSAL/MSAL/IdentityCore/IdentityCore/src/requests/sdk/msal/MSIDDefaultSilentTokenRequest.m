@@ -27,17 +27,20 @@
 #import "MSIDAuthority.h"
 #import "MSIDTokenResult.h"
 #import "MSIDAccessToken.h"
-#import "MSIDIDToken.h"
+#import "MSIDIdToken.h"
 #import "MSIDAccountIdentifier.h"
 #import "MSIDAppMetadataCacheItem.h"
 #import "MSIDRefreshToken.h"
 #import "NSError+MSIDExtensions.h"
 #import "MSIDConstants.h"
 #import "MSIDConfiguration.h"
+#import "MSIDAccountMetadataCacheAccessor.h"
+#import "MSIDTokenResponse.h"
 
 @interface MSIDDefaultSilentTokenRequest()
 
 @property (nonatomic) MSIDDefaultTokenCacheAccessor *defaultAccessor;
+@property (nonatomic) MSIDAccountMetadataCacheAccessor *accountMetadataAccessor;
 @property (nonatomic) MSIDAppMetadataCacheItem *appMetadata;
 
 @end
@@ -51,6 +54,7 @@
                                       oauthFactory:(nonnull MSIDOauth2Factory *)oauthFactory
                             tokenResponseValidator:(nonnull MSIDTokenResponseValidator *)tokenResponseValidator
                                         tokenCache:(nonnull MSIDDefaultTokenCacheAccessor *)tokenCache
+                             accountMetadataCache:(nonnull MSIDAccountMetadataCacheAccessor *)accountMetadataCache
 {
     self = [super initWithRequestParameters:parameters
                                forceRefresh:forceRefresh
@@ -60,6 +64,7 @@
     if (self)
     {
         _defaultAccessor = tokenCache;
+        _accountMetadataAccessor = accountMetadataCache;
     }
 
     return self;
@@ -70,7 +75,6 @@
 - (nullable MSIDAccessToken *)accessTokenWithError:(NSError **)error
 {
     NSError *cacheError = nil;
-
     MSIDAccessToken *accessToken = [self.defaultAccessor getAccessTokenForAccount:self.requestParameters.accountIdentifier
                                                                     configuration:self.requestParameters.msidConfiguration
                                                                           context:self.requestParameters
@@ -83,8 +87,7 @@
             *error = cacheError;
         }
 
-        MSID_LOG_NO_PII(MSIDLogLevelError, nil, self.requestParameters, @"Access token lookup error %ld, %@", (long)cacheError.code, cacheError.domain);
-        MSID_LOG_PII(MSIDLogLevelError, nil, self.requestParameters, @"Access token lookup error %@", cacheError);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelError, self.requestParameters, @"Access token lookup error %@", MSID_PII_LOG_MASKABLE(cacheError));
         return nil;
     }
 
@@ -106,7 +109,13 @@
 
     if (!idToken)
     {
-        MSID_LOG_WARN(self.requestParameters, @"Couldn't find an id token for clientId %@, authority %@", self.requestParameters.clientId, self.requestParameters.authority.url);
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, self.requestParameters, @"Couldn't find an id token for clientId %@, authority %@", self.requestParameters.clientId, self.requestParameters.authority.url);
+        if (error)
+        {
+            *error = MSIDCreateError(MSIDErrorDomain, MSIDErrorInternal, @"No id token matching request found", nil, nil, nil, nil, nil);
+        }
+        
+        return nil;
     }
 
     MSIDAccount *account = [self.defaultAccessor getAccountForIdentifier:self.requestParameters.accountIdentifier
@@ -116,14 +125,21 @@
 
     if (!account)
     {
-        MSID_LOG_WARN(self.requestParameters, @"Couldn't find an account for clientId %@, authority %@", self.requestParameters.clientId, self.requestParameters.authority.url);
-    }
+        MSID_LOG_WITH_CTX(MSIDLogLevelError,self.requestParameters, @"Couldn't find an account for clientId %@, authority %@", self.requestParameters.clientId, self.requestParameters.authority.url);
 
+        if (error)
+        {
+            *error = MSIDCreateError(MSIDErrorDomain, MSIDErrorInternal, @"No account matching request found", nil, nil, nil, nil, nil);
+        }
+        
+        return nil;
+    }
+    
     MSIDTokenResult *result = [[MSIDTokenResult alloc] initWithAccessToken:accessToken
                                                               refreshToken:refreshToken
                                                                    idToken:idToken.rawIdToken
                                                                    account:account
-                                                                 authority:accessToken.authority
+                                                                 authority:self.requestParameters.msidConfiguration.authority
                                                              correlationId:self.requestParameters.correlationId
                                                              tokenResponse:nil];
 
@@ -190,7 +206,7 @@
         //reset family id if set in app's metadata
         if (!result)
         {
-            MSID_LOG_WARN(self.requestParameters, @"Failed to update app metadata");
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,self.requestParameters, @"Failed to update app metadata");
         }
     }
 
@@ -210,6 +226,11 @@
     return self.defaultAccessor;
 }
 
+- (MSIDAccountMetadataCacheAccessor *)metadataCache
+{
+    return self.accountMetadataAccessor;
+}
+
 #pragma mark - Helpers
 
 - (MSIDAppMetadataCacheItem *)appMetadataWithError:(NSError * _Nullable * _Nullable)error
@@ -226,8 +247,7 @@
             *error = cacheError;
         }
 
-        MSID_LOG_NO_PII(MSIDLogLevelError, nil, self.requestParameters, @"Failed reading app metadata with error %ld, %@", (long)cacheError.code, cacheError.domain);
-        MSID_LOG_PII(MSIDLogLevelError, nil, self.requestParameters, @"Failed reading app metadata with error %@", cacheError);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelError, self.requestParameters, @"Failed reading app metadata with error %@", MSID_PII_LOG_MASKABLE(cacheError));
         return nil;
     }
 

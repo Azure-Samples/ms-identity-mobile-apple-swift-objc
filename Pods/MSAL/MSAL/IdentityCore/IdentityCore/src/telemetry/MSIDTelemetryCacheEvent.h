@@ -40,5 +40,6 @@
 - (void)setCacheWipeApp:(NSString *)wipeApp;
 - (void)setCacheWipeTime:(NSString *)wipeTime;
 - (void)setWipeData:(NSDictionary *)wipeData;
+- (void)setExternalCacheSeedingStatus:(NSString *)status;
 
 @end

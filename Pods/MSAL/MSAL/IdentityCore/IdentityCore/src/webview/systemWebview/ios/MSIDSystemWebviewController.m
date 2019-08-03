@@ -52,13 +52,13 @@
 {
     if (!startURL)
     {
-        MSID_LOG_WARN(context, @"Attemped to start with nil URL");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,context, @"Attemped to start with nil URL");
         return nil;
     }
     
     if (!callbackURLScheme)
     {
-        MSID_LOG_WARN(context, @"Attemped to start with invalid redirect uri");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,context, @"Attemped to start with invalid redirect uri");
         return nil;
     }
     
@@ -81,7 +81,7 @@
 {
     if (!completionHandler)
     {
-        MSID_LOG_WARN(_context, @"CompletionHandler cannot be nil for interactive session.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,_context, @"CompletionHandler cannot be nil for interactive session.");
         return;
     }
     

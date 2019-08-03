@@ -87,7 +87,7 @@
         
         if (!_refreshToken)
         {
-            MSID_LOG_ERROR(nil, @"Trying to initialize refresh token when missing refresh token field");
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Trying to initialize refresh token when missing refresh token field");
             return nil;
         }
         

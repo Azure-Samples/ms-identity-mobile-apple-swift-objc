@@ -40,7 +40,7 @@
         
         if (!_sessionKey)
         {
-            MSID_LOG_ERROR(nil, @"Trying to initialize primary refresh token when missing session key field");
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Trying to initialize primary refresh token when missing session key field");
             return nil;
         }
     }
@@ -73,7 +73,7 @@
         
         if (!_sessionKey)
         {
-            MSID_LOG_ERROR(nil, @"Trying to initialize primary refresh token when missing session key field");
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Trying to initialize primary refresh token when missing session key field");
             return nil;
         }
     }
@@ -87,7 +87,7 @@
     MSIDLegacyTokenCacheItem *legacyPrtCacheItem = [MSIDLegacyTokenCacheItem new];
     
     legacyPrtCacheItem.credentialType = MSIDPrimaryRefreshTokenType;
-    legacyPrtCacheItem.authority = self.storageAuthority.url ? self.storageAuthority.url : self.authority.url;
+    legacyPrtCacheItem.environment = self.storageEnvironment ? self.storageEnvironment : self.environment;
     legacyPrtCacheItem.clientId = self.clientId;
     
     return legacyPrtCacheItem;

@@ -26,6 +26,7 @@
 #import "MSIDAccountIdentifier.h"
 #import "NSMutableDictionary+MSIDExtensions.h"
 #import "MSIDClaimsRequest.h"
+#import "MSIDConstants.h"
 
 @implementation MSIDLegacyBrokerTokenRequest
 
@@ -63,7 +64,7 @@
     [contents msidSetNonEmptyString:self.requestParameters.target forKey:@"resource"];
     [contents msidSetNonEmptyString:username forKey:@"username"];
     [contents msidSetNonEmptyString:usernameType forKey:@"username_type"];
-    [contents setValue:@"2" forKey:@"max_protocol_ver"];
+    [contents setValue:MSID_ADAL_BROKER_MESSAGE_VERSION forKey:MSID_BROKER_MAX_PROTOCOL_VERSION];
     [contents setValue:self.requestParameters.uiBehaviorType == MSIDUIBehaviorForceType ? @"YES" : @"NO" forKey:@"force"];
 
     return contents;
@@ -71,7 +72,8 @@
 
 - (NSDictionary *)protocolResumeDictionaryContents
 {
-    return @{@"resource": self.requestParameters.target ?: @""};
+    return @{@"resource": self.requestParameters.target ?: @"",
+             MSID_SDK_NAME_KEY: MSID_ADAL_SDK_NAME};
 }
 
 @end

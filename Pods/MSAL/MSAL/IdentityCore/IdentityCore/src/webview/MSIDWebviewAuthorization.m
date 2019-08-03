@@ -94,7 +94,7 @@ static MSIDWebviewSession *s_currentSession = nil;
 {
     if (!completionHandler)
     {
-        MSID_LOG_WARN(context, @"CompletionHandler cannot be nil for interactive session.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,context, @"CompletionHandler cannot be nil for interactive session.");
         return;
     }
     
@@ -140,7 +140,7 @@ static MSIDWebviewSession *s_currentSession = nil;
     @synchronized([MSIDWebviewAuthorization class])
     {
         if (s_currentSession) {
-            MSID_LOG_INFO(nil, @"Session is already running. Please wait or cancel the session before setting it new.");
+            MSID_LOG_WITH_CTX(MSIDLogLevelInfo, nil, @"Session is already running. Please wait or cancel the session before setting it new.");
             return NO;
         }
         
@@ -160,7 +160,7 @@ static MSIDWebviewSession *s_currentSession = nil;
         {
             // There's no error param because this isn't on a critical path. Just log that you are
             // trying to clear a session when there isn't one.
-            MSID_LOG_INFO(nil, @"Trying to clear out an empty session");
+            MSID_LOG_WITH_CTX(MSIDLogLevelInfo, nil, @"Trying to clear out an empty session");
         }
         
         s_currentSession = nil;

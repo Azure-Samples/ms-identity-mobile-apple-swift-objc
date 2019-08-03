@@ -24,6 +24,7 @@
 #import "MSIDAADV1BrokerResponse.h"
 #import "MSIDAADV1TokenResponse.h"
 #import "MSIDBrokerResponse+Internal.h"
+#import "MSIDAADAuthority.h"
 
 @implementation MSIDAADV1BrokerResponse
 
@@ -51,6 +52,7 @@ MSID_FORM_ACCESSOR(@"user_id", userId);
 {
     self.tokenResponse = [[MSIDAADV1TokenResponse alloc] initWithJSONDictionary:_urlForm
                                                                           error:nil];
+    self.msidAuthority = [[MSIDAADAuthority alloc] initWithURL:[NSURL URLWithString:self.authority] rawTenant:nil context:nil error:nil];
 }
 
 - (NSString *)oauthErrorCode

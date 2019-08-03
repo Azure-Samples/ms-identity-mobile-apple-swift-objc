@@ -90,7 +90,7 @@ static BOOL VerifyHostString(NSString *host, NSString *label, BOOL isAliases, id
     
     // Run this through urlForPreferredHost to make sure it does not return any errors.
     NSError *err;
-    [[NSURL URLWithString:@"https://fakeurl.contoso.com"] msidURLForPreferredHost:host context:context error:&err];
+    [[NSURL URLWithString:@"https://fakeurl.contoso.com"] msidURLForHost:host context:context error:&err];
     
     if (err)
     {
@@ -116,11 +116,11 @@ openIdConfigEndpoint:(NSURL *)openIdConfigEndpoint
     
     if (metadata.count == 0)
     {
-        MSID_LOG_INFO(context, @"No metadata returned from authority validation");
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"No metadata returned from authority validation");
     }
     else
     {
-        MSID_LOG_INFO(context, @"Caching AAD Environements");
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Caching AAD Environements");
     }
     
     NSMutableArray<MSIDAadAuthorityCacheRecord *> *recordsToAdd = [NSMutableArray new];
@@ -162,7 +162,7 @@ openIdConfigEndpoint:(NSURL *)openIdConfigEndpoint
             [self setObject:record forKey:alias];
         }
         
-        MSID_LOG_INFO_PII(context, @"networkHost: %@, cacheHost: %@, aliases: %@", record.networkHost, record.cacheHost, [aliases componentsJoinedByString:@", "]);
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"networkHost: %@, cacheHost: %@, aliases: %@", record.networkHost, record.cacheHost, [aliases componentsJoinedByString:@", "]);
     }
     
     // In case the authority we were looking for wasn't in the metadata
@@ -185,7 +185,7 @@ openIdConfigEndpoint:(NSURL *)openIdConfigEndpoint
               oauthError:(NSError *)oauthError
                  context:(id<MSIDRequestContext>)context
 {
-    MSID_LOG_WARN(context, @"Caching Invalid AAD Instance");
+    MSID_LOG_WITH_CTX(MSIDLogLevelWarning,context, @"Caching Invalid AAD Instance");
     __auto_type record = [MSIDAadAuthorityCacheRecord new];
     record.validated = NO;
     record.error = oauthError;
@@ -244,7 +244,7 @@ static NSURL *urlForPreferredHost(NSURL *url, NSString *preferredHost)
     NSURL *url = [self networkUrlForAuthorityImpl:authority];
     if (!url)
     {
-        MSID_LOG_WARN(context, @"No cached preferred_network for authority");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,context, @"No cached preferred_network for authority");
         return authority.url;
     }
     
@@ -257,7 +257,7 @@ static NSURL *urlForPreferredHost(NSURL *url, NSString *preferredHost)
     NSURL *url = [self cacheUrlForAuthorityImpl:authority];
     if (!url)
     {
-        MSID_LOG_WARN(context, @"No cached preferred_cache for authority");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,context, @"No cached preferred_cache for authority");
         return authority.url;
     }
     
@@ -271,7 +271,7 @@ static NSURL *urlForPreferredHost(NSURL *url, NSString *preferredHost)
     NSString *cacheEnvironment = [self cacheEnvironmentForEnvironmentImpl:environment];
     if (!cacheEnvironment)
     {
-        MSID_LOG_WARN(context, @"No cached preferred_cache for environment");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,context, @"No cached preferred_cache for environment");
         return environment;
     }
 

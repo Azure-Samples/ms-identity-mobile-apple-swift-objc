@@ -98,7 +98,7 @@ MSID_JSON_ACCESSOR(@"adi", additionalUserId)
     
     if (!expiresOn && expiresOnObj)
     {
-        MSID_LOG_WARN(nil, @"Unparsable time - The response value for the access token expiration (expiresOn) cannot be parsed: %@", expiresOnObj);
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Unparsable time - The response value for the access token expiration (expiresOn) cannot be parsed: %@", expiresOnObj);
     }
     
     return expiresOn;
@@ -117,7 +117,7 @@ MSID_JSON_ACCESSOR(@"adi", additionalUserId)
     
     if (!extExpiresIn && extExpiresInObj)
     {
-        MSID_LOG_WARN(nil, @"Unparsable time - The response value for the access token expiration (extended expires IN) cannot be parsed: %@", extExpiresInObj);
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Unparsable time - The response value for the access token expiration (extended expires IN) cannot be parsed: %@", extExpiresInObj);
     }
     
     return extExpiresIn;
@@ -161,7 +161,12 @@ MSID_JSON_ACCESSOR(@"adi", additionalUserId)
                              MSID_OAUTH2_EXT_EXPIRES_IN, @"url",
                              MSID_OAUTH2_SUB_ERROR];
     
-    return [additionalInfo dictionaryByRemovingFields:knownFields];
+    additionalInfo = [additionalInfo dictionaryByRemovingFields:knownFields];
+    if (additionalInfo.count > 0)
+    {
+        return additionalInfo;
+    }
+    return nil;
 }
 
 - (NSString *)description

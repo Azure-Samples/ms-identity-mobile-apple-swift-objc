@@ -30,16 +30,11 @@
 
 + (nullable MSIDAuthority *)authorityFromUrl:(nonnull NSURL *)url
                                      context:(nullable id<MSIDRequestContext>)context
-                                       error:(NSError * _Nullable __autoreleasing * _Nullable)error;
+                                       error:(NSError * _Nullable __autoreleasing * _Nullable)error DEPRECATED_MSG_ATTRIBUTE("Don't use authority factory outside of tests, because not all authorities will comfort to same standards. It will be removed soon. ");
 
 + (nullable MSIDAuthority *)authorityFromUrl:(nonnull NSURL *)url
                                    rawTenant:(nullable NSString *)rawTenant
                                      context:(nullable id<MSIDRequestContext>)context
-                                       error:(NSError * _Nullable __autoreleasing * _Nullable)error;
-
-+ (nullable MSIDAuthority *)authorityWithRawTenant:(nullable NSString *)rawTenant
-                                     msidAuthority:(nonnull MSIDAuthority *)msidAuthority
-                                           context:(nullable id<MSIDRequestContext>)context
-                                             error:(NSError * _Nullable __autoreleasing * _Nullable)error;
+                                       error:(NSError * _Nullable __autoreleasing * _Nullable)error DEPRECATED_MSG_ATTRIBUTE("Don't use authority factory outside of tests, because not all authorities will comfort to same standards. It will be removed soon. ");
 
 @end

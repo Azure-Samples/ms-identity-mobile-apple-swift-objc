@@ -87,7 +87,7 @@
 {
     if (!completionHandler)
     {
-        MSID_LOG_WARN(_context, @"CompletionHandler cannot be nil for interactive session.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,_context, @"CompletionHandler cannot be nil for interactive session.");
         return;
     }
     

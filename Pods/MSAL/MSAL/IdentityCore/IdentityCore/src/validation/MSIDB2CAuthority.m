@@ -51,17 +51,21 @@
 }
 
 - (nullable instancetype)initWithURL:(nonnull NSURL *)url
-                           rawTenant:(NSString *)rawTenant
+                      validateFormat:(BOOL)validateFormat
+                           rawTenant:(nullable NSString *)rawTenant
                              context:(nullable id<MSIDRequestContext>)context
                                error:(NSError **)error
 {
-    self = [self initWithURL:url context:context error:error];
+    self = [self initWithURL:url validateFormat:validateFormat context:context error:error];
     if (self)
     {
         if (rawTenant)
         {
-            _url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@/%@/%@", [url msidHostWithPortIfNecessary], url.pathComponents[1], rawTenant, url.pathComponents[3]]];
-            if (![self.class isAuthorityFormatValid:_url context:context error:error]) return nil;
+            if ([self.class isAuthorityFormatValid:url context:context error:nil])
+            {
+                _url = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@/%@/%@", [url msidHostWithPortIfNecessary], url.pathComponents[1], rawTenant, url.pathComponents[3]]];
+                _realm = rawTenant;
+            }
         }
     }
 
@@ -118,6 +122,19 @@
 }
 
 #pragma mark - Protected
+
++ (NSString *)realmFromURL:(NSURL *)url
+                   context:(id<MSIDRequestContext>)context
+                     error:(NSError **)error
+{
+    if ([self isAuthorityFormatValid:url context:context error:error])
+    {
+        return url.pathComponents[2];
+    }
+    
+    // We do support non standard B2C authority formats
+    return url.path;
+}
 
 - (id<MSIDAuthorityResolving>)resolver
 {

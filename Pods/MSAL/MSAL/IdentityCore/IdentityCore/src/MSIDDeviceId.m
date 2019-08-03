@@ -76,7 +76,7 @@ void CopySerialNumber(CFStringRef *serialNumber)
     int result = sysctlbyname("hw.cputype", &cpuType, &structSize, NULL, 0);
     if (result)
     {
-        MSID_LOG_WARN(nil, @"Cannot extract cpu type. Error: %d", result);
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Cannot extract cpu type. Error: %d", result);
         return nil;
     }
     

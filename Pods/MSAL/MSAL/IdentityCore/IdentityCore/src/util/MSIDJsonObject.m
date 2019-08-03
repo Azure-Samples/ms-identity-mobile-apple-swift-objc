@@ -26,6 +26,7 @@
 //------------------------------------------------------------------------------
 
 #import "MSIDJsonObject.h"
+#import "NSJSONSerialization+MSIDExtensions.h"
 
 @implementation MSIDJsonObject
 
@@ -48,9 +49,7 @@
         return nil;
     }
     
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data
-                                                         options:NSJSONReadingMutableContainers
-                                                           error:error];
+    NSDictionary *json = [NSJSONSerialization msidNormalizedDictionaryFromJsonData:data error:error];
     
     if (!json)
     {

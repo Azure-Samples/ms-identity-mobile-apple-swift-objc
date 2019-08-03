@@ -206,7 +206,7 @@ static WKWebViewConfiguration *s_webConfig;
                                                                      queue:nil
                                                                 usingBlock:^(__unused NSNotification *notification)
                    {
-                       MSID_LOG_VERBOSE(_context, @"Application will resign active");
+                       MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,_context, @"Application will resign active");
                        [self startTrackingForegroundAppTransition];
                        [self startBackgroundTask];
                    }];
@@ -216,7 +216,7 @@ static WKWebViewConfiguration *s_webConfig;
 {
     if (_bgObserver)
     {
-        MSID_LOG_VERBOSE(_context, @"Stop background application tracking");
+        MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,_context, @"Stop background application tracking");
         [[NSNotificationCenter defaultCenter] removeObserver:_bgObserver];
         _bgObserver = nil;
     }
@@ -234,7 +234,7 @@ static WKWebViewConfiguration *s_webConfig;
                                                                              queue:nil
                                                                         usingBlock:^(__unused NSNotification * _Nonnull note) {
                                                                             
-                                                                            MSID_LOG_VERBOSE(_context, @"Application did become active");
+                                                                            MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,_context, @"Application did become active");
                                                                             [self stopBackgroundTask];
                                                                             [self stopTrackingForegroundAppTransition];
                                                                         }];
@@ -244,7 +244,7 @@ static WKWebViewConfiguration *s_webConfig;
 {
     if (_foregroundObserver)
     {
-        MSID_LOG_VERBOSE(_context, @"Stop foreground application tracking");
+        MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,_context, @"Stop foreground application tracking");
         
         [[NSNotificationCenter defaultCenter] removeObserver:_foregroundObserver];
         _foregroundObserver = nil;
@@ -264,11 +264,11 @@ static WKWebViewConfiguration *s_webConfig;
         return;
     }
     
-    MSID_LOG_INFO(_context, @"Start background app task");
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, _context, @"Start background app task");
     
     _bgTask = [[MSIDAppExtensionUtil sharedApplication] beginBackgroundTaskWithName:@"Interactive login"
                                                                   expirationHandler:^{
-                                                                      MSID_LOG_INFO(_context, @"Background task expired");
+                                                                      MSID_LOG_WITH_CTX(MSIDLogLevelInfo, _context, @"Background task expired");
                                                                       [self stopBackgroundTask];
                                                                       [self stopTrackingForegroundAppTransition];
                                                                   }];
@@ -282,7 +282,7 @@ static WKWebViewConfiguration *s_webConfig;
         return;
     }
     
-    MSID_LOG_INFO(_context, @"Stop background task");
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, _context, @"Stop background task");
     [[MSIDAppExtensionUtil sharedApplication] endBackgroundTask:_bgTask];
     _bgTask = UIBackgroundTaskInvalid;
 }

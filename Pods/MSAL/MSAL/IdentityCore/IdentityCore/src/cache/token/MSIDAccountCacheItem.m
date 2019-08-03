@@ -23,6 +23,8 @@
 
 #import "MSIDAccountCacheItem.h"
 #import "MSIDClientInfo.h"
+#import "NSDate+MSIDExtensions.h"
+#import "NSDictionary+MSIDExtensions.h"
 
 @interface MSIDAccountCacheItem()
 
@@ -69,6 +71,8 @@
     result &= (!self.clientInfo && !item.clientInfo) || [self.clientInfo.rawClientInfo isEqualToString:item.clientInfo.rawClientInfo];
     result &= (!self.environment && !item.environment) || [self.environment isEqualToString:item.environment];
     result &= (!self.alternativeAccountId && !item.alternativeAccountId) || [self.alternativeAccountId isEqualToString:item.alternativeAccountId];
+    // Ignore the lastMod properties (two otherwise-identical items with different
+    // last modification informational values should be considered equal)
     return result;
 }
 
@@ -109,6 +113,8 @@
     item.clientInfo = [self.clientInfo copyWithZone:zone];
     item.environment = [self.environment copyWithZone:zone];
     item.alternativeAccountId = [self.alternativeAccountId copyWithZone:zone];
+    item.lastModificationTime = [self.lastModificationTime copyWithZone:zone];
+    item.lastModificationApp = [self.lastModificationApp copyWithZone:zone];
     return item;
 }
 
@@ -124,31 +130,34 @@
 
     if (!json)
     {
-        MSID_LOG_WARN(nil, @"Tried to decode an account cache item from nil json");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Tried to decode an account cache item from nil json");
         return nil;
     }
 
     _json = json;
 
-    _accountType = [MSIDAccountTypeHelpers accountTypeFromString:json[MSID_AUTHORITY_TYPE_CACHE_KEY]];
+    _accountType = [MSIDAccountTypeHelpers accountTypeFromString:[json msidStringObjectForKey:MSID_AUTHORITY_TYPE_CACHE_KEY]];
 
     if (!_accountType)
     {
-        MSID_LOG_WARN(nil, @"No account type present in the JSON for credential");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"No account type present in the JSON for credential");
         return nil;
     }
 
-    _localAccountId = json[MSID_LOCAL_ACCOUNT_ID_CACHE_KEY];
-    _homeAccountId = json[MSID_HOME_ACCOUNT_ID_CACHE_KEY];
-    _username = json[MSID_USERNAME_CACHE_KEY];
-    _givenName = json[MSID_GIVEN_NAME_CACHE_KEY];
-    _middleName = json[MSID_MIDDLE_NAME_CACHE_KEY];
-    _familyName = json[MSID_FAMILY_NAME_CACHE_KEY];
-    _name = json[MSID_NAME_CACHE_KEY];
-    _realm = json[MSID_REALM_CACHE_KEY];
-    _clientInfo = [[MSIDClientInfo alloc] initWithRawClientInfo:json[MSID_CLIENT_INFO_CACHE_KEY] error:nil];
-    _environment = json[MSID_ENVIRONMENT_CACHE_KEY];
-    _alternativeAccountId = json[MSID_ALTERNATIVE_ACCOUNT_ID_KEY];
+    _localAccountId = [json msidStringObjectForKey:MSID_LOCAL_ACCOUNT_ID_CACHE_KEY];
+    _homeAccountId = [json msidStringObjectForKey:MSID_HOME_ACCOUNT_ID_CACHE_KEY];
+    _username = [json msidStringObjectForKey:MSID_USERNAME_CACHE_KEY];
+    _givenName = [json msidStringObjectForKey:MSID_GIVEN_NAME_CACHE_KEY];
+    _middleName = [json msidStringObjectForKey:MSID_MIDDLE_NAME_CACHE_KEY];
+    _familyName = [json msidStringObjectForKey:MSID_FAMILY_NAME_CACHE_KEY];
+    _name = [json msidStringObjectForKey:MSID_NAME_CACHE_KEY];
+    _realm = [json msidStringObjectForKey:MSID_REALM_CACHE_KEY];
+    _clientInfo = [[MSIDClientInfo alloc] initWithRawClientInfo:[json msidStringObjectForKey:MSID_CLIENT_INFO_CACHE_KEY] error:nil];
+    _environment = [json msidStringObjectForKey:MSID_ENVIRONMENT_CACHE_KEY];
+    _alternativeAccountId = [json msidStringObjectForKey:MSID_ALTERNATIVE_ACCOUNT_ID_KEY];
+    // Last Modification info (currently used on macOS only)
+    _lastModificationTime = [NSDate msidDateFromTimeStamp:[json msidStringObjectForKey:MSID_LAST_MOD_TIME_CACHE_KEY]];
+    _lastModificationApp = [json msidStringObjectForKey:MSID_LAST_MOD_APP_CACHE_KEY];
     return self;
 }
 
@@ -160,11 +169,6 @@
     if (_json)
     {
         [dictionary addEntriesFromDictionary:_json];
-    }
-    
-    if (_additionalAccountFields)
-    {
-        [dictionary addEntriesFromDictionary:_additionalAccountFields];
     }
     
     dictionary[MSID_AUTHORITY_TYPE_CACHE_KEY] = [MSIDAccountTypeHelpers accountTypeAsString:_accountType];
@@ -179,17 +183,22 @@
     dictionary[MSID_REALM_CACHE_KEY] = _realm;
     dictionary[MSID_CLIENT_INFO_CACHE_KEY] = _clientInfo.rawClientInfo;
     dictionary[MSID_ALTERNATIVE_ACCOUNT_ID_KEY] = _alternativeAccountId;
+
+    // Last Modification info (currently used on macOS only)
+    dictionary[MSID_LAST_MOD_TIME_CACHE_KEY] = [_lastModificationTime msidDateToFractionalTimestamp:3];
+    dictionary[MSID_LAST_MOD_APP_CACHE_KEY] = _lastModificationApp;
+
     return dictionary;
 }
 
-#pragma mark - Update
-
-- (void)updateFieldsFromAccount:(MSIDAccountCacheItem *)account
+- (nullable MSIDCacheKey *)generateCacheKey
 {
-    NSMutableDictionary *allAdditionalFields = [NSMutableDictionary dictionary];
-    [allAdditionalFields addEntriesFromDictionary:account.additionalAccountFields];
-    [allAdditionalFields addEntriesFromDictionary:_additionalAccountFields];
-    _additionalAccountFields = allAdditionalFields;
+    MSIDDefaultAccountCacheKey *key = [[MSIDDefaultAccountCacheKey alloc] initWithHomeAccountId:self.homeAccountId
+                                                                                    environment:self.environment
+                                                                                          realm:self.realm
+                                                                                           type:self.accountType];
+    key.username = self.username;
+    return key;
 }
 
 @end

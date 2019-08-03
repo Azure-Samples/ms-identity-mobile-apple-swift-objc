@@ -44,6 +44,11 @@
     return [NSString stringWithFormat:@"%qu", (uint64_t)[self timeIntervalSince1970]];
 }
 
+- (NSString *)msidDateToFractionalTimestamp:(int)precision
+{
+    return [NSString stringWithFormat:@"%0.*f", precision, [self timeIntervalSince1970]];
+}
+
 + (NSDate *)msidDateFromTimeStamp:(NSString *)timeStamp
 {
     if (!timeStamp)
@@ -51,7 +56,7 @@
         return nil;
     }
     
-    return [NSDate dateWithTimeIntervalSince1970:[timeStamp integerValue]];
+    return [NSDate dateWithTimeIntervalSince1970:[timeStamp doubleValue]];
 }
 
 @end

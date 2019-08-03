@@ -24,6 +24,7 @@
 #import "MSIDBrokerResponse.h"
 #import "MSIDAADV1TokenResponse.h"
 #import "MSIDBrokerResponse+Internal.h"
+#import "MSIDAADAuthority.h"
 
 @implementation MSIDBrokerResponse
 
@@ -52,6 +53,7 @@ MSID_FORM_ACCESSOR(@"error_domain", errorDomain);
 - (void)initDerivedProperties
 {
     self.tokenResponse = [[MSIDAADV1TokenResponse alloc] initWithJSONDictionary:_urlForm error:nil];
+    self.msidAuthority = [[MSIDAADAuthority alloc] initWithURL:[NSURL URLWithString:self.authority] rawTenant:nil context:nil error:nil];
 }
 
 - (NSString *)target

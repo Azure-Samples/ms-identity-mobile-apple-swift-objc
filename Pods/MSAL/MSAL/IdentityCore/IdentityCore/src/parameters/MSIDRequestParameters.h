@@ -35,6 +35,10 @@
 @interface MSIDRequestParameters : NSObject <MSIDRequestContext>
 
 @property (nonatomic) MSIDAuthority *authority;
+/*
+ Authority provided by the developer. It could be different from the `authority` property.
+ */
+@property (nonatomic) MSIDAuthority *providedAuthority;
 @property (nonatomic) MSIDAuthority *cloudAuthority;
 @property (nonatomic) NSString *redirectUri;
 @property (nonatomic) NSString *clientId;

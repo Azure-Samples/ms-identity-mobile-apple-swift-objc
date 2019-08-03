@@ -91,11 +91,11 @@ static MSIDBrokerInteractiveController *s_currentExecutingController;
 
 - (void)acquireToken:(MSIDRequestCompletionBlock)completionBlock
 {
-    MSID_LOG_INFO(self.requestParameters, @"Beginning broker flow.");
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Beginning broker flow.");
     
     if (!completionBlock)
     {
-        MSID_LOG_ERROR(self.requestParameters, @"Passed nil completionBlock. End broker flow.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, self.requestParameters, @"Passed nil completionBlock. End broker flow.");
         return;
     }
     
@@ -121,7 +121,7 @@ static MSIDBrokerInteractiveController *s_currentExecutingController;
 {
     MSIDRequestCompletionBlock completionBlockWrapper = ^(MSIDTokenResult *result, NSError *error)
     {
-        MSID_LOG_INFO(self.requestParameters, @"Broker flow finished.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Broker flow finished.");
         completionBlock(result, error);
     };
 
@@ -142,8 +142,7 @@ static MSIDBrokerInteractiveController *s_currentExecutingController;
 
     if (!brokerKey)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelError, nil, self.requestParameters, @"Failed to retrieve broker key with error %ld, %@", (long)brokerError.code, brokerError.domain);
-        MSID_LOG_PII(MSIDLogLevelError, nil, self.requestParameters, @"Failed to retrieve broker key with error %@", brokerError);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelError, self.requestParameters, @"Failed to retrieve broker key with error %@", MSID_PII_LOG_MASKABLE(brokerError));
 
         [self stopTelemetryEvent:[self telemetryAPIEvent] error:brokerError];
         completionBlockWrapper(nil, brokerError);
@@ -154,7 +153,7 @@ static MSIDBrokerInteractiveController *s_currentExecutingController;
 
     if (!base64UrlKey)
     {
-        MSID_LOG_ERROR(self.requestParameters, @"Unable to base64 encode broker key");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, self.requestParameters, @"Unable to base64 encode broker key");
 
         NSError *brokerKeyError = MSIDCreateError(MSIDErrorDomain, MSIDErrorInternal, @"Unable to base64 encode broker key", nil, nil, nil, self.requestParameters.correlationId, nil);
         [self stopTelemetryEvent:[self telemetryAPIEvent] error:brokerKeyError];
@@ -168,7 +167,7 @@ static MSIDBrokerInteractiveController *s_currentExecutingController;
 
     if (!brokerRequest)
     {
-        MSID_LOG_ERROR(self.requestParameters, @"Couldn't create broker request");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, self.requestParameters, @"Couldn't create broker request");
         [self stopTelemetryEvent:[self telemetryAPIEvent] error:brokerError];
         completionBlockWrapper(nil, brokerError);
         return;
@@ -182,7 +181,7 @@ static MSIDBrokerInteractiveController *s_currentExecutingController;
 
 - (void)callBrokerWithRequest:(MSIDBrokerTokenRequest *)brokerRequest
 {
-    MSID_LOG_INFO(self.requestParameters, @"Invoking broker for authentication, correlationId %@", brokerRequest.requestParameters.correlationId.UUIDString);
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, self.requestParameters, @"Invoking broker for authentication, correlationId %@", brokerRequest.requestParameters.correlationId.UUIDString);
     
     [self.class setCurrentBrokerController:self];
     [self.class startTrackingAppState];
@@ -227,7 +226,14 @@ static MSIDBrokerInteractiveController *s_currentExecutingController;
 
     if (!isBrokerResponse)
     {
-        MSID_LOG_WARN(nil, @"Asked to handle non broker response. Skipping request.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Asked to handle non broker response. Skipping request.");
+        return NO;
+    }
+    
+    BOOL hasCompletionBlock = [[self.class currentBrokerController] hasCompletionBlock];
+    if (![responseHandler canHandleBrokerResponse:resultURL hasCompletionBlock:hasCompletionBlock])
+    {
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, nil, @"This broker response cannot be handled. Skipping request.");
         return NO;
     }
 
@@ -256,7 +262,7 @@ static MSIDBrokerInteractiveController *s_currentExecutingController;
 #else
     if ([NSString msidIsStringNilOrBlank:sourceApplication])
     {
-        MSID_LOG_INFO(nil, @"Asked to handle non broker response. Skipping request.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelInfo, nil, @"Asked to handle non broker response. Skipping request.");
         return NO;
     }
 
@@ -388,6 +394,17 @@ static MSIDBrokerInteractiveController *s_currentExecutingController;
         self.requestCompletionBlock = completionBlock;
         return completionBlock;
     }
+}
+
+- (BOOL)hasCompletionBlock
+{
+    BOOL result = NO;
+    @synchronized(self)
+    {
+        result = self.requestCompletionBlock != nil;
+    }
+    
+    return result;
 }
 
 #pragma mark - Current controller

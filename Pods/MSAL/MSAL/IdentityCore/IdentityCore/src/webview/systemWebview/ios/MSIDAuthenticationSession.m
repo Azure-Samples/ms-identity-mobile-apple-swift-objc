@@ -101,7 +101,7 @@
 {
     if (!completionHandler)
     {
-        MSID_LOG_WARN(_context, @"CompletionHandler cannot be nil for interactive session.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,_context, @"CompletionHandler cannot be nil for interactive session.");
         return;
     }
 
@@ -164,7 +164,7 @@
 
 - (void)cancel
 {
-    MSID_LOG_INFO(_context, @"Authorization session was cancelled programatically");
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, _context, @"Authorization session was cancelled programatically");
     [_telemetryEvent setIsCancelled:YES];
     [[MSIDTelemetry sharedInstance] stopEvent:_telemetryRequestId event:_telemetryEvent];
     

@@ -45,7 +45,8 @@ static NSString *s_redirectScheme = nil;
 /*! @abstract Delegate callback called when the user taps the Done button. Upon this call, the view controller is dismissed modally. */
 - (void)safariViewControllerDidFinish:(SFSafariViewController *)controller
 {
-    [MSIDCertAuthHandler completeCertAuthChallenge:nil];
+    NSError *cancelledError = MSIDCreateError(MSIDErrorDomain, MSIDErrorUserCancel, @"Certificate based authentication got cancelled", nil, nil, nil, nil, nil);
+    [MSIDCertAuthHandler completeCertAuthChallenge:nil error:cancelledError];
 }
 
 /*! @abstract Invoked when the initial URL load is complete.
@@ -87,10 +88,9 @@ static NSString *s_redirectScheme = nil;
     s_activities = activities;
 }
 
-+ (BOOL)completeCertAuthChallenge:(NSURL *)endUrl
++ (BOOL)completeCertAuthChallenge:(NSURL *)endUrl error:(NSError *)error
 {
-    MSID_LOG_NO_PII(MSIDLogLevelInfo, nil, nil, @"Complete cert auth challenge with end URL: %@", endUrl.host);
-    MSID_LOG_PII(MSIDLogLevelInfo, nil, nil, @"Complete cert auth challenge with end URL: %@", [endUrl msidPIINullifiedURL]);
+    MSID_LOG_WITH_CTX_PII(MSIDLogLevelInfo, nil, @"Complete cert auth challenge with end URL: %@", [endUrl msidPIINullifiedURL]);
     
     if (s_certAuthInProgress)
     {
@@ -102,13 +102,13 @@ static NSString *s_redirectScheme = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
             [s_safariController dismissViewControllerAnimated:YES completion:nil];
             
-            if (endUrl)
+            if (endUrl || error)
             {
-                [embeddedViewController endWebAuthWithURL:endUrl error:nil];
+                [embeddedViewController endWebAuthWithURL:endUrl error:error];
             }
             else
             {
-                NSError *error = MSIDCreateError(MSIDErrorDomain, MSIDErrorInternal, @"no end url is provided to end the cert auth handling", nil, nil, nil, nil, nil);
+                NSError *error = MSIDCreateError(MSIDErrorDomain, MSIDErrorInternal, @"Unexpected Cert Auth response received.", nil, nil, nil, nil, nil);
                 [embeddedViewController endWebAuthWithURL:nil error:error];
             }
         });
@@ -133,12 +133,11 @@ static NSString *s_redirectScheme = nil;
     
     if (!currentSession)
     {
-        MSID_LOG_ERROR(context, @"There is no current session open to continue with the cert auth challenge.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"There is no current session open to continue with the cert auth challenge.");
         return NO;
     }
     
-    MSID_LOG_NO_PII(MSIDLogLevelInfo, nil, context, @"Received CertAuthChallenge");
-    MSID_LOG_PII(MSIDLogLevelInfo, nil, context, @"Received CertAuthChallengehost from : %@", challenge.protectionSpace.host);
+    MSID_LOG_WITH_CTX_PII(MSIDLogLevelInfo, context, @"Received CertAuthChallengehost from : %@", MSID_PII_LOG_TRACKABLE(challenge.protectionSpace.host));
     
     NSURL *requestURL = [currentSession.webviewController startURL];
     

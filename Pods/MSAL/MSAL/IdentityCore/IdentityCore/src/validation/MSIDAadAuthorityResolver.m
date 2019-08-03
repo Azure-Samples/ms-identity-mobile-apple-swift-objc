@@ -98,9 +98,9 @@ static dispatch_queue_t s_aadValidationQueue;
         if (dispatch_semaphore_wait(dsem, DISPATCH_TIME_NOW) != 0)
         {
             // Only bother logging if we have to wait on the queue.
-            MSID_LOG_INFO(context, @"Waiting on Authority Validation Queue");
+            MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Waiting on Authority Validation Queue");
             dispatch_semaphore_wait(dsem, DISPATCH_TIME_FOREVER);
-            MSID_LOG_INFO(context, @"Returned from Authority Validation Queue");
+            MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Returned from Authority Validation Queue");
         }
     });
 }

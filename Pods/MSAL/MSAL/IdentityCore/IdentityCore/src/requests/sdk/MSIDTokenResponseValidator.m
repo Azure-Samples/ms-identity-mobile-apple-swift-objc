@@ -27,10 +27,11 @@
 #import "MSIDTokenResult.h"
 #import "MSIDTokenResponse.h"
 #import "MSIDBrokerResponse.h"
-#import "MSIDAuthorityFactory.h"
 #import "MSIDAccessToken.h"
 #import "MSIDRefreshToken.h"
 #import "MSIDBasicContext.h"
+#import "MSIDAccountMetadataCacheAccessor.h"
+#import "MSIDAccountIdentifier.h"
 
 @implementation MSIDTokenResponseValidator
 
@@ -57,25 +58,54 @@
             *error = verificationError;
         }
 
-        MSID_LOG_NO_PII(MSIDLogLevelWarning, correlationID, nil, @"Unsuccessful token response, error %ld, %@", (long)verificationError.code, verificationError.domain);
-        MSID_LOG_PII(MSIDLogLevelWarning, correlationID, nil, @"Unsuccessful token response, error %@", verificationError);
+        MSID_LOG_WITH_CORR_PII(MSIDLogLevelWarning, correlationID, @"Unsuccessful token response, error %@", MSID_PII_LOG_MASKABLE(verificationError));
 
         return nil;
     }
+    
+    return [self createTokenResultFromResponse:tokenResponse
+                                  oauthFactory:factory
+                                 configuration:configuration
+                                requestAccount:accountIdentifier
+                                 correlationID:correlationID
+                                         error:error];
+}
 
+- (MSIDTokenResult *)createTokenResultFromResponse:(MSIDTokenResponse *)tokenResponse
+                                      oauthFactory:(MSIDOauth2Factory *)factory
+                                     configuration:(MSIDConfiguration *)configuration
+                                    requestAccount:(__unused MSIDAccountIdentifier *)accountIdentifier
+                                     correlationID:(NSUUID *)correlationID
+                                             error:(NSError **)error
+
+{
     MSIDAccessToken *accessToken = [factory accessTokenFromResponse:tokenResponse configuration:configuration];
     MSIDRefreshToken *refreshToken = [factory refreshTokenFromResponse:tokenResponse configuration:configuration];
-
+    
     MSIDAccount *account = [factory accountFromResponse:tokenResponse configuration:configuration];
-
+    NSError *authorityError = nil;
+    MSIDAuthority *resultAuthority = [factory resultAuthorityWithConfiguration:configuration tokenResponse:tokenResponse error:&authorityError];
+    
+    if (!resultAuthority)
+    {
+        MSID_LOG_WITH_CORR(MSIDLogLevelError, correlationID, @"Failed to create authority with error %@, %ld", authorityError.domain, (long)authorityError.code);
+        
+        if (error)
+        {
+            *error = authorityError;
+        }
+        
+        return nil;
+    }
+    
     MSIDTokenResult *result = [[MSIDTokenResult alloc] initWithAccessToken:accessToken
                                                               refreshToken:refreshToken
                                                                    idToken:tokenResponse.idToken
                                                                    account:account
-                                                                 authority:accessToken.authority
+                                                                 authority:resultAuthority
                                                              correlationId:correlationID
                                                              tokenResponse:tokenResponse];
-
+    
     return result;
 }
 
@@ -104,21 +134,25 @@
                                      correlationID:(NSUUID *)correlationID
                                              error:(NSError **)error
 {
-    MSID_LOG_INFO_CORR(correlationID, @"Validating broker response.");
+    MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Validating broker response.");
     
     if (!brokerResponse)
     {
         MSIDFillAndLogError(error, MSIDErrorInternal, @"Broker response is nil", correlationID);
         return nil;
     }
+    
+    if (!brokerResponse.msidAuthority)
+    {
+        if (error)
+        {
+            *error = MSIDCreateError(MSIDErrorDomain, MSIDErrorInvalidInternalParameter, @"No authority returned from broker", nil, nil, nil, correlationID, nil);
+        }
+        
+        return nil;
+    }
 
-    __auto_type authority = [MSIDAuthorityFactory authorityFromUrl:[NSURL URLWithString:brokerResponse.authority]
-                                                           context:nil
-                                                             error:error];
-
-    if (!authority) return nil;
-
-    MSIDConfiguration *configuration = [[MSIDConfiguration alloc] initWithAuthority:authority
+    MSIDConfiguration *configuration = [[MSIDConfiguration alloc] initWithAuthority:brokerResponse.msidAuthority
                                                                         redirectUri:nil
                                                                            clientId:brokerResponse.clientId
                                                                              target:brokerResponse.target];
@@ -133,13 +167,13 @@
 
     if (!tokenResult)
     {
-        MSID_LOG_INFO_CORR(correlationID, @"Broker response is not valid.");
+        MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Broker response is not valid.");
         return nil;
     }
-    MSID_LOG_INFO_CORR(correlationID, @"Broker response is valid.");
+    MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Broker response is valid.");
 
     BOOL shouldSaveSSOStateOnly = brokerResponse.accessTokenInvalidForResponse;
-    MSID_LOG_INFO_CORR(correlationID, @"Saving broker response, only save SSO state %d", shouldSaveSSOStateOnly);
+    MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Saving broker response, only save SSO state %d", shouldSaveSSOStateOnly);
 
     NSError *savingError = nil;
     BOOL isSaved = NO;
@@ -163,15 +197,14 @@
 
     if (!isSaved)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelError, correlationID, nil, @"Failed to save tokens in cache. Error %ld, %@", (long)savingError.code, savingError.domain);
-        MSID_LOG_PII(MSIDLogLevelError, correlationID, nil, @"Failed to save tokens in cache. Error %@", savingError);
+        MSID_LOG_WITH_CORR_PII(MSIDLogLevelError, correlationID, @"Failed to save tokens in cache. Error %@", MSID_PII_LOG_MASKABLE(savingError));
     }
     else
     {
-        MSID_LOG_INFO_CORR(correlationID, @"Saved broker response.");
+        MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Saved broker response.");
     }
 
-    MSID_LOG_INFO_CORR(correlationID, @"Validating token result.");
+    MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Validating token result.");
     BOOL resultValid = [self validateTokenResult:tokenResult
                                    configuration:configuration
                                        oidcScope:oidcScope
@@ -180,10 +213,10 @@
 
     if (!resultValid)
     {
-        MSID_LOG_INFO_CORR(correlationID, @"Token result is invalid.");
+        MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Token result is invalid.");
         return nil;
     }
-    MSID_LOG_INFO_CORR(correlationID, @"Token result is valid.");
+    MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Token result is valid.");
 
     tokenResult.brokerAppVersion = brokerResponse.brokerAppVer;
     return tokenResult;
@@ -193,6 +226,7 @@
 - (MSIDTokenResult *)validateAndSaveTokenResponse:(MSIDTokenResponse *)tokenResponse
                                      oauthFactory:(MSIDOauth2Factory *)factory
                                        tokenCache:(id<MSIDCacheAccessor>)tokenCache
+                             accountMetadataCache:(MSIDAccountMetadataCacheAccessor *)accountMetadataCache
                                 requestParameters:(MSIDRequestParameters *)parameters
                                             error:(NSError **)error
 {
@@ -207,6 +241,22 @@
     {
         return nil;
     }
+    
+    //save metadata
+    //TODO: update the instanceAware parameter with the instanceAware value in config
+    NSError *updateMetadataError = nil;
+    [accountMetadataCache updateAuthorityURL:tokenResult.authority.url
+                               forRequestURL:parameters.authority.url
+                               homeAccountId:tokenResult.accessToken.accountIdentifier.homeAccountId
+                                    clientId:parameters.clientId
+                               instanceAware:NO
+                                     context:parameters
+                                       error:&updateMetadataError];
+    
+    if (updateMetadataError)
+    {
+       MSID_LOG_WITH_CTX(MSIDLogLevelError, parameters, @"Failed to update auhtority map in cache. Error %@", MSID_PII_LOG_MASKABLE(updateMetadataError));
+    }
 
     NSError *savingError = nil;
     BOOL isSaved = [tokenCache saveTokensWithConfiguration:parameters.msidConfiguration
@@ -217,11 +267,8 @@
 
     if (!isSaved)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelError, nil, parameters, @"Failed to save tokens in cache. Error %ld, %@", (long)savingError.code, savingError.domain);
-        MSID_LOG_ERROR_PII(parameters, @"Failed to save tokens in cache. Error %@", savingError);
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, parameters, @"Failed to save tokens in cache. Error %@", MSID_PII_LOG_MASKABLE(savingError));
     }
-    
-    
 
     BOOL resultValid = [self validateTokenResult:tokenResult
                                    configuration:parameters.msidConfiguration

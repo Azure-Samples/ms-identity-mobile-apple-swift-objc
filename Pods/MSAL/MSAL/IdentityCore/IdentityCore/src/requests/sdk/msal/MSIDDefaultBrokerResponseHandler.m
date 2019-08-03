@@ -29,6 +29,8 @@
 #import "MSIDDefaultTokenResponseValidator.h"
 #import "MSIDTokenResult.h"
 #import "MSIDAccount.h"
+#import "MSIDConstants.h"
+#import "MSIDBrokerResponseHandler+Internal.h"
 
 #if TARGET_OS_IPHONE
 #import "MSIDKeychainTokenCache.h"
@@ -46,11 +48,8 @@
     
     if (self)
     {
-        _userInfoKeyMapping = @{@"error_description" : MSIDErrorDescriptionKey,
-                                @"oauth_error" : MSIDOAuthErrorKey,
-                                @"oauth_sub_error" : MSIDOAuthSubErrorKey,
-                                @"correlation_id" : MSIDCorrelationIdKey,
-                                @"http_headers" : MSIDHTTPHeadersKey,
+        _userInfoKeyMapping = @{@"correlation_id" : MSIDCorrelationIdKey,
+                                @"http_response_headers" : MSIDHTTPHeadersKey,
                                 @"http_response_code" : MSIDHTTPResponseCodeKey,
                                 @"x-broker-app-ver" : MSIDBrokerVersionKey,
                                 @"username" : MSIDUserDisplayableIdkey,
@@ -108,13 +107,13 @@
         
         if (!tokenResult)
         {
-            MSID_LOG_NO_PII(MSIDLogLevelWarning, correlationID, nil, @"Unable to save additional tokens with error %ld, %@", (long)additionalTokensError.code, additionalTokensError.domain);
-            MSID_LOG_PII(MSIDLogLevelWarning, correlationID, nil, @"Unable to save additional token with error %@", additionalTokensError);
+            MSID_LOG_WITH_CORR_PII(MSIDLogLevelWarning, correlationID, @"Unable to save additional token with error %@", MSID_PII_LOG_MASKABLE(additionalTokensError));
         }
     }
     
     // Successful case
-    if ([NSString msidIsStringNilOrBlank:decryptedResponse[@"error_domain"]])
+    if ([NSString msidIsStringNilOrBlank:decryptedResponse[@"broker_error_domain"]]
+        && [decryptedResponse[@"success"] boolValue])
     {
         return [[MSIDAADV2BrokerResponse alloc] initWithDictionary:decryptedResponse error:error];
     }
@@ -186,7 +185,6 @@
             [userInfo setValue:errorResponse.errorMetadata[metadataKey] forKey:userInfokey];
         }
     }
-
     //Special handling for non-string error metadata
     NSDictionary *httpHeaders = [NSDictionary msidDictionaryFromWWWFormURLEncodedString:errorResponse.httpHeaders];
     if (httpHeaders)
@@ -197,6 +195,15 @@
     NSError *brokerError = MSIDCreateError(errorDomain, errorCode, errorDescription, oauthErrorCode, subError, nil, correlationId, userInfo);
     
     return brokerError;
+}
+
+- (BOOL)canHandleBrokerResponse:(NSURL *)response
+             hasCompletionBlock:(BOOL)hasCompletionBlock
+{
+    return [self canHandleBrokerResponse:response
+                      hasCompletionBlock:hasCompletionBlock
+                         protocolVersion:MSID_MSAL_BROKER_MESSAGE_VERSION
+                                 sdkName:MSID_MSAL_SDK_NAME];
 }
 
 @end

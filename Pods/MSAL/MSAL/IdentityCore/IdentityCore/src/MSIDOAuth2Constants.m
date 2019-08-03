@@ -117,9 +117,15 @@ NSString *const MSID_FAMILY_NAME_CACHE_KEY               = @"family_name";
 NSString *const MSID_NAME_CACHE_KEY                      = @"name";
 NSString *const MSID_ALTERNATIVE_ACCOUNT_ID_KEY          = @"alternative_account_id";
 NSString *const MSID_SESSION_KEY_CACHE_KEY               = @"session_key";
+NSString *const MSID_ACCOUNT_CACHE_KEY                   = @"account_metadata";
+NSString *const MSID_LAST_MOD_TIME_CACHE_KEY             = @"last_modification_time";
+NSString *const MSID_LAST_MOD_APP_CACHE_KEY              = @"last_modification_app";
 
 NSString *const MSID_ACCESS_TOKEN_CACHE_TYPE             = @"AccessToken";
+NSString *const MSID_ACCOUNT_CACHE_TYPE                  = @"Account";
 NSString *const MSID_REFRESH_TOKEN_CACHE_TYPE            = @"RefreshToken";
+NSString *const MSID_APPLICATION_METADATA_CACHE_TYPE     = @"AppMetadata";
+NSString *const MSID_ACCOUNT_METADATA_CACHE_TYPE         = @"AccountMetadata";
 NSString *const MSID_LEGACY_TOKEN_CACHE_TYPE             = @"LegacySingleResourceToken";
 NSString *const MSID_ID_TOKEN_CACHE_TYPE                 = @"IdToken";
 NSString *const MSID_LEGACY_ID_TOKEN_CACHE_TYPE          = @"V1IdToken";
@@ -127,6 +133,7 @@ NSString *const MSID_PRT_TOKEN_CACHE_TYPE                = @"PrimaryRefreshToken
 NSString *const MSID_GENERAL_TOKEN_CACHE_TYPE            = @"token";
 NSString *const MSID_GENERAL_CACHE_ITEM_TYPE             = @"general_cache_item";
 NSString *const MSID_APP_METADATA_CACHE_TYPE             = @"appmetadata";
+NSString *const MSID_APP_METADATA_AUTHORITY_MAP_TYPE     = @"authority_map";
 
 NSString *const MSID_OPENID_CONFIGURATION_SUFFIX         = @".well-known/openid-configuration";
 NSString *const MSID_PREFERRED_USERNAME_MISSING          = @"Missing from the token response";

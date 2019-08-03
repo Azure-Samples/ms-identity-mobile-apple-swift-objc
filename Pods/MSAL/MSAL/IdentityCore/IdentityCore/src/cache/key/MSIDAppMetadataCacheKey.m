@@ -89,4 +89,16 @@ static NSInteger kGeneralTypePrefix = 3000;
     return [self serviceWithType:self.generalType clientId:self.clientId];
 }
 
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    MSIDAppMetadataCacheKey *item = [[self.class allocWithZone:zone] init];
+    item->_clientId = [_clientId copyWithZone:zone];
+    item->_environment = [_environment copyWithZone:zone];
+    item->_generalType = _generalType;
+    item->_familyId = [_familyId copyWithZone:zone];
+    return item;
+}
+
 @end

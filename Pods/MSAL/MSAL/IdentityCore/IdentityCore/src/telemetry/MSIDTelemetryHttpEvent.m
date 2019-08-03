@@ -26,6 +26,7 @@
 #import "MSIDTelemetryEventStrings.h"
 #import "MSIDOAuth2Constants.h"
 #import "NSString+MSIDTelemetryExtensions.h"
+#import "NSJSONSerialization+MSIDExtensions.h"
 
 @implementation MSIDTelemetryHttpEvent
 
@@ -79,14 +80,15 @@
     }
     
     NSError* jsonError  = nil;
-    id jsonObject = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&jsonError];
     
-    if (!jsonObject || ![jsonObject isKindOfClass:[NSDictionary class]])
+    NSDictionary *jsonObject = [NSJSONSerialization msidNormalizedDictionaryFromJsonData:responseData error:&jsonError];
+    
+    if (!jsonObject)
     {
         return;
     }
     
-    NSString *oauthError = [(NSDictionary *)jsonObject objectForKey:MSID_OAUTH2_ERROR];
+    NSString *oauthError = [jsonObject msidStringObjectForKey:MSID_OAUTH2_ERROR];
     [self setProperty:MSID_TELEMETRY_KEY_OAUTH_ERROR_CODE value:oauthError];
     self.errorInEvent = ![NSString msidIsStringNilOrBlank:oauthError];
 }
@@ -120,10 +122,37 @@
 
 - (void)setClientTelemetry:(NSString *)clientTelemetry
 {
+    [self setProperty:MSID_TELEMETRY_KEY_CLIENT_TELEMETRY_RAW value:clientTelemetry];
+    
     if (![NSString msidIsStringNilOrBlank:clientTelemetry])
     {
         [_propertyMap addEntriesFromDictionary:[clientTelemetry msidParsedClientTelemetry]];
     }
+}
+
+#pragma mark - MSIDTelemetryBaseEvent
+
++ (NSArray<NSString *> *)propertiesToAggregate
+{
+    static dispatch_once_t once;
+    static NSMutableArray *names = nil;
+    
+    dispatch_once(&once, ^{
+        names = [[super propertiesToAggregate] mutableCopy];
+        
+        [names addObjectsFromArray:@[
+                                     MSID_TELEMETRY_KEY_OAUTH_ERROR_CODE,
+                                     MSID_TELEMETRY_KEY_HTTP_RESPONSE_CODE,
+                                     MSID_TELEMETRY_KEY_HTTP_EVENT_COUNT,
+                                     MSID_TELEMETRY_KEY_SERVER_ERROR_CODE,
+                                     MSID_TELEMETRY_KEY_SERVER_SUBERROR_CODE,
+                                     MSID_TELEMETRY_KEY_RT_AGE,
+                                     MSID_TELEMETRY_KEY_SPE_INFO,
+                                     MSID_TELEMETRY_KEY_CLIENT_TELEMETRY_RAW
+                                     ]];
+    });
+    
+    return names;
 }
 
 @end

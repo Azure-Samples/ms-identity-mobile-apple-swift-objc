@@ -28,7 +28,6 @@
 #import "MSIDOauth2Factory.h"
 
 @class MSIDBaseToken;
-@class MSIDAuthorityFactory;
 @protocol MSIDRefreshableToken;
 
 @interface MSIDAADOauth2Factory : MSIDOauth2Factory
