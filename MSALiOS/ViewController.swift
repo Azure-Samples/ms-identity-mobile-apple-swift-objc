@@ -60,14 +60,14 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         do {
             try self.initMSAL()
         } catch let error {
-            self.loggingText.text = "Unable to create Application Context \(error)"
+            self.updateLogging(text: "Unable to create Application Context \(error)")
         }
     }
 
     override func viewWillAppear(_ animated: Bool) {
 
         super.viewWillAppear(animated)
-        signOutButton.isEnabled = !self.accessToken.isEmpty
+        self.updateSignOutButton(enabled: !self.accessToken.isEmpty)
     }
 }
 
@@ -95,7 +95,7 @@ extension ViewController {
     func initMSAL() throws {
         
         guard let authorityURL = URL(string: kAuthority) else {
-            self.loggingText.text = "Unable to create authority URL"
+            self.updateLogging(text: "Unable to create authority URL")
             return
         }
         
@@ -291,8 +291,8 @@ extension ViewController {
              */
             
             try applicationContext.remove(account)
-            self.loggingText.text = ""
-            self.signOutButton.isEnabled = false
+            self.updateLogging(text: "")
+            self.updateSignOutButton(enabled: false)
             self.accessToken = ""
             
         } catch let error as NSError {
