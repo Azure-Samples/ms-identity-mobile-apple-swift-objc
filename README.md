@@ -5,7 +5,7 @@ author: brandwe
 level: 100
 client: iOS Mobile App
 service: Microsoft Graph
-endpoint: AAD V2
+endpoint: Microsoft identity platform
 ---
 # MSAL iOS Swift Microsoft Graph API Sample 
 
