@@ -216,7 +216,7 @@ static MSIDIntuneEnrollmentIdsCache *s_sharedCache;
     if (![json isKindOfClass:NSDictionary.class])
     {
         if (error) *error = validationError;
-        MSID_LOG_ERROR(context, @"Intune Enrollment ID JSON structure is incorrect (json not a dictionary).");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"Intune Enrollment ID JSON structure is incorrect (json not a dictionary).");
         
         return NO;
     }
@@ -226,7 +226,7 @@ static MSIDIntuneEnrollmentIdsCache *s_sharedCache;
     if (![enrollIds isKindOfClass:NSArray.class])
     {
         if (error) *error = validationError;
-        MSID_LOG_ERROR(context, @"Intune Enrollment ID JSON structure is incorrect (enrollIds not an array).");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"Intune Enrollment ID JSON structure is incorrect (enrollIds not an array).");
         
         return NO;
     }
@@ -236,7 +236,7 @@ static MSIDIntuneEnrollmentIdsCache *s_sharedCache;
         if (![enrollIdDic isKindOfClass:NSDictionary.class])
         {
             if (error) *error = validationError;
-            MSID_LOG_ERROR(context, @"Intune Enrollment ID JSON structure is incorrect (enrollIdDic not an array).");
+            MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"Intune Enrollment ID JSON structure is incorrect (enrollIdDic not an array).");
             
             return NO;
         }
@@ -247,7 +247,7 @@ static MSIDIntuneEnrollmentIdsCache *s_sharedCache;
             if (![enrollId isKindOfClass:NSString.class])
             {
                 if (error) *error = validationError;
-                MSID_LOG_ERROR(context, @"Intune Enrollment ID JSON structure is incorrect (enrollId not a string).");
+                MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"Intune Enrollment ID JSON structure is incorrect (enrollId not a string).");
                 
                 return NO;
             }

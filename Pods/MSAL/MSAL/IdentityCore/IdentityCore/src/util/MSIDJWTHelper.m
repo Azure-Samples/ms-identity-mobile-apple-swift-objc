@@ -92,8 +92,7 @@
                                                          error:&error];
     if (!jsonData)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelError, nil, nil, @"Got an error code: %ld", (long)error.code);
-        MSID_LOG_PII(MSIDLogLevelError, nil, nil, @"Got an error code: %ld error: %@", (long)error.code, error);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelError, nil, @"Got an error code: %ld error: %@", (long)error.code, MSID_PII_LOG_MASKABLE(error));
 
         return nil;
     }

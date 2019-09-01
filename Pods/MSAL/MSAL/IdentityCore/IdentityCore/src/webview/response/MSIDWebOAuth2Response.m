@@ -123,7 +123,7 @@
     
     if (!result)
     {
-        MSID_LOG_WARN(nil, @"Missing or invalid state returned state: %@", stateReceived);
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Missing or invalid state returned state: %@", stateReceived);
         if (error)
         {
             *error = MSIDCreateError(MSIDOAuthErrorDomain,

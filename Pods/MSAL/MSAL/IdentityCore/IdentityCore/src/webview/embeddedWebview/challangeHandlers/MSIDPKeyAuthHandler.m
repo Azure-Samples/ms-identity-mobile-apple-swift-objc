@@ -37,7 +37,7 @@
                 context:(id<MSIDRequestContext>)context
       completionHandler:(void (^)(NSURLRequest *challengeResponse, NSError *error))completionHandler
 {
-    MSID_LOG_INFO(context, @"Handling PKeyAuth Challenge.");
+    MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Handling PKeyAuth Challenge.");
     
     NSArray *parts = [challengeUrl componentsSeparatedByString:@"?"];
     NSString *qp = [parts objectAtIndex:1];
@@ -53,16 +53,10 @@
         return YES;
     }
     
-    error = nil;
-    NSString *authHeader = [MSIDPkeyAuthHelper createDeviceAuthResponse:[[NSURL alloc] initWithString:submitUrl]
+    // Extract authority from submit url    
+    NSString *authHeader = [MSIDPkeyAuthHelper createDeviceAuthResponse:[NSURL URLWithString:submitUrl]
                                                           challengeData:queryParamsMap
-                                                                context:context
-                                                                  error:&error];
-    if (!authHeader)
-    {
-        completionHandler(nil, error);
-        return YES;
-    }
+                                                                context:context];
     
     // Attach client version to response url
     NSURLComponents *responseUrlComp = [[NSURLComponents alloc] initWithURL:[NSURL URLWithString:submitUrl] resolvingAgainstBaseURL:NO];
@@ -91,15 +85,13 @@
     
     if (!authHeaderParams)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelError, nil, context, @"Unparseable wwwAuthHeader received");
-        MSID_LOG_PII(MSIDLogLevelError, nil, context, @"Unparseable wwwAuthHeader received %@", wwwAuthHeaderValue);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelError, context, @"Unparseable wwwAuthHeader received %@", MSID_PII_LOG_MASKABLE(wwwAuthHeaderValue));
     }
     
     NSError *error = nil;
     NSString *authHeader = [MSIDPkeyAuthHelper createDeviceAuthResponse:requestUrl
                                                           challengeData:authHeaderParams
-                                                                context:context
-                                                                  error:&error];
+                                                                context:context];
     if (completionHandler)
     {
         completionHandler(authHeader, error);

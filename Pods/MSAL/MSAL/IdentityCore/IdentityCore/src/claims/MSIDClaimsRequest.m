@@ -70,8 +70,7 @@
                                      nil, nil, nil, nil, nil);
         }
         
-        MSID_LOG_ERROR(nil, @"Failed to request claim: claim request is nil.");
-        
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to request claim: claim request is nil.");
         return NO;
     }
     
@@ -81,7 +80,7 @@
         return NO;
     }
     
-    __auto_type key = [[NSNumber alloc] initWithInt:target];
+    __auto_type key = [[NSNumber alloc] initWithLong:target];
     
     NSMutableSet *requests = self.claimsRequestsDict[key] ?: [NSMutableSet new];
     
@@ -98,7 +97,7 @@
 {
     if (!self.claimsRequestsDict) return nil;
     
-    __auto_type key = [[NSNumber alloc] initWithInt:target];
+    __auto_type key = [[NSNumber alloc] initWithLong:target];
     NSArray *requests = [self.claimsRequestsDict[key] allObjects] ?: [NSArray new];
     
     return requests;
@@ -118,12 +117,12 @@
                                      nil, nil, nil, nil, nil);
         }
         
-        MSID_LOG_ERROR(nil, @"Failed to remove claim: name is nil.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to remove claim: name is nil.");
         
         return NO;
     }
     
-    __auto_type key = [[NSNumber alloc] initWithInt:target];
+    __auto_type key = [[NSNumber alloc] initWithLong:target];
     if (!self.claimsRequestsDict[key]) return NO;
     
     NSMutableSet *requests = self.claimsRequestsDict[key];
@@ -140,7 +139,7 @@
 
 #pragma mark - NSCopying
 
-- (id)copyWithZone:(NSZone *)zone
+- (id)copyWithZone:(__unused NSZone *)zone
 {
     MSIDClaimsRequest *item = [MSIDClaimsRequest new];
     item->_claimsRequestsDict = [_claimsRequestsDict mutableCopy];
@@ -235,7 +234,7 @@
                                  nil, nil, nil, nil, nil);
     }
     
-    MSID_LOG_ERROR(nil, @"Invalid claims target: %@", string);
+    MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Invalid claims target: %@", string);
     
     return MSIDClaimsRequestTargetInvalid;
 }

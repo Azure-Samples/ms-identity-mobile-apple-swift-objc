@@ -52,13 +52,13 @@
         {
             NSMutableDictionary *additionalUserInfo = [NSMutableDictionary new];
             
-            MSID_LOG_ERROR_CORR(correlationID, @"Server returned less scopes than requested, granted scopes: %@", grantedScopes);
+            MSID_LOG_WITH_CORR(MSIDLogLevelError, correlationID, @"Server returned less scopes than requested, granted scopes: %@", grantedScopes);
             // Remove oidc scopes.
             NSOrderedSet *oidcScopes = oidcScope.msidScopeSet;
             NSOrderedSet *filteredGrantedScopes = [grantedScopes msidMinusOrderedSet:oidcScopes normalize:YES];
             
-            MSID_LOG_INFO_CORR(correlationID, @"Removing reserved scopes from granted scopes: %@", oidcScopes);
-            MSID_LOG_INFO_CORR(correlationID, @"Final granted scopes: %@", grantedScopes);
+            MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Removing reserved scopes from granted scopes: %@", oidcScopes);
+            MSID_LOG_WITH_CORR(MSIDLogLevelInfo, correlationID, @"Final granted scopes: %@", grantedScopes);
             
             additionalUserInfo[MSIDGrantedScopesKey] = [filteredGrantedScopes array];
 

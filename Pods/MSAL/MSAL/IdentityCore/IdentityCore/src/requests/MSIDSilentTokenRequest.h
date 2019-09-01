@@ -29,9 +29,17 @@
 @class MSIDOauth2Factory;
 @class MSIDTokenResponseValidator;
 
+#if TARGET_OS_OSX
+@class MSIDExternalAADCacheSeeder;
+#endif
+
 @interface MSIDSilentTokenRequest : NSObject
 
 @property (nonatomic, readonly, nullable) MSIDRequestParameters *requestParameters;
+
+#if TARGET_OS_OSX
+@property (nonatomic, nullable) MSIDExternalAADCacheSeeder *externalCacheSeeder;
+#endif
 
 - (nullable instancetype)initWithRequestParameters:(nonnull MSIDRequestParameters *)parameters
                                       forceRefresh:(BOOL)forceRefresh

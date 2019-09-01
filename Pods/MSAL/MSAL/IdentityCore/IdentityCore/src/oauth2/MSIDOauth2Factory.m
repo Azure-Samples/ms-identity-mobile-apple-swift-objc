@@ -117,6 +117,7 @@
                                configuration:(MSIDConfiguration *)configuration
 {
     MSIDAccessToken *accessToken = [[MSIDAccessToken alloc] init];
+    
     BOOL result = [self fillAccessToken:accessToken fromResponse:response configuration:configuration];
 
     if (!result) return nil;
@@ -204,11 +205,15 @@
         return NO;
     }
     
-    token.authority = configuration.authority;
+    MSIDAuthority *cacheAuthority = [self cacheAuthorityWithConfiguration:configuration tokenResponse:response];
+    if (!cacheAuthority) return NO;
+    
+    token.environment = cacheAuthority.environment;
+    token.storageEnvironment = [cacheAuthority cacheEnvironmentWithContext:nil];
+    token.realm = cacheAuthority.realm;
     token.clientId = configuration.clientId;
     token.additionalServerInfo = response.additionalServerInfo;
-    token.accountIdentifier = [[MSIDAccountIdentifier alloc] initWithDisplayableId:response.idTokenObj.userId
-                                                                       homeAccountId:response.idTokenObj.userId];
+    token.accountIdentifier = [self accountIdentifierFromResponse:response];
     return YES;
 }
 
@@ -229,14 +234,14 @@
     
     if (!token.accessToken)
     {
-        MSID_LOG_ERROR(nil, @"Trying to initialize access token when missing access token field");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Trying to initialize access token when missing access token field");
         return NO;
     }
     NSDate *expiresOn = response.expiryDate;
     
     if (!expiresOn)
     {
-        MSID_LOG_WARN(nil, @"The server did not return the expiration time for the access token.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"The server did not return the expiration time for the access token.");
         expiresOn = [NSDate dateWithTimeIntervalSinceNow:3600.0]; //Assume 1hr expiration
     }
     
@@ -259,6 +264,7 @@
     
     if (!response.isMultiResource)
     {
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Initializing non multi resource refresh token.");
         return NO;
     }
     
@@ -266,7 +272,7 @@
     
     if (!token.refreshToken)
     {
-        MSID_LOG_ERROR(nil, @"Trying to initialize refresh token when missing refresh token field");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Trying to initialize refresh token when missing refresh token field");
         return NO;
     }
 
@@ -288,7 +294,7 @@
     
     if (!token.rawIdToken)
     {
-        MSID_LOG_ERROR(nil, @"Trying to initialize ID token when missing ID token field");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Trying to initialize ID token when missing ID token field");
         return NO;
     }
 
@@ -306,9 +312,9 @@
         return NO;
     }
     
+    token.realm = configuration.authority.realm;
     token.refreshToken = response.refreshToken;
     token.idToken = response.idToken;
-    token.accountIdentifier = [[MSIDAccountIdentifier alloc] initWithDisplayableId:response.idTokenObj.userId homeAccountId:token.accountIdentifier.homeAccountId];
     token.accessTokenType = response.tokenType ? response.tokenType : MSID_OAUTH2_BEARER;
     return YES;
 }
@@ -324,8 +330,8 @@
         return NO;
     }
 
+    token.realm = configuration.authority.realm;
     token.idToken = response.idToken;
-    token.accountIdentifier = [[MSIDAccountIdentifier alloc] initWithDisplayableId:response.idTokenObj.userId homeAccountId:token.accountIdentifier.homeAccountId];
     token.accessTokenType = response.tokenType ? response.tokenType : MSID_OAUTH2_BEARER;
     return YES;
 }
@@ -341,9 +347,8 @@
         return NO;
     }
 
+    token.realm = configuration.authority.realm;
     token.idToken = response.idToken;
-    token.accountIdentifier = [[MSIDAccountIdentifier alloc] initWithDisplayableId:response.idTokenObj.userId homeAccountId:token.accountIdentifier.homeAccountId];
-    token.realm = response.idTokenObj.realm;
     return YES;
 }
 
@@ -357,14 +362,19 @@
     {
         return NO;
     }
+    
+    MSIDAuthority *cacheAuthority = [self cacheAuthorityWithConfiguration:configuration tokenResponse:response];
+    if (!cacheAuthority) return NO;
 
-    account.accountIdentifier = [[MSIDAccountIdentifier alloc] initWithDisplayableId:response.idTokenObj.username homeAccountId:homeAccountId];
+    account.accountIdentifier = [self accountIdentifierFromResponse:response];
     account.username = response.idTokenObj.username;
     account.givenName = response.idTokenObj.givenName;
     account.familyName = response.idTokenObj.familyName;
     account.middleName = response.idTokenObj.middleName;
     account.name = response.idTokenObj.name;
-    account.authority = configuration.authority;
+    account.environment = cacheAuthority.environment;
+    account.storageEnvironment = [cacheAuthority cacheEnvironmentWithContext:nil];
+    account.realm = cacheAuthority.realm;
     account.accountType = response.accountType;
     account.localAccountId = response.idTokenObj.uniqueId;
     return YES;
@@ -374,8 +384,11 @@
            fromResponse:(__unused MSIDTokenResponse *)response
           configuration:(MSIDConfiguration *)configuration
 {
+    MSIDAuthority *cacheAuthority = [self cacheAuthorityWithConfiguration:configuration tokenResponse:response];
+    if (!cacheAuthority) return NO;
+    
     metadata.clientId = configuration.clientId;
-    metadata.environment = configuration.authority.environment;
+    metadata.environment = cacheAuthority.environment;
     return YES;
 }
 
@@ -427,6 +440,36 @@
     tokenRequest.responseSerializer = [[MSIDTokenResponseSerializer alloc] initWithOauth2Factory:self];
     
     return tokenRequest;
+}
+
+#pragma mark - Common identifiers
+
+- (MSIDAuthority *)cacheAuthorityWithConfiguration:(MSIDConfiguration *)configuration
+                                     tokenResponse:(__unused MSIDTokenResponse *)response
+{
+    return configuration.authority;
+}
+
+- (MSIDAccountIdentifier *)accountIdentifierFromResponse:(MSIDTokenResponse *)response
+{
+    return [[MSIDAccountIdentifier alloc] initWithDisplayableId:response.idTokenObj.preferredUsername
+                                                  homeAccountId:response.idTokenObj.userId];
+}
+
+#pragma mark - Result authority
+
+- (MSIDAuthority *)resultAuthorityWithConfiguration:(MSIDConfiguration *)configuration
+                                      tokenResponse:(MSIDTokenResponse *)response
+                                              error:(__unused NSError **)error
+{
+    if (response.idTokenObj.issuerAuthority)
+    {
+        return response.idTokenObj.issuerAuthority;
+    }
+    else
+    {
+        return configuration.authority;
+    }
 }
 
 @end

@@ -22,9 +22,9 @@
 // THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "MSIDCredentialItemSerializer.h"
+#import "MSIDCacheItemSerializing.h"
 
-@interface MSIDKeyedArchiverSerializer : NSObject <MSIDCredentialItemSerializer>
+@interface MSIDKeyedArchiverSerializer : NSObject <MSIDCacheItemSerializing>
 
 - (void)addEncodeClassMapping:(NSDictionary *)classMap;
 - (void)addDecodeClassMapping:(NSDictionary *)classMap;

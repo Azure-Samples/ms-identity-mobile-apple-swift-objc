@@ -24,10 +24,11 @@
 
 #import <Foundation/Foundation.h>
 #import "MSIDJsonSerializable.h"
+#import "MSIDKeyGenerator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MSIDAppMetadataCacheItem : NSObject <NSCopying, MSIDJsonSerializable>
+@interface MSIDAppMetadataCacheItem : NSObject <NSCopying, MSIDJsonSerializable, MSIDKeyGenerator>
 
 @property (nonnull) NSString *clientId;
 @property (nonnull) NSString *environment;

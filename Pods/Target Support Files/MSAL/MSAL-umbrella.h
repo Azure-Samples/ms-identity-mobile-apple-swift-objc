@@ -12,7 +12,9 @@
 
 #import "MSAL.h"
 #import "MSALAADAuthority.h"
+#import "MSALAccount+MultiTenantAccount.h"
 #import "MSALAccount.h"
+#import "MSALAccountEnumerationParameters.h"
 #import "MSALAccountId.h"
 #import "MSALADFSAuthority.h"
 #import "MSALAuthority.h"
@@ -32,13 +34,17 @@
 #import "MSALResult.h"
 #import "MSALSilentTokenParameters.h"
 #import "MSALTelemetry.h"
+#import "MSALTenantProfile.h"
 #import "MSALTokenParameters.h"
+#import "MSALLegacySharedAccountsProvider.h"
 #import "MSALHTTPConfig.h"
 #import "MSALLoggerConfig.h"
 #import "MSALTelemetryConfig.h"
 #import "MSALGlobalConfig.h"
 #import "MSALPublicClientApplicationConfig.h"
 #import "MSALCacheConfig.h"
+#import "MSALExternalAccountProviding.h"
+#import "MSALSerializedADALCacheProvider.h"
 #import "MSALSliceConfig.h"
 
 FOUNDATION_EXPORT double MSALVersionNumber;

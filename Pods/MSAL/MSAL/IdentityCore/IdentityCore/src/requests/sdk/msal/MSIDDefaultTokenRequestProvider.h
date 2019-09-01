@@ -27,13 +27,23 @@
 @class MSIDDefaultTokenCacheAccessor;
 @class MSIDOauth2Factory;
 @class MSIDTokenResponseValidator;
+@class MSIDAccountMetadataCacheAccessor;
+
+#if TARGET_OS_OSX
+@class MSIDExternalAADCacheSeeder;
+#endif
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MSIDDefaultTokenRequestProvider : NSObject <MSIDTokenRequestProviding>
 
+#if TARGET_OS_OSX
+@property (nonatomic, nullable) MSIDExternalAADCacheSeeder *externalCacheSeeder;
+#endif
+
 - (nullable instancetype)initWithOauthFactory:(MSIDOauth2Factory *)oauthFactory
                               defaultAccessor:(MSIDDefaultTokenCacheAccessor *)defaultAccessor
+                      accountMetadataAccessor:(MSIDAccountMetadataCacheAccessor *)accountMetadataAccessor
                        tokenResponseValidator:(MSIDTokenResponseValidator *)tokenResponseValidator;
 
 @end

@@ -27,7 +27,6 @@
 #import "MSIDTelemetryEventStrings.h"
 #import "MSIDClientInfo.h"
 #import "MSIDAuthority.h"
-#import "MSIDAuthorityFactory.h"
 #import "MSIDAccountIdentifier.h"
 
 @implementation MSIDBaseToken
@@ -37,10 +36,12 @@
 - (id)copyWithZone:(NSZone *)zone
 {
     MSIDBaseToken *item = [[self.class allocWithZone:zone] init];
-    item->_authority = [_authority copyWithZone:zone];
-    item->_storageAuthority = [_storageAuthority copyWithZone:zone];
+    item->_storageEnvironment = [_storageEnvironment copyWithZone:zone];
+    item->_environment = [_environment copyWithZone:zone];
+    item->_realm = [_realm copyWithZone:zone];
     item->_clientId = [_clientId copyWithZone:zone];
     item->_accountIdentifier = [_accountIdentifier copyWithZone:zone];
+    item->_speInfo = [_speInfo copyWithZone:zone];
     item->_additionalServerInfo = [_additionalServerInfo copyWithZone:zone];
     return item;
 }
@@ -65,10 +66,11 @@
 - (NSUInteger)hash
 {
     NSUInteger hash = 0;
-    hash = hash * 31 + self.authority.hash;
-    hash = hash * 31 + self.storageAuthority.hash;
+    hash = hash * 31 + self.environment.hash;
+    hash = hash * 31 + self.realm.hash;
     hash = hash * 31 + self.clientId.hash;
     hash = hash * 31 + self.accountIdentifier.hash;
+    hash = hash * 31 + self.speInfo.hash;
     hash = hash * 31 + self.additionalServerInfo.hash;
     hash = hash * 31 + self.credentialType;
     return hash;
@@ -82,10 +84,11 @@
     }
     
     BOOL result = YES;
-    result &= (!self.authority && !item.authority) || [self.authority isEqual:item.authority];
-    result &= (!self.storageAuthority && !item.storageAuthority) || [self.storageAuthority isEqual:item.storageAuthority];
+    result &= (!self.environment && !item.environment) || [self.environment isEqualToString:item.environment];
+    result &= (!self.realm && !item.realm) || [self.realm isEqualToString:item.realm];
     result &= (!self.clientId && !item.clientId) || [self.clientId isEqualToString:item.clientId];
     result &= (!self.accountIdentifier && !item.accountIdentifier) || [self.accountIdentifier isEqual:item.accountIdentifier];
+    result &= (!self.speInfo && !item.speInfo) || [self.speInfo isEqual:item.speInfo];
     result &= (!self.additionalServerInfo && !item.additionalServerInfo) || [self.additionalServerInfo isEqualToDictionary:item.additionalServerInfo];
     result &= (self.credentialType == item.credentialType);
     
@@ -119,19 +122,16 @@
         
         if (![self supportsCredentialType:tokenCacheItem.credentialType])
         {
-            MSID_LOG_ERROR(nil, @"Trying to initialize with a wrong token type");
+            MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,nil, @"Trying to initialize with a wrong token type, current token type %@, allowed token type %ld", [self class], (long)tokenCacheItem.credentialType);
             return nil;
         }
 
-        NSString *environment = tokenCacheItem.environment;
-        NSString *tenant = tokenCacheItem.realm;
-
-        __auto_type authorityUrl = [NSURL msidURLWithEnvironment:environment tenant:tenant];
-        _authority = [MSIDAuthorityFactory authorityFromUrl:authorityUrl rawTenant:tenant context:nil error:nil];
+        _environment = tokenCacheItem.environment;
+        _realm = tokenCacheItem.realm;
         
-        if (!_authority)
+        if (!_environment)
         {
-            MSID_LOG_ERROR(nil, @"Trying to initialize token when missing authority field");
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Trying to initialize token when missing environment field");
             return nil;
         }
         
@@ -139,12 +139,12 @@
         
         if (!_clientId)
         {
-            MSID_LOG_ERROR(nil, @"Trying to initialize token when missing clientId field");
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Trying to initialize token when missing clientId field");
             return nil;
         }
-        
-        _additionalServerInfo = tokenCacheItem.additionalInfo;
 
+        _speInfo = tokenCacheItem.speInfo;
+        
         if (tokenCacheItem.homeAccountId)
         {
             _accountIdentifier = [[MSIDAccountIdentifier alloc] initWithDisplayableId:nil homeAccountId:tokenCacheItem.homeAccountId];
@@ -158,19 +158,10 @@
 {
     MSIDCredentialCacheItem *cacheItem = [[MSIDCredentialCacheItem alloc] init];
     cacheItem.credentialType = self.credentialType;
-
-    if (self.storageAuthority)
-    {
-        cacheItem.environment = self.storageAuthority.url.msidHostWithPortIfNecessary;
-    }
-    else
-    {
-        cacheItem.environment = self.authority.environment;
-    }
-
-    cacheItem.realm = self.authority.url.msidTenant;
+    cacheItem.environment = self.storageEnvironment ? self.storageEnvironment : self.environment;
+    cacheItem.realm = self.realm;
     cacheItem.clientId = self.clientId;
-    cacheItem.additionalInfo = self.additionalServerInfo;
+    cacheItem.speInfo = self.speInfo;
     cacheItem.homeAccountId = self.accountIdentifier.homeAccountId;
     return cacheItem;
 }
@@ -179,8 +170,9 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"(authority=%@ clientId=%@ credentialType=%@ homeAccountId=%@)",
-            _authority, _clientId, [MSIDCredentialTypeHelpers credentialTypeAsString:self.credentialType], _accountIdentifier.homeAccountId];
+    return [NSString stringWithFormat:@"(environment=%@ realm=%@ clientId=%@ credentialType=%@ homeAccountId=%@ speInfo=%@)",
+            _storageEnvironment, _realm, _clientId, [MSIDCredentialTypeHelpers credentialTypeAsString:self.credentialType],
+            _accountIdentifier.homeAccountId, _speInfo];
 }
 
 @end

@@ -27,7 +27,6 @@
 
 + (NSDictionary *)msidDictionaryFromURLEncodedString:(NSString *)string;
 + (NSDictionary *)msidDictionaryFromWWWFormURLEncodedString:(NSString *)string;
-+ (NSDictionary *)msidDictionaryFromJsonData:(NSData *)data error:(NSError **)error;
 
 - (NSString *)msidURLEncode;
 - (NSString *)msidWWWFormURLEncode;
@@ -36,6 +35,8 @@
 - (NSString *)msidJSONSerializeWithContext:(id<MSIDRequestContext>)context;
 
 - (NSDictionary *)msidDictionaryWithoutNulls;
+- (NSString *)msidStringObjectForKey:(NSString *)key;
+- (id)msidObjectForKey:(NSString *)key ofClass:(Class)requiredClass;
 
 - (BOOL)msidAssertType:(Class)type
                ofField:(NSString *)field
@@ -46,5 +47,9 @@
 - (BOOL)msidAssertContainsField:(NSString *)field
                         context:(id <MSIDRequestContext>)context
                           error:(NSError **)error;
+
+- (NSDictionary *)msidNormalizedJSONDictionary;
+
+- (NSMutableDictionary *)mutableDeepCopy;
 
 @end

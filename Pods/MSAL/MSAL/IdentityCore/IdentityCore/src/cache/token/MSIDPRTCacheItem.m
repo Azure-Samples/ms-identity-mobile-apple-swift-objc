@@ -62,9 +62,9 @@
         return nil;
     }
     
-    if (json[MSID_SESSION_KEY_CACHE_KEY])
+    if ([json msidStringObjectForKey:MSID_SESSION_KEY_CACHE_KEY])
     {
-        _sessionKey = [NSData msidDataFromBase64UrlEncodedString:json[MSID_SESSION_KEY_CACHE_KEY]];
+        _sessionKey = [NSData msidDataFromBase64UrlEncodedString:[json msidStringObjectForKey:MSID_SESSION_KEY_CACHE_KEY]];
     }
     
     return self;

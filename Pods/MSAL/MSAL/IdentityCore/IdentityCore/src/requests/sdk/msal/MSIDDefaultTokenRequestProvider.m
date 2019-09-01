@@ -33,6 +33,7 @@
 
 - (nullable instancetype)initWithOauthFactory:(MSIDOauth2Factory *)oauthFactory
                               defaultAccessor:(MSIDDefaultTokenCacheAccessor *)defaultAccessor
+                      accountMetadataAccessor:(MSIDAccountMetadataCacheAccessor *)accountMetadataAccessor
                        tokenResponseValidator:(MSIDTokenResponseValidator *)tokenResponseValidator
 {
     self = [super init];
@@ -41,6 +42,7 @@
     {
         _oauthFactory = oauthFactory;
         _tokenCache = defaultAccessor;
+        _accountMetadataCache = accountMetadataAccessor;
         _tokenResponseValidator = tokenResponseValidator;
     }
 
@@ -49,20 +51,33 @@
 
 - (MSIDInteractiveTokenRequest *)interactiveTokenRequestWithParameters:(MSIDInteractiveRequestParameters *)parameters
 {
-    return [[MSIDInteractiveTokenRequest alloc] initWithRequestParameters:parameters
-                                                             oauthFactory:self.oauthFactory
-                                                   tokenResponseValidator:self.tokenResponseValidator
-                                                               tokenCache:self.tokenCache];
+    __auto_type request = [[MSIDInteractiveTokenRequest alloc] initWithRequestParameters:parameters
+                                                                            oauthFactory:self.oauthFactory
+                                                                  tokenResponseValidator:self.tokenResponseValidator
+                                                                              tokenCache:self.tokenCache
+                                                                    accountMetadataCache:self.accountMetadataCache];
+#if TARGET_OS_OSX
+    request.externalCacheSeeder = self.externalCacheSeeder;
+#endif
+    
+    return request;
 }
 
 - (MSIDSilentTokenRequest *)silentTokenRequestWithParameters:(MSIDRequestParameters *)parameters
                                                 forceRefresh:(BOOL)forceRefresh
 {
-    return [[MSIDDefaultSilentTokenRequest alloc] initWithRequestParameters:parameters
-                                                               forceRefresh:forceRefresh
-                                                               oauthFactory:self.oauthFactory
-                                                     tokenResponseValidator:self.tokenResponseValidator
-                                                                 tokenCache:self.tokenCache];
+    __auto_type request = [[MSIDDefaultSilentTokenRequest alloc] initWithRequestParameters:parameters
+                                                                              forceRefresh:forceRefresh
+                                                                              oauthFactory:self.oauthFactory
+                                                                    tokenResponseValidator:self.tokenResponseValidator
+                                                                                tokenCache:self.tokenCache
+                                                                      accountMetadataCache:self.accountMetadataCache];
+    
+#if TARGET_OS_OSX
+    request.externalCacheSeeder = self.externalCacheSeeder;
+#endif
+    
+    return request;
 }
 
 - (nullable MSIDBrokerTokenRequest *)brokerTokenRequestWithParameters:(nonnull MSIDInteractiveRequestParameters *)parameters

@@ -100,18 +100,13 @@ static NSDateFormatter *s_dateFormatter = nil;
 - (void)logWithLevel:(MSIDLogLevel)level
              context:(id<MSIDRequestContext>)context
        correlationId:(NSUUID *)correlationId
-               isPII:(BOOL)isPii
-  ignoreIfPIIEnabled:(BOOL)ignoreIfPIIEnabled
+         containsPII:(BOOL)containsPII
               format:(NSString *)format, ...
 {
     if (!format) return;
-    if (isPii && !self.PiiLoggingEnabled) return;
     if (level > self.level) return;
     if (!self.callback && !self.NSLoggingEnabled) return;
-    // If this is not PII and PII is enabled
-    // we want to avoid logging double lines, so we pass an extra flag to tell logger to ignore this line
-    if (ignoreIfPIIEnabled && self.PiiLoggingEnabled && !isPii) return;
-    
+
     va_list args;
     va_start(args, format);
     NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
@@ -133,7 +128,15 @@ static NSDateFormatter *s_dateFormatter = nil;
             
             if (correlationId)
             {
-                correlationIdStr = [NSString stringWithFormat:@" - %@", correlationId.UUIDString];
+                if ([correlationId isKindOfClass:[NSUUID class]])
+                {
+                    correlationIdStr = [NSString stringWithFormat:@" - %@", correlationId.UUIDString];
+                }
+                else
+                {
+                    NSAssert(NO, @"Correlation ID not of NSUUID class");
+                    correlationIdStr = @"[Invalid non-NSUUID correlationID]";
+                }
             }
             else if (context)
             {
@@ -154,9 +157,9 @@ static NSDateFormatter *s_dateFormatter = nil;
             
             if (self.NSLoggingEnabled)
             {
-                NSString *levelStr = [self stringForLogLevel:_level];
+                NSString *logLevelStr = [self stringForLogLevel:_level];
                 
-                NSString *log = [NSString stringWithFormat:@"%@ %@ %@ %@ [%@%@]%@ %@: %@", threadInfo, sdkName, sdkVersion, [MSIDDeviceId deviceOSId], dateStr, correlationIdStr, componentStr, levelStr, message];
+                NSString *log = [NSString stringWithFormat:@"%@ %@ %@ %@ [%@%@]%@ %@: %@", threadInfo, sdkName, sdkVersion, [MSIDDeviceId deviceOSId], dateStr, correlationIdStr, componentStr, logLevelStr, message];
                 
                 NSLog(@"%@", log);
             }
@@ -165,7 +168,8 @@ static NSDateFormatter *s_dateFormatter = nil;
             {
                 NSString *log = [NSString stringWithFormat:@"%@ %@ %@ %@ [%@%@]%@ %@", threadInfo, sdkName, sdkVersion, [MSIDDeviceId deviceOSId], dateStr, correlationIdStr, componentStr, message];
                 
-                self.callback(level, log, isPii);
+                BOOL lineContainsPII = self.PiiLoggingEnabled ? containsPII : NO;
+                self.callback(level, log, lineContainsPII);
             }
             
             dispatch_semaphore_signal(self.queueSemaphore);
@@ -205,7 +209,7 @@ static NSDateFormatter *s_dateFormatter = nil;
         [logString appendFormat:@" expires on %@", expiresOn];
     }
     
-    MSID_LOG_INFO_PII(context, @"%@", logString);
+    MSID_LOG_WITH_CTX_PII(MSIDLogLevelInfo, context, @"%@", logString);
 }
 
 @end

@@ -38,7 +38,6 @@
 #import "MSIDAADWebviewFactory.h"
 #import "MSIDAadAuthorityCache.h"
 #import "MSIDAuthority.h"
-#import "MSIDAuthorityFactory.h"
 #import "MSIDAADAuthority.h"
 #import "MSIDAADTenant.h"
 #import "MSIDAccountIdentifier.h"
@@ -132,23 +131,23 @@
 
 - (void)checkCorrelationId:(NSUUID *)requestCorrelationId response:(MSIDAADTokenResponse *)response
 {
-    MSID_LOG_VERBOSE_CORR(requestCorrelationId, @"Token extraction. Attempt to extract the data from the server response.");
+    MSID_LOG_WITH_CORR(MSIDLogLevelVerbose, requestCorrelationId, @"Token extraction. Attempt to extract the data from the server response.");
 
     if (![NSString msidIsStringNilOrBlank:response.correlationId])
     {
         NSUUID *responseUUID = [[NSUUID alloc] initWithUUIDString:response.correlationId];
         if (!responseUUID)
         {
-            MSID_LOG_INFO_CORR(requestCorrelationId, @"Bad correlation id - The received correlation id is not a valid UUID. Sent: %@; Received: %@", requestCorrelationId, response.correlationId);
+            MSID_LOG_WITH_CORR(MSIDLogLevelInfo, requestCorrelationId, @"Bad correlation id - The received correlation id is not a valid UUID. Sent: %@; Received: %@", requestCorrelationId, response.correlationId);
         }
         else if (![requestCorrelationId isEqual:responseUUID])
         {
-            MSID_LOG_INFO_CORR(requestCorrelationId, @"Correlation id mismatch - Mismatch between the sent correlation id and the received one. Sent: %@; Received: %@", requestCorrelationId, response.correlationId);
+            MSID_LOG_WITH_CORR(MSIDLogLevelInfo, requestCorrelationId, @"Correlation id mismatch - Mismatch between the sent correlation id and the received one. Sent: %@; Received: %@", requestCorrelationId, response.correlationId);
         }
     }
     else
     {
-        MSID_LOG_INFO_CORR(requestCorrelationId, @"Missing correlation id - No correlation id received for request with correlation id: %@", [requestCorrelationId UUIDString]);
+        MSID_LOG_WITH_CORR(MSIDLogLevelInfo, requestCorrelationId, @"Missing correlation id - No correlation id received for request with correlation id: %@", [requestCorrelationId UUIDString]);
     }
 }
 
@@ -244,9 +243,6 @@
     account.accountType = MSIDAccountTypeMSSTS;
     account.alternativeAccountId = response.idTokenObj.alternativeAccountId;
 
-    account.accountIdentifier = [[MSIDAccountIdentifier alloc] initWithDisplayableId:account.accountIdentifier.displayableId
-                                                                         homeAccountId:response.clientInfo.accountIdentifier];
-
     return YES;
 }
 
@@ -256,29 +252,56 @@
          fromResponse:(MSIDAADTokenResponse *)response
         configuration:(MSIDConfiguration *)configuration
 {
+    if (![self checkResponseClass:response context:nil error:nil])
+    {
+        return NO;
+    }
+    
     if (![super fillBaseToken:baseToken fromResponse:response configuration:configuration])
     {
         return NO;
     }
 
-    if (![self checkResponseClass:response context:nil error:nil])
-    {
-        return NO;
-    }
-
-    baseToken.accountIdentifier = [[MSIDAccountIdentifier alloc] initWithDisplayableId:baseToken.accountIdentifier.displayableId
-                                                                           homeAccountId:response.clientInfo.accountIdentifier];
-
     if (response.speInfo)
     {
-        NSMutableDictionary *additionalServerInfo = [baseToken.additionalServerInfo mutableCopy];
-        additionalServerInfo[MSID_SPE_INFO_CACHE_KEY] = response.speInfo;
-        baseToken.additionalServerInfo = additionalServerInfo;
+        baseToken.speInfo = response.speInfo;
     }
 
     return YES;
 }
 
+#pragma mark - Common identifiers
+
+- (MSIDAccountIdentifier *)accountIdentifierFromResponse:(MSIDAADTokenResponse *)response
+{
+    return [[MSIDAccountIdentifier alloc] initWithDisplayableId:response.idTokenObj.username
+                                                  homeAccountId:response.clientInfo.accountIdentifier];
+}
+
+- (MSIDAuthority *)cacheAuthorityWithConfiguration:(MSIDConfiguration *)configuration
+                                     tokenResponse:(MSIDTokenResponse *)response
+{
+    if (response.idTokenObj.realm)
+    {
+        NSError *authorityError = nil;
+        MSIDAADAuthority *authority = [MSIDAADAuthority aadAuthorityWithEnvironment:configuration.authority.environment
+                                                                          rawTenant:response.idTokenObj.realm
+                                                                            context:nil
+                                                                              error:&authorityError];
+        
+        if (!authority)
+        {
+            MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to create authority with error domain %@, code %ld", authorityError.domain, (long)authorityError.code);
+            return nil;
+        }
+        
+        return authority;
+    }
+    else
+    {
+        return configuration.authority;
+    }
+}
 
 #pragma mark - Webview
 

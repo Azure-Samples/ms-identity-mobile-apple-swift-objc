@@ -26,7 +26,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MSIDAppMetadataCacheKey : MSIDCacheKey
+@interface MSIDAppMetadataCacheKey : MSIDCacheKey <NSCopying>
 
 @property (nullable, nonatomic) NSString *clientId;
 @property (nullable, nonatomic) NSString *environment;

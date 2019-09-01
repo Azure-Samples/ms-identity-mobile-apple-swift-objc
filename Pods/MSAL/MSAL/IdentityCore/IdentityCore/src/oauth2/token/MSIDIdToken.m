@@ -85,7 +85,7 @@
         
         if (!_rawIdToken)
         {
-            MSID_LOG_ERROR(nil, @"Trying to initialize ID token when missing ID token field");
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Trying to initialize ID token when missing ID token field");
             return nil;
         }
     }

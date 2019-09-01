@@ -57,11 +57,6 @@
     return [NSString msidBase64UrlEncodedStringFromData:self];
 }
 
-- (NSDictionary *)msidToJsonDictionary:(NSError **)error
-{
-    return [NSDictionary msidDictionaryFromJsonData:self error:error];
-}
-
 /// <summary>
 /// Base64 URL decode a set of bytes.
 /// </summary>

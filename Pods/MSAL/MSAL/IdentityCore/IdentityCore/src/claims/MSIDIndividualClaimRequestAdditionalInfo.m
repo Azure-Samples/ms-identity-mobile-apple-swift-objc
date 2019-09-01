@@ -67,7 +67,7 @@ static NSString *const kValuesJsonParam = @"values";
                                                     @"values is not an NSArray.",
                                                     nil, nil, nil, nil, nil);
                 
-                MSID_LOG_ERROR(nil, @"Failed to init MSIDIndividualClaimRequestAdditionalInfo with json: values is not an NSArray.");
+                MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to init MSIDIndividualClaimRequestAdditionalInfo with json: values is not an NSArray.");
                 return nil;
             }
             
@@ -83,7 +83,7 @@ static NSString *const kValuesJsonParam = @"values";
                                                 @"Failed to init claim additional info from json.",
                                                 nil, nil, nil, nil, nil);
             
-            MSID_LOG_ERROR(nil, @"Failed to init MSIDIndividualClaimRequestAdditionalInfo with json: json is invalid.");
+            MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to init MSIDIndividualClaimRequestAdditionalInfo with json: json is invalid.");
             return nil;
         }
     }

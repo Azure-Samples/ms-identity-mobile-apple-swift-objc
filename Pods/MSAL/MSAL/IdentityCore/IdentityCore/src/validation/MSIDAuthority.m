@@ -71,6 +71,16 @@ static MSIDCache <NSString *, MSIDOpenIdProviderMetadata *> *s_openIdConfigurati
         }
         _url = url;
         _environment = url.msidHostWithPortIfNecessary;
+        
+        NSError *realmError = nil;
+        _realm = [self.class realmFromURL:url context:context error:&realmError];
+        
+        if (realmError && validateFormat)
+        {
+            MSID_LOG_WITH_CTX(MSIDLogLevelWarning,context, @"Failed to extract realm for authority");
+            if (error) *error = realmError;
+            return nil;
+        }
     }
     return self;
 }
@@ -94,8 +104,7 @@ static MSIDCache <NSString *, MSIDOpenIdProviderMetadata *> *s_openIdConfigurati
 
     [[MSIDTelemetry sharedInstance] startEvent:context.telemetryRequestId eventName:MSID_TELEMETRY_EVENT_AUTHORITY_VALIDATION];
     
-    MSID_LOG_NO_PII(MSIDLogLevelInfo, nil, context, @"Resolving authority: %@, upn: %@", [self isKnown] ? self.url : _PII_NULLIFY(self.url), _PII_NULLIFY(upn));
-    MSID_LOG_PII(MSIDLogLevelInfo, nil, context, @"Resolving authority: %@, upn: %@", self.url, upn);
+    MSID_LOG_WITH_CTX_PII(MSIDLogLevelInfo, context, @"Resolving authority: %@, upn: %@", MSID_PII_LOG_TRACKABLE(self.url), MSID_PII_LOG_EMAIL(upn));
     
     [resolver resolveAuthority:self
              userPrincipalName:upn
@@ -110,7 +119,7 @@ static MSIDCache <NSString *, MSIDOpenIdProviderMetadata *> *s_openIdConfigurati
          [validationEvent setAuthority:self];
          [[MSIDTelemetry sharedInstance] stopEvent:context.telemetryRequestId event:validationEvent];
          
-         MSID_LOG_INFO(context, @"Resolved authority, validated: %@, error: %ld", validated ? @"YES" : @"NO", (long)error.code);
+         MSID_LOG_WITH_CTX(MSIDLogLevelInfo, context, @"Resolved authority, validated: %@, error: %ld", validated ? @"YES" : @"NO", (long)error.code);
          
          if (completionBlock) completionBlock(openIdConfigurationEndpoint, validated, error);
      }];
@@ -124,6 +133,11 @@ static MSIDCache <NSString *, MSIDOpenIdProviderMetadata *> *s_openIdConfigurati
 - (NSURL *)cacheUrlWithContext:(__unused id<MSIDRequestContext>)context
 {
     return self.url;
+}
+
+- (nonnull NSString *)cacheEnvironmentWithContext:(nullable id<MSIDRequestContext> __unused)context
+{
+    return self.url.msidHostWithPortIfNecessary;
 }
 
 - (NSArray<NSURL *> *)legacyAccessTokenLookupAuthorities
@@ -296,9 +310,24 @@ static MSIDCache <NSString *, MSIDOpenIdProviderMetadata *> *s_openIdConfigurati
 
 #pragma mark - Protected
 
++ (NSString *)realmFromURL:(NSURL *)url
+                   context:(__unused id<MSIDRequestContext>)context
+                     error:(__unused NSError **)error
+{
+    return url.path;
+}
+
 - (id<MSIDAuthorityResolving>)resolver
 {
     NSAssert(NO, @"Abstract method");
+    return nil;
+}
+
+#pragma mark - Sovereign
+
+- (MSIDAuthority *)authorityWithUpdatedCloudHostInstanceName:(__unused NSString *)cloudHostInstanceName
+                                                           error:(__unused NSError **)error
+{
     return nil;
 }
 

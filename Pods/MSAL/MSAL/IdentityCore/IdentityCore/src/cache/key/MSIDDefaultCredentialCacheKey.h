@@ -27,7 +27,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MSIDDefaultCredentialCacheKey : MSIDCacheKey
+@interface MSIDDefaultCredentialCacheKey : MSIDCacheKey <NSCopying>
 
 @property (nullable, nonatomic) NSString *homeAccountId;
 @property (nullable, nonatomic) NSString *environment;

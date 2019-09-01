@@ -70,11 +70,11 @@ static NSTimeInterval s_requestTimeoutInterval = 300;
     
     [self.telemetry sendRequestEventWithId:self.context.telemetryRequestId];
     
-    MSID_LOG_VERBOSE(self.context, @"Sending network request: %@, headers: %@", _PII_NULLIFY(self.urlRequest), _PII_NULLIFY(self.urlRequest.allHTTPHeaderFields));
+    MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,self.context, @"Sending network request: %@, headers: %@", _PII_NULLIFY(self.urlRequest), _PII_NULLIFY(self.urlRequest.allHTTPHeaderFields));
     
     [[self.sessionManager.session dataTaskWithRequest:self.urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
       {
-          MSID_LOG_VERBOSE(self.context, @"Received network response: %@, error %@", _PII_NULLIFY(response), _PII_NULLIFY(error));
+          MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,self.context, @"Received network response: %@, error %@", _PII_NULLIFY(response), _PII_NULLIFY(error));
           
           if (response) NSAssert([response isKindOfClass:NSHTTPURLResponse.class], NULL);
           
@@ -94,7 +94,7 @@ static NSTimeInterval s_requestTimeoutInterval = 300;
           {
               id responseObject = [self.responseSerializer responseObjectForResponse:httpResponse data:data context:self.context error:&error];
               
-              MSID_LOG_VERBOSE(self.context, @"Parsed response: %@, error %@, error domain: %@, error code: %ld", _PII_NULLIFY(responseObject), _PII_NULLIFY(error), error.domain, (long)error.code);
+              MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,self.context, @"Parsed response: %@, error %@, error domain: %@, error code: %ld", _PII_NULLIFY(responseObject), _PII_NULLIFY(error), error.domain, (long)error.code);
               
               if (completionBlock) { completionBlock(responseObject, error); }
           }

@@ -36,6 +36,7 @@ typedef void(^MSIDOpenIdConfigurationInfoBlock)(MSIDOpenIdProviderMetadata * _Nu
 {
 @protected
     NSURL *_url;
+    NSString *_realm;
     NSURL *_openIdConfigurationEndpoint;
 }
 
@@ -44,6 +45,8 @@ typedef void(^MSIDOpenIdConfigurationInfoBlock)(MSIDOpenIdProviderMetadata * _Nu
 @property (readonly, nonnull) NSURL *url;
 
 @property (readonly, nonnull) NSString *environment;
+
+@property (readonly, nonnull) NSString *realm;
 
 @property (readonly, nullable) NSURL *openIdConfigurationEndpoint;
 
@@ -60,6 +63,8 @@ typedef void(^MSIDOpenIdConfigurationInfoBlock)(MSIDOpenIdProviderMetadata * _Nu
 - (nonnull NSURL *)networkUrlWithContext:(nullable id<MSIDRequestContext>)context;
 
 - (nonnull NSURL *)cacheUrlWithContext:(nullable id<MSIDRequestContext>)context;
+
+- (nonnull NSString *)cacheEnvironmentWithContext:(nullable id<MSIDRequestContext>)context;
 
 - (nonnull NSArray<NSURL *> *)legacyAccessTokenLookupAuthorities;
 

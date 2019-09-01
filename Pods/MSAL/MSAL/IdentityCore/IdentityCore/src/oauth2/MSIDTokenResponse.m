@@ -86,7 +86,7 @@ MSID_JSON_RW(MSID_OAUTH2_ID_TOKEN, idToken, setIdToken)
     
     if (!expiresIn && expiresInObj)
     {
-        MSID_LOG_WARN(nil, @"Unparsable time - The response value for the access token expiration cannot be parsed: %@", expiresInObj);
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Unparsable time - The response value for the access token expiration cannot be parsed: %@", expiresInObj);
     }
     
     return expiresIn;
@@ -142,7 +142,12 @@ MSID_JSON_RW(MSID_OAUTH2_ID_TOKEN, idToken, setIdToken)
                              MSID_OAUTH2_ID_TOKEN,
                              MSID_OAUTH2_EXPIRES_IN];
     
-    return [_json dictionaryByRemovingFields:knownFields];
+    NSDictionary *additionalInfo = [_json dictionaryByRemovingFields:knownFields];
+    if (additionalInfo.count > 0)
+    {
+        return additionalInfo;
+    }
+    return nil;
 }
 
 - (NSString *)description

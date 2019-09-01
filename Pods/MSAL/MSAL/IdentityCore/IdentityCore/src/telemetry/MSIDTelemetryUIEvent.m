@@ -57,4 +57,25 @@
     [self setProperty:MSID_TELEMETRY_KEY_UI_CANCELLED value:cancelled ? MSID_TELEMETRY_VALUE_YES : MSID_TELEMETRY_VALUE_NO];
 }
 
+#pragma mark - MSIDTelemetryBaseEvent
+
++ (NSArray<NSString *> *)propertiesToAggregate
+{
+    static dispatch_once_t once;
+    static NSMutableArray *names = nil;
+    
+    dispatch_once(&once, ^{
+        names = [[super propertiesToAggregate] mutableCopy];
+        
+        [names addObjectsFromArray:@[
+                                     MSID_TELEMETRY_KEY_USER_CANCEL,
+                                     MSID_TELEMETRY_KEY_LOGIN_HINT,
+                                     MSID_TELEMETRY_KEY_NTLM_HANDLED,
+                                     MSID_TELEMETRY_KEY_UI_EVENT_COUNT
+                                     ]];
+    });
+    
+    return names;
+}
+
 @end

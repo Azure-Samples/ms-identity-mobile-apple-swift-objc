@@ -51,7 +51,7 @@
                                                                            error:error];
     if (!tokenResponse)
     {
-        MSID_LOG_ERROR(context, @"Failed to parse token response.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"Failed to parse token response.");
         return nil;
     }
     

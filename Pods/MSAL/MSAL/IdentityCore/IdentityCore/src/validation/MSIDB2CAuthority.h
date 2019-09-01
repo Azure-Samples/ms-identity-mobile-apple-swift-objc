@@ -31,6 +31,7 @@
                                error:(NSError * _Nullable __autoreleasing * _Nullable)error;
 
 - (nullable instancetype)initWithURL:(nonnull NSURL *)url
+                      validateFormat:(BOOL)validateFormat
                            rawTenant:(nullable NSString *)rawTenant
                              context:(nullable id<MSIDRequestContext>)context
                                error:(NSError * _Nullable __autoreleasing * _Nullable)error;

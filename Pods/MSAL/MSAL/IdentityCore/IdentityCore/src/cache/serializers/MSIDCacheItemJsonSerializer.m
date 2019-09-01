@@ -28,6 +28,12 @@
 #import "MSIDCredentialCacheItem+MSIDBaseToken.h"
 #import "MSIDAccountCacheItem.h"
 #import "MSIDAppMetadataCacheItem.h"
+#import "MSIDAccountMetadataCacheItem.h"
+#import "MSIDJsonObject.h"
+
+#if !TARGET_OS_IPHONE
+#import "MSIDMacCredentialStorageItem.h"
+#endif
 
 @interface MSIDCacheItemJsonSerializer()
 
@@ -56,54 +62,38 @@
 
 - (MSIDCredentialCacheItem *)deserializeCredentialCacheItem:(NSData *)data
 {
-    NSError *error = nil;
-    MSIDCredentialCacheItem *item = (MSIDCredentialCacheItem *)[self.jsonSerializer fromJsonData:data ofType:MSIDCredentialCacheItem.class context:nil error:&error];
-    
-    if (!item)
-    {
-        MSID_LOG_VERBOSE(nil, @"Failed to deserialize credential %@", error);
-        return nil;
-    }
-    
-    return item;
+    return (MSIDCredentialCacheItem *)[self deserializeCacheItem:data ofClass:[MSIDCredentialCacheItem class]];
 }
 
-#pragma mark - Account
+#if TARGET_OS_OSX
 
-- (NSData *)serializeAccountCacheItem:(MSIDAccountCacheItem *)item
+- (NSData *)serializeCredentialStorageItem:(MSIDMacCredentialStorageItem *)item
 {
     return [self.jsonSerializer toJsonData:item context:nil error:nil];
 }
 
-- (MSIDAccountCacheItem *)deserializeAccountCacheItem:(NSData *)data
+- (MSIDMacCredentialStorageItem *)deserializeCredentialStorageItem:(NSData *)data
 {
-    NSError *error = nil;
-    MSIDAccountCacheItem *item = (MSIDAccountCacheItem *)[self.jsonSerializer fromJsonData:data ofType:MSIDAccountCacheItem.class context:nil error:&error];
-    
-    if (!item)
-    {
-        MSID_LOG_VERBOSE(nil, @"Failed to deserialize credential %@", error);
-        return nil;
-    }
-    
-    return item;
+    return (MSIDMacCredentialStorageItem *)[self deserializeCacheItem:data ofClass:[MSIDMacCredentialStorageItem class]];
 }
 
-#pragma mark - App metadata
+#endif
 
-- (NSData *)serializeAppMetadataCacheItem:(MSIDAppMetadataCacheItem *)item
+#pragma mark - JSON Object
+
+- (NSData *)serializeCacheItem:(id<MSIDJsonSerializable>)item
 {
     return [self.jsonSerializer toJsonData:item context:nil error:nil];
 }
 
-- (MSIDAppMetadataCacheItem *)deserializeAppMetadataCacheItem:(NSData *)data
+- (id<MSIDJsonSerializable>)deserializeCacheItem:(NSData *)data ofClass:(Class)expectedClass
 {
     NSError *error = nil;
-    MSIDAppMetadataCacheItem *item = (MSIDAppMetadataCacheItem *)[self.jsonSerializer fromJsonData:data ofType:MSIDAppMetadataCacheItem.class context:nil error:&error];
+    id<MSIDJsonSerializable> item = [self.jsonSerializer fromJsonData:data ofType:expectedClass context:nil error:&error];
     
     if (!item)
     {
-        MSID_LOG_VERBOSE(nil, @"Failed to deserialize app metadata %@", error);
+        MSID_LOG_WITH_CTX(MSIDLogLevelVerbose, nil, @"Failed to deserialize object %@ of expected class %@", error, expectedClass);
         return nil;
     }
     

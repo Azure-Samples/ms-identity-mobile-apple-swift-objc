@@ -31,6 +31,8 @@
 
 @property MSIDIdTokenClaims *idTokenObj;
 
+- (BOOL)initIdToken:(NSError *__autoreleasing *)error;
+
 @end
 
 #endif /* MSIDTokenResponse_Internal_h */

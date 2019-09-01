@@ -52,8 +52,7 @@
 
         if (![_requestParameters validateParametersWithError:&parametersError])
         {
-            MSID_LOG_NO_PII(MSIDLogLevelError, nil, self.requestParameters, @"Request parameters error %ld, %@", (long)parametersError.code, parametersError.domain);
-            MSID_LOG_PII(MSIDLogLevelError, nil, self.requestParameters,  @"Request parameters error %@", parametersError);
+            MSID_LOG_WITH_CTX_PII(MSIDLogLevelError, self.requestParameters,  @"Request parameters error %@", MSID_PII_LOG_MASKABLE(parametersError));
 
             if (error)
             {

@@ -106,7 +106,7 @@
 {
     if (![item isKindOfClass:[MSIDLegacyTokenCacheItem class]])
     {
-        MSID_LOG_WARN(nil, @"Asked to serialize MSIDCredentialCacheItem, which is unsupported");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Asked to serialize MSIDCredentialCacheItem, which is unsupported");
         return nil;
     }
 
@@ -124,6 +124,18 @@
         return (MSIDLegacyTokenCacheItem *) item;
     }
     
+    return nil;
+}
+
+- (NSData *)serializeCredentialStorageItem:(__unused MSIDMacCredentialStorageItem *)item
+{
+    MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Asked to serialize MSIDMacCredentialStorageItem, which is unsupported");
+    return nil;
+}
+
+- (MSIDMacCredentialStorageItem *)deserializeCredentialStorageItem:(__unused NSData *)data
+{
+    MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Asked to deserialize MSIDMacCredentialStorageItem, which is unsupported");
     return nil;
 }
 

@@ -24,6 +24,7 @@
 #import <Foundation/Foundation.h>
 #import "MSIDTokenCacheDataSource.h"
 
+// Legacy in memory cache for macOS ADAL
 @class MSIDMacTokenCache;
 
 @protocol MSIDMacTokenCacheDelegate <NSObject>

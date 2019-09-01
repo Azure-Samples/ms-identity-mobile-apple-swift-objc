@@ -52,7 +52,7 @@
 
     if (status != errSecSuccess)
     {
-        MSID_LOG_ERROR(nil, @"Failed to sign JWT %d", (int)status);
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to sign JWT %d", (int)status);
         free(signedHashBytes);
         return nil;
     }
@@ -74,7 +74,7 @@
 
     if (!signer)
     {
-        MSID_LOG_ERROR(nil, @"Failed to sign JWT %@", error);
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to sign JWT %@", error);
         return nil;
     }
 
@@ -88,7 +88,7 @@
 
     if (!result)
     {
-        MSID_LOG_ERROR(nil, @"Failed to sign JWT %@", error);
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to sign JWT %@", error);
         CFRelease(signer);
         return nil;
     }
@@ -98,7 +98,7 @@
 
     if (!resultData)
     {
-        MSID_LOG_ERROR(nil, @"Failed to sign JWT %@", error);
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to sign JWT %@", error);
         return nil;
     }
 
@@ -112,7 +112,7 @@
 
     if (!result)
     {
-        MSID_LOG_ERROR(nil, @"Failed to set signing attribute with error %@", error);
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to set signing attribute with error %@", error);
         return NO;
     }
 

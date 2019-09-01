@@ -22,15 +22,14 @@
 // THE SOFTWARE.
 
 #import "MSIDRefreshToken.h"
+#import "MSIDLegacyCredentialCacheCompatible.h"
 
 @class MSIDLegacyTokenCacheItem;
+@class MSIDIdTokenClaims;
 
-@interface MSIDLegacyRefreshToken : MSIDRefreshToken
+@interface MSIDLegacyRefreshToken : MSIDRefreshToken <MSIDLegacyCredentialCacheCompatible>
 
 @property (readwrite) NSString *idToken;
-@property (readwrite) NSString *realm;
-
-- (instancetype)initWithLegacyTokenCacheItem:(MSIDLegacyTokenCacheItem *)tokenCacheItem;
-- (MSIDLegacyTokenCacheItem *)legacyTokenCacheItem;
+@property (readonly) MSIDIdTokenClaims *idTokenClaims;
 
 @end

@@ -102,12 +102,41 @@
 - (void)setUserInformation:(MSIDAccount *)account
 {
     [self setProperty:MSID_TELEMETRY_KEY_USER_ID value:account.accountIdentifier.displayableId];
-    [self setProperty:MSID_TELEMETRY_KEY_TENANT_ID value:[account.authority.url msidTenant]];
+    [self setProperty:MSID_TELEMETRY_KEY_TENANT_ID value:account.realm];
 }
 
 - (void)setOauthErrorCode:(NSString *)oauthErrorCode
 {
     [self setProperty:MSID_TELEMETRY_KEY_PROTOCOL_CODE value:oauthErrorCode];
+}
+
+#pragma mark - MSIDTelemetryBaseEvent
+
++ (NSArray<NSString *> *)propertiesToAggregate
+{
+    static dispatch_once_t once;
+    static NSMutableArray *names = nil;
+    
+    dispatch_once(&once, ^{
+        names = [[super propertiesToAggregate] mutableCopy];
+        
+        [names addObjectsFromArray:@[
+                                     MSID_TELEMETRY_KEY_EXTENDED_EXPIRES_ON_SETTING,
+                                     MSID_TELEMETRY_KEY_PROMPT_BEHAVIOR,
+                                     MSID_TELEMETRY_KEY_RESULT_STATUS,
+                                     MSID_TELEMETRY_KEY_TENANT_ID,
+                                     MSID_TELEMETRY_KEY_USER_ID,
+                                     MSID_TELEMETRY_KEY_RESPONSE_TIME,
+                                     MSID_TELEMETRY_KEY_CLIENT_ID,
+                                     MSID_TELEMETRY_KEY_API_ID,
+                                     MSID_TELEMETRY_KEY_API_ERROR_CODE,
+                                     MSID_TELEMETRY_KEY_ERROR_DOMAIN,
+                                     MSID_TELEMETRY_KEY_PROTOCOL_CODE,
+                                     MSID_TELEMETRY_KEY_IS_SUCCESSFUL
+                                     ]];
+    });
+    
+    return names;
 }
 
 @end

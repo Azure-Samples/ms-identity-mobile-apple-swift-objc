@@ -128,15 +128,15 @@ static NSString* const s_delimiter = @"|";
     }
 }
 
-- (void)findAndRemoveDispatcher:(nonnull id)clientDispatcher
+- (void)removeDispatcherByObserver:(id)observer
 {
     @synchronized (self)
     {
         for (id<MSIDTelemetryDispatcher> msidDispatcher in _dispatchers)
         {
-            if ([msidDispatcher containsDispatcher:clientDispatcher])
+            if ([msidDispatcher containsObserver:observer])
             {
-                [_dispatchers removeObject:clientDispatcher];
+                [_dispatchers removeObject:msidDispatcher];
             }
         }
     }

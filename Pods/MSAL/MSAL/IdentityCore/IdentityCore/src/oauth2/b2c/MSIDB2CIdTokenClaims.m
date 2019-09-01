@@ -27,6 +27,7 @@
 
 #import "MSIDB2CIdTokenClaims.h"
 #import "MSIDHelpers.h"
+#import "MSIDB2CAuthority.h"
 
 @implementation MSIDB2CIdTokenClaims
 
@@ -50,6 +51,14 @@ MSID_JSON_ACCESSOR(@"tfp", tfp)
     }
 
     _userId = [MSIDHelpers normalizeUserId:userId];
+    
+    NSError *issuerError = nil;
+    _issuerAuthority = [[MSIDB2CAuthority alloc] initWithURL:[NSURL URLWithString:self.issuer] validateFormat:NO context:nil error:&issuerError];
+    
+    if (!_issuerAuthority)
+    {
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,nil, @"Failed to initialize issuer authority with error %@, %ld", issuerError.domain, (long)issuerError.code);
+    }
 }
 
 - (NSString *)alternativeAccountId

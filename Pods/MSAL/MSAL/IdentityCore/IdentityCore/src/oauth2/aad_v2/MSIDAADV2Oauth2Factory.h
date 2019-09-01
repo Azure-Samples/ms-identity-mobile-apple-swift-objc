@@ -25,8 +25,4 @@
 
 @interface MSIDAADV2Oauth2Factory : MSIDAADOauth2Factory
 
-- (MSIDAuthority *)authorityFromRequestAuthority:(MSIDAuthority *)requestAuthority
-                                   tokenResponse:(MSIDTokenResponse *)response
-                                           error:(NSError **)error;
-
 @end

@@ -33,8 +33,12 @@
 @class MSIDIdToken;
 @class MSIDAuthority;
 @class MSIDAppMetadataCacheItem;
+@protocol MSIDExtendedTokenCacheDataSource;
 
 @interface MSIDDefaultTokenCacheAccessor : NSObject <MSIDCacheAccessor>
+
+- (instancetype)initWithDataSource:(id<MSIDExtendedTokenCacheDataSource>)dataSource
+               otherCacheAccessors:(NSArray<id<MSIDCacheAccessor>> *)otherAccessors;
 
 - (MSIDAccessToken *)getAccessTokenForAccount:(MSIDAccountIdentifier *)account
                                 configuration:(MSIDConfiguration *)configuration
@@ -55,6 +59,10 @@
 - (BOOL)removeToken:(MSIDBaseToken *)token
             context:(id<MSIDRequestContext>)context
               error:(NSError **)error;
+
+- (BOOL)saveToken:(MSIDBaseToken *)token
+          context:(id<MSIDRequestContext>)context
+            error:(NSError **)error;
 
 - (NSArray<MSIDAppMetadataCacheItem *> *)getAppMetadataEntries:(MSIDConfiguration *)configuration
                                                        context:(id<MSIDRequestContext>)context

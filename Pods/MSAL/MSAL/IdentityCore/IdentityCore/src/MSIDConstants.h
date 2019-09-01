@@ -83,8 +83,15 @@ extern NSString * _Nonnull const MSID_BROKER_ADAL_SCHEME;
 extern NSString * _Nonnull const MSID_BROKER_MSAL_SCHEME;
 extern NSString * _Nonnull const MSID_BROKER_APP_BUNDLE_ID;
 extern NSString * _Nonnull const MSID_BROKER_APP_BUNDLE_ID_DF;
+extern NSString * _Nonnull const MSID_BROKER_MAX_PROTOCOL_VERSION;
+extern NSString * _Nonnull const MSID_BROKER_PROTOCOL_VERSION_KEY;
+extern NSString * _Nonnull const MSID_ADAL_BROKER_MESSAGE_VERSION;
+extern NSString * _Nonnull const MSID_MSAL_BROKER_MESSAGE_VERSION;
 extern NSString * _Nonnull const MSID_AUTHENTICATOR_REDIRECT_URI;
 extern NSString * _Nonnull const MSID_DEFAULT_FAMILY_ID;
+extern NSString * _Nonnull const MSID_ADAL_SDK_NAME;
+extern NSString * _Nonnull const MSID_MSAL_SDK_NAME;
+extern NSString * _Nonnull const MSID_SDK_NAME_KEY;
 
 extern NSString * _Nonnull const MSIDTrustedAuthority;
 extern NSString * _Nonnull const MSIDTrustedAuthorityUS;
@@ -94,3 +101,6 @@ extern NSString * _Nonnull const MSIDTrustedAuthorityGermany;
 extern NSString * _Nonnull const MSIDTrustedAuthorityWorldWide;
 extern NSString * _Nonnull const MSIDTrustedAuthorityUSGovernment;
 extern NSString * _Nonnull const MSIDTrustedAuthorityCloudGovApi;
+
+extern NSString * _Nonnull const MSID_DEFAULT_AAD_AUTHORITY;
+extern NSString * _Nonnull const MSID_DEFAULT_MSA_TENANTID;

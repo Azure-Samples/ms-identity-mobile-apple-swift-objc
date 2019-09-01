@@ -41,7 +41,13 @@
  Set to YES to allow events possibly containing Personally Identifiable Information (PII) to be
  sent to dispatcher. By default it is NO.
  */
-@property (nonatomic) BOOL piiEnabled;
+@property (atomic) BOOL piiEnabled;
+
+/*!
+ If set YES, telemetry events are only dispatched when errors occurred;
+ If set NO, will dispatch all events.
+ */
+@property (atomic) BOOL notifyOnFailureOnly;
 
 /*!
     Register a telemetry dispatcher for receiving telemetry events.

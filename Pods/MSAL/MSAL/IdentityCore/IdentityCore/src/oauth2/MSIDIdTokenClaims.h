@@ -27,20 +27,29 @@
 
 #import "MSIDJsonObject.h"
 
+@class MSIDAuthority;
+
 @interface MSIDIdTokenClaims : MSIDJsonObject
 {
     NSString *_uniqueId;
     NSString *_userId;
     BOOL _userIdDisplayable;
+    MSIDAuthority *_issuerAuthority;
 }
 
 // Default properties
+// REQUIRED. Subject Identifier. A locally unique and never reassigned identifier within the Issuer for the End-User, which is intended to be consumed by the Client, e.g., 24400320 or AItOawmwtWwcT0k51BayewNvutrJUqsvl6qs7A4. It MUST NOT exceed 255 ASCII characters in length. The sub value is a case sensitive string.
 @property (readonly) NSString *subject;
+// REQUIRED. Issuer Identifier for the Issuer of the response. The iss value is a case sensitive URL using the https scheme that contains scheme, host, and optionally, port number and path components and no query or fragment components.
+@property (readonly) NSString *issuer;
+// Shorthand name by which the End-User wishes to be referred to at the RP, such as janedoe or j.doe. This value MAY be any valid JSON string including special characters such as @, /, or whitespace. The RP MUST NOT rely upon this value being unique.
 @property (readonly) NSString *preferredUsername;
 @property (readonly) NSString *name;
 @property (readonly) NSString *givenName;
 @property (readonly) NSString *middleName;
 @property (readonly) NSString *familyName;
+
+// End-User's preferred e-mail address. Its value MUST conform to the RFC 5322 [RFC5322] addr-spec syntax. The RP MUST NOT rely upon this value being unique.
 @property (readonly) NSString *email;
 
 // Derived properties
@@ -48,6 +57,7 @@
 @property (readonly) NSString *userId;
 @property (readonly) BOOL userIdDisplayable;
 @property (readonly) NSString *alternativeAccountId;
+@property (readonly) MSIDAuthority *issuerAuthority;
 
 // Convinience properties
 @property (readonly) NSString *rawIdToken;

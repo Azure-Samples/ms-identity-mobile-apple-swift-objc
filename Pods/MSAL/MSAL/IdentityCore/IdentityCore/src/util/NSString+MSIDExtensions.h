@@ -40,6 +40,9 @@
 /*! Returns the same string, but without the leading and trailing whitespace */
 - (NSString *)msidTrimmedString;
 
+/*! Returns the same string, but lowercased and without the leading and trailing whitespace */
+- (NSString *)msidNormalizedString;
+
 /*! Decodes a application/x-www-form-urlencoded string.
  See https://www.w3.org/TR/html401/interact/forms.html#h-17.13.4 for more details. */
 - (NSString *)msidWWWFormURLDecode;

@@ -26,7 +26,7 @@
 
 @protocol MSIDTelemetryDispatcher <NSObject>
 
-- (BOOL)containsDispatcher:(id)dispatcher;
+- (BOOL)containsObserver:(id)observer;
 
 - (void)receive:(NSString *)requestId
           event:(id<MSIDTelemetryEventInterface>)event;

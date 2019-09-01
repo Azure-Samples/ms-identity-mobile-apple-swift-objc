@@ -28,5 +28,6 @@
 @interface MSIDBrokerResponse ()
 
 @property (readwrite) MSIDTokenResponse *tokenResponse;
+@property (readwrite) MSIDAuthority *msidAuthority;
 
 @end

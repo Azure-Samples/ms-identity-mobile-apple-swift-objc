@@ -24,6 +24,8 @@
 #import "MSIDURLFormObject.h"
 #import "MSIDAADTokenResponse.h"
 
+@class MSIDAuthority;
+
 @interface MSIDBrokerResponse : MSIDURLFormObject
 
 @property (readonly) NSString *authority;
@@ -39,6 +41,7 @@
 
 // Derived properties
 @property (readonly) MSIDTokenResponse *tokenResponse;
+@property (readonly) MSIDAuthority *msidAuthority;
 @property (readonly) BOOL accessTokenInvalidForResponse;
 
 @end

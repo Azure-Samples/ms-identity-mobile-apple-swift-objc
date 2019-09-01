@@ -80,6 +80,10 @@
 - (MSIDRefreshTokenGrantRequest *)refreshTokenRequestWithRequestParameters:(MSIDRequestParameters *)parameters
                                                               refreshToken:(NSString *)refreshToken;
 
+- (MSIDAuthority *)resultAuthorityWithConfiguration:(MSIDConfiguration *)configuration
+                                      tokenResponse:(MSIDTokenResponse *)response
+                                              error:(NSError **)error;
+
 // Webview Factory
 @property (readonly) MSIDWebviewFactory *webviewFactory;
 

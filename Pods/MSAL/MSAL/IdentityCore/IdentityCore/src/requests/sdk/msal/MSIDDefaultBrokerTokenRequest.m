@@ -38,7 +38,7 @@
     
     // if value is nil, it won't appear in the dictionary
     NSMutableDictionary *contents = [NSMutableDictionary new];
-    [contents msidSetNonEmptyString:self.requestParameters.target forKey:@"request_scopes"];
+    [contents msidSetNonEmptyString:self.requestParameters.target forKey:@"scope"];
     [contents msidSetNonEmptyString:self.requestParameters.oidcScope forKey:@"extra_oidc_scopes"];
     [contents msidSetNonEmptyString:homeAccountId forKey:@"home_account_id"];
     [contents msidSetNonEmptyString:username forKey:@"username"];
@@ -47,7 +47,7 @@
     [contents msidSetNonEmptyString:self.requestParameters.extraScopesToConsent forKey:@"extra_consent_scopes"];
     NSString *promptParam = MSIDPromptParamFromType(self.requestParameters.promptType);
     [contents msidSetNonEmptyString:promptParam forKey:@"prompt"];
-    [contents setValue:@"3" forKey:@"msg_protocol_ver"];
+    [contents setValue:@"3" forKey:MSID_BROKER_PROTOCOL_VERSION_KEY];
     
     return contents;
 }
@@ -55,7 +55,8 @@
 - (NSDictionary *)protocolResumeDictionaryContents
 {
     return @{@"scope": self.requestParameters.target ?: @"",
-             @"oidc_scope": self.requestParameters.oidcScope ?: @""};
+             @"oidc_scope": self.requestParameters.oidcScope ?: @"",
+             MSID_SDK_NAME_KEY: MSID_MSAL_SDK_NAME};
 }
 
 @end

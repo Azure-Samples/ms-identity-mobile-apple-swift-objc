@@ -31,6 +31,8 @@
 #import "MSIDTokenResponseValidator.h"
 #import "MSIDTokenResult.h"
 #import "MSIDAccount.h"
+#import "MSIDConstants.h"
+#import "MSIDBrokerResponseHandler+Internal.h"
 
 #if TARGET_OS_IPHONE
 #import "MSIDKeychainTokenCache.h"
@@ -83,7 +85,7 @@
     {
         NSDictionary *intuneResponseDictionary = @{@"response": encryptedParams[@"intune_mam_token"],
                                                    @"hash": encryptedParams[@"intune_mam_token_hash"],
-                                                   @"msg_protocol_ver": encryptedParams[@"msg_protocol_ver"] ?: @2};
+                                                   MSID_BROKER_PROTOCOL_VERSION_KEY: encryptedParams[MSID_BROKER_PROTOCOL_VERSION_KEY] ?: @2};
 
         NSDictionary *decryptedResponse = [self.brokerCryptoProvider decryptBrokerResponse:intuneResponseDictionary
                                                                              correlationId:correlationID
@@ -105,8 +107,7 @@
 
         if (!intuneResult)
         {
-            MSID_LOG_NO_PII(MSIDLogLevelWarning, correlationID, nil, @"Unable to save intune token with error %ld, %@", (long)intuneError.code, intuneError.domain);
-            MSID_LOG_PII(MSIDLogLevelWarning, correlationID, nil, @"Unable to save intune token with error %@", intuneError);
+            MSID_LOG_WITH_CORR_PII(MSIDLogLevelWarning, correlationID, @"Unable to save intune token with error %@", MSID_PII_LOG_MASKABLE(intuneError));
         }
         else
         {
@@ -168,6 +169,15 @@
     NSError *brokerError = MSIDCreateError(errorDomain, errorCode, errorDescription, oauthErrorCode, errorResponse.subError, nil, correlationId, userInfo);
 
     return brokerError;
+}
+
+- (BOOL)canHandleBrokerResponse:(NSURL *)response
+             hasCompletionBlock:(BOOL)hasCompletionBlock
+{
+    return [self canHandleBrokerResponse:response
+                      hasCompletionBlock:hasCompletionBlock
+                         protocolVersion:MSID_ADAL_BROKER_MESSAGE_VERSION
+                                 sdkName:MSID_ADAL_SDK_NAME];
 }
 
 @end

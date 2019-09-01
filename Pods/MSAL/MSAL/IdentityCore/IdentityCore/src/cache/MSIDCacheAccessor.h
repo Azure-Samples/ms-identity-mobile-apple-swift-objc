@@ -41,9 +41,6 @@
 
 @protocol MSIDCacheAccessor <NSObject>
 
-- (instancetype)initWithDataSource:(id<MSIDTokenCacheDataSource>)dataSource
-               otherCacheAccessors:(NSArray<id<MSIDCacheAccessor>> *)otherAccessors;
-
 /*!
  This method saves all tokens to the cache based on the token response.
  All tokens include: access tokens, refresh tokens, id tokens, accounts depending on the SDK

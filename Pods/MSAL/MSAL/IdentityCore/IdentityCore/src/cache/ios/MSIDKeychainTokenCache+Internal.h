@@ -28,7 +28,7 @@
 - (NSString *)keychainGroupLoggingName;
 
 - (NSMutableArray<MSIDCredentialCacheItem *> *)filterTokenItemsFromKeychainItems:(NSArray *)items
-                                                                      serializer:(id<MSIDCredentialItemSerializer>)serializer
+                                                                      serializer:(id<MSIDCacheItemSerializing>)serializer
                                                                          context:(id<MSIDRequestContext>)context;
 
 - (MSIDCacheKey *)overrideTokenKey:(MSIDCacheKey *)key;

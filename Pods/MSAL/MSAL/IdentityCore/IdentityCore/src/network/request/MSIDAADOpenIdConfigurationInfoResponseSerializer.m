@@ -23,6 +23,7 @@
 #import "MSIDAADOpenIdConfigurationInfoResponseSerializer.h"
 #import "MSIDOpenIdProviderMetadata.h"
 #import "MSIDAADJsonResponsePreprocessor.h"
+#import "NSURL+MSIDAADUtils.h"
 
 static NSString *s_tenantIdPlaceholder = @"{tenantid}";
 
@@ -126,9 +127,11 @@ static NSString *s_tenantIdPlaceholder = @"{tenantid}";
     
     // If `issuer` contains {tenantid}, it is AAD authority.
     // Lets exctract tenant from `endpoint` and put it instead of {tenantid}.
-    if ([issuerString containsString:s_tenantIdPlaceholder] && [self.endpoint msidTenant])
+    NSString *tenantId = [self.endpoint msidAADTenant];
+    
+    if ([issuerString containsString:s_tenantIdPlaceholder] && tenantId)
     {
-        issuerString = [issuerString stringByReplacingOccurrencesOfString:s_tenantIdPlaceholder withString:[self.endpoint msidTenant]];
+        issuerString = [issuerString stringByReplacingOccurrencesOfString:s_tenantIdPlaceholder withString:tenantId];
     }
     
     metadata.issuer = [NSURL URLWithString:issuerString];

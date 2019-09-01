@@ -105,8 +105,7 @@
             *error = MSIDCreateError(MSIDErrorDomain, MSIDErrorInternal, @"Unable to create broker request URL", nil, nil, nil, self.requestParameters.correlationId, nil);
         }
 
-        MSID_LOG_ERROR(self.requestParameters, @"Unable to create broker request URL");
-        MSID_LOG_ERROR(self.requestParameters, @"Unable to create broker request URL with contents %@", contents);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelError, self.requestParameters, @"Unable to create broker request URL with contents %@", MSID_PII_LOG_MASKABLE(contents));
         return NO;
     }
 
@@ -188,7 +187,7 @@
     if (!parameter)
     {
         NSString *errorDescription = [NSString stringWithFormat:@"%@ is nil, but is a required parameter", parameterName];
-        MSID_LOG_ERROR(self.requestParameters, @"%@", errorDescription);
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, self.requestParameters, @"%@", errorDescription);
 
         if (error)
         {
@@ -215,7 +214,7 @@
 
     if (!claimsString)
     {
-        MSID_LOG_WARN(self.requestParameters, @"Failed to serialize claims parameter");
+        MSID_LOG_WITH_CTX(MSIDLogLevelWarning,self.requestParameters, @"Failed to serialize claims parameter");
         return nil;
     }
 
@@ -231,8 +230,7 @@
 
     if (cacheError)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelError, nil, self.requestParameters, @"Failed to retrieve valid intune enrollment IDs with error %ld, %@", (long)cacheError.code, cacheError.domain);
-        MSID_LOG_PII(MSIDLogLevelError, nil, self.requestParameters, @"Failed to retrieve valid intune enrollment IDs with error %@", cacheError);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelError, self.requestParameters, @"Failed to retrieve valid intune enrollment IDs with error %@", MSID_PII_LOG_MASKABLE(cacheError));
         if (error) *error = cacheError;
         return nil;
     }
@@ -250,8 +248,7 @@
 
     if (cacheError)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelError, nil, self.requestParameters, @"Failed to retrieve valid intune MAM resource with error %ld, %@", (long)cacheError.code, cacheError.domain);
-        MSID_LOG_PII(MSIDLogLevelError, nil, self.requestParameters, @"Failed to retrieve valid intune MAM resource with error %@", cacheError);
+        MSID_LOG_WITH_CTX_PII(MSIDLogLevelError, self.requestParameters, @"Failed to retrieve valid intune MAM resource with error %@", MSID_PII_LOG_MASKABLE(cacheError));
         if (error) *error = cacheError;
         return nil;
     }

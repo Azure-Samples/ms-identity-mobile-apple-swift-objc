@@ -33,7 +33,6 @@
 #import "MSIDIdToken.h"
 #import "MSIDOauth2Factory+Internal.h"
 #import "MSIDAADV2WebviewFactory.h"
-#import "MSIDAuthorityFactory.h"
 #import "NSOrderedSet+MSIDExtensions.h"
 #import "MSIDRequestParameters.h"
 #import "MSIDAADAuthorizationCodeGrantRequest.h"
@@ -44,6 +43,7 @@
 #import "MSIDAADTokenResponseSerializer.h"
 #import "MSIDClaimsRequest.h"
 #import "MSIDClaimsRequest+ClientCapabilities.h"
+#import "MSIDAADAuthority.h"
 
 @implementation MSIDAADV2Oauth2Factory
 
@@ -103,8 +103,7 @@
 
     if (!response.clientInfo)
     {
-        MSID_LOG_NO_PII(MSIDLogLevelError, nil, context, @"Client info was not returned in the server response");
-        MSID_LOG_PII(MSIDLogLevelError, nil, context, @"Client info was not returned in the server response");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"Client info was not returned in the server response");
         
         if (error)
         {
@@ -130,63 +129,12 @@
     }
 
     // We want to keep case as it comes from the server side, because scopes are case sensitive by OIDC spec
-    NSOrderedSet *responseScopes = [response.scope msidScopeSet];
-
-    if (!response.scope)
+    if (!accessToken.scopes)
     {
-        responseScopes = configuration.scopes;
+        accessToken.scopes = configuration.scopes;
     }
-
-    accessToken.scopes = responseScopes;
-    accessToken.authority = [self authorityFromRequestAuthority:accessToken.authority tokenResponse:response error:nil];
 
     return YES;
-}
-
-- (BOOL)fillIDToken:(MSIDIdToken *)token
-       fromResponse:(MSIDTokenResponse *)response
-      configuration:(MSIDConfiguration *)configuration
-{
-    BOOL result = [super fillIDToken:token fromResponse:response configuration:configuration];
-
-    if (!result)
-    {
-        return NO;
-    }
-
-    token.authority = [self authorityFromRequestAuthority:token.authority tokenResponse:response error:nil];
-
-    return YES;
-}
-
-- (BOOL)fillAccount:(MSIDAccount *)account
-       fromResponse:(MSIDAADV2TokenResponse *)response
-      configuration:(MSIDConfiguration *)configuration
-{
-    if (![self checkResponseClass:response context:nil error:nil])
-    {
-        return NO;
-    }
-
-    BOOL result = [super fillAccount:account fromResponse:response configuration:configuration];
-
-    if (!result)
-    {
-        return NO;
-    }
-
-    account.authority = [self authorityFromRequestAuthority:account.authority tokenResponse:response error:nil];
-    return YES;
-}
-
-- (MSIDAuthority *)authorityFromRequestAuthority:(MSIDAuthority *)requestAuthority
-                                   tokenResponse:(MSIDTokenResponse *)response
-                                           error:(NSError **)error;
-{
-    return [MSIDAuthorityFactory authorityFromUrl:requestAuthority.url
-                                         rawTenant:response.idTokenObj.realm
-                                           context:nil
-                                             error:error];
 }
 
 #pragma mark - Webview
@@ -269,6 +217,25 @@
     tokenRequest.responseSerializer = [[MSIDAADTokenResponseSerializer alloc] initWithOauth2Factory:self];
 
     return tokenRequest;
+}
+
+#pragma mark - Authority
+
+- (MSIDAuthority *)resultAuthorityWithConfiguration:(MSIDConfiguration *)configuration
+                                      tokenResponse:(MSIDTokenResponse *)response
+                                              error:(NSError **)error
+{
+    if (response.idTokenObj.realm)
+    {
+        return [MSIDAADAuthority aadAuthorityWithEnvironment:configuration.authority.environment
+                                                   rawTenant:response.idTokenObj.realm
+                                                     context:nil
+                                                       error:error];
+    }
+    else
+    {
+        return configuration.authority;
+    }
 }
 
 @end

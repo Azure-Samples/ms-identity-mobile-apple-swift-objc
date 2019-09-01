@@ -25,6 +25,8 @@
 #import "NSDictionary+MSIDExtensions.h"
 #import "MSIDBrokerResponse+Internal.h"
 #import "MSIDAADV2TokenResponse.h"
+#import "MSIDAADAuthority.h"
+#import "NSJSONSerialization+MSIDExtensions.h"
 
 @implementation MSIDAADV2BrokerResponse
 
@@ -40,7 +42,7 @@ MSID_FORM_ACCESSOR(@"scope", scope);
         NSString *errorMetadataJSON = form[@"error_metadata"];
         if (errorMetadataJSON)
         {
-            _errorMetadata = [NSDictionary msidDictionaryFromJsonData:[errorMetadataJSON dataUsingEncoding:NSUTF8StringEncoding] error:nil];
+            _errorMetadata = [NSJSONSerialization msidNormalizedDictionaryFromJsonData:[errorMetadataJSON dataUsingEncoding:NSUTF8StringEncoding] error:nil];
         }
     }
 
@@ -51,26 +53,37 @@ MSID_FORM_ACCESSOR(@"scope", scope);
 {
     self.tokenResponse = [[MSIDAADV2TokenResponse alloc] initWithJSONDictionary:_urlForm
                                                                           error:nil];
+    self.msidAuthority = [[MSIDAADAuthority alloc] initWithURL:[NSURL URLWithString:self.authority] rawTenant:nil context:nil error:nil];
+}
+
+- (NSString *)errorCode
+{
+    return self.formDictionary[@"broker_error_code"];
+}
+
+- (NSString *)errorDomain
+{
+    return self.formDictionary[@"broker_error_domain"];
 }
 
 - (NSString *)oauthErrorCode
 {
-    return self.errorMetadata[@"oauth_error"];
+    return self.formDictionary[@"error"];
 }
 
 - (NSString *)errorDescription
 {
-    return self.errorMetadata[@"error_description"];
+    return self.formDictionary[@"error_description"];
 }
 
 - (NSString *)subError
 {
-    return self.errorMetadata[@"oauth_sub_error"];
+    return self.formDictionary[@"suberror"];
 }
 
 - (NSString *)httpHeaders
 {
-    return self.errorMetadata[@"http_headers"];
+    return self.errorMetadata[@"http_response_headers"];
 }
 
 - (NSString *)username

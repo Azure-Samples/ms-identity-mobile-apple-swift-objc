@@ -40,6 +40,6 @@
 
 - (void)flush:(NSString *)requestId;
 
-- (void)findAndRemoveDispatcher:(id)clientDispatcher;
+- (void)removeDispatcherByObserver:(id)observer;
 
 @end

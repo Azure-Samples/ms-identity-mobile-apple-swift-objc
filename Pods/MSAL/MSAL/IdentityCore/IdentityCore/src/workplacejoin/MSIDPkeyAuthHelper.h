@@ -28,7 +28,6 @@
 
 + (nullable NSString *)createDeviceAuthResponse:(nonnull NSURL *)authorizationServer
                                   challengeData:(nullable NSDictionary *)challengeData
-                                        context:(nullable id<MSIDRequestContext>)context
-                                          error:(NSError * _Nullable * _Nullable)error;
+                                        context:(nullable id<MSIDRequestContext>)context;
 
 @end

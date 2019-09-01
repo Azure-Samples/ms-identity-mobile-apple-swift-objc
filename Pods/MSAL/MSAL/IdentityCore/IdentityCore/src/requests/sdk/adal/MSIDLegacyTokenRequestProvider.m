@@ -60,7 +60,8 @@
     return [[MSIDInteractiveTokenRequest alloc] initWithRequestParameters:parameters
                                                              oauthFactory:self.oauthFactory
                                                    tokenResponseValidator:[MSIDLegacyTokenResponseValidator new]
-                                                               tokenCache:self.tokenCache];
+                                                               tokenCache:self.tokenCache
+                                                    accountMetadataCache:nil];
 }
 
 - (MSIDSilentTokenRequest *)silentTokenRequestWithParameters:(MSIDRequestParameters *)parameters

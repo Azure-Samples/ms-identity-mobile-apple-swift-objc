@@ -56,7 +56,7 @@
                                                 @"Invalid json.",
                                                 nil, nil, nil, nil, nil);
             
-            MSID_LOG_ERROR(nil, @"Failed to init MSIDIndividualClaimRequest with json: json is invalid.");
+            MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to init MSIDIndividualClaimRequest with json: json is invalid.");
             return nil;
         }
         
@@ -69,7 +69,7 @@
                                                 @"Claim name is not a string.",
                                                 nil, nil, nil, nil, nil);
             
-            MSID_LOG_ERROR(nil, @"Failed to init MSIDIndividualClaimRequest with json: claim name is not a string.");
+            MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"Failed to init MSIDIndividualClaimRequest with json: claim name is not a string.");
             return nil;
         }
         
@@ -106,7 +106,7 @@
     
     if (!self.name)
     {
-        MSID_LOG_ERROR(nil, @"name property of individual claim request is nil.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, nil, @"name property of individual claim request is nil.");
         return nil;
     }
     

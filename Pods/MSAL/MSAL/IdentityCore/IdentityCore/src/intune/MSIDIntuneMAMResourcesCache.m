@@ -79,7 +79,7 @@ static MSIDIntuneMAMResourcesCache *s_sharedCache;
     NSDictionary *jsonDictionary = [self.dataSource jsonDictionaryForKey:MSID_INTUNE_RESOURCE_ID_KEY];
     if (!jsonDictionary)
     {
-        MSID_LOG_VERBOSE(context, @"No Intune Resource JSON found.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,context, @"No Intune Resource JSON found.");
         return nil;
     }
     
@@ -131,14 +131,14 @@ static MSIDIntuneMAMResourcesCache *s_sharedCache;
     
     if (!json)
     {
-        MSID_LOG_VERBOSE(context, @"Intune Resource JSON is nil.");
+        MSID_LOG_WITH_CTX(MSIDLogLevelVerbose,context, @"Intune Resource JSON is nil.");
         return YES;
     }
     
     if (![json isKindOfClass:NSDictionary.class])
     {
         if (error) *error = validationError;
-        MSID_LOG_ERROR(context, @"Intune Resource JSON structure is incorrect (json not a dictionary).");
+        MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"Intune Resource JSON structure is incorrect (json not a dictionary).");
         
         return NO;
     }
@@ -148,7 +148,7 @@ static MSIDIntuneMAMResourcesCache *s_sharedCache;
         if (![key isKindOfClass:NSString.class])
         {
             if (error) *error = validationError;
-            MSID_LOG_ERROR(context, @"Intune Resource JSON structure is incorrect (json keys are not strings).");
+            MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"Intune Resource JSON structure is incorrect (json keys are not strings).");
             
             return NO;
         }
@@ -159,7 +159,7 @@ static MSIDIntuneMAMResourcesCache *s_sharedCache;
         if (![value isKindOfClass:NSString.class])
         {
             if (error) *error = validationError;
-            MSID_LOG_ERROR(context, @"Intune Resource JSON structure is incorrect (json values are not strings).");
+            MSID_LOG_WITH_CTX(MSIDLogLevelError, context, @"Intune Resource JSON structure is incorrect (json values are not strings).");
             
             return NO;
         }

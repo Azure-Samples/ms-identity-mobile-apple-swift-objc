@@ -31,7 +31,6 @@
 #import "MSIDClientInfo.h"
 #import "MSIDAccountIdentifier.h"
 #import "MSIDAuthority.h"
-#import "MSIDAuthorityFactory.h"
 
 @implementation MSIDAccount
 
@@ -43,7 +42,9 @@
     item->_accountIdentifier = [_accountIdentifier copyWithZone:zone];
     item->_localAccountId = [_localAccountId copyWithZone:zone];
     item->_accountType = _accountType;
-    item->_authority = [_authority copyWithZone:zone];
+    item->_environment = [_environment copyWithZone:zone];
+    item->_storageEnvironment = [_storageEnvironment copyWithZone:zone];
+    item->_realm = [_realm copyWithZone:zone];
     item->_username = [_username copyWithZone:zone];
     item->_givenName = [_givenName copyWithZone:zone];
     item->_middleName = [_middleName copyWithZone:zone];
@@ -76,7 +77,8 @@
     NSUInteger hash = 0;
     hash = hash * 31 + self.accountIdentifier.displayableId.hash;
     hash = hash * 31 + self.accountType;
-    hash = hash * 31 + self.authority.hash;
+    hash = hash * 31 + self.environment.hash;
+    hash = hash * 31 + self.realm.hash;
     hash = hash * 31 + self.alternativeAccountId.hash;
     hash = hash * 31 + self.username.hash;
     return hash;
@@ -105,7 +107,8 @@
 
     result &= self.accountType == account.accountType;
     result &= (!self.alternativeAccountId && !account.alternativeAccountId) || [self.alternativeAccountId isEqualToString:account.alternativeAccountId];
-    result &= (!self.authority && !account.authority) || [self.authority isEqual:account.authority];
+    result &= (!self.environment && !account.environment) || [self.environment isEqualToString:account.environment];
+    result &= (!self.realm && !account.realm) || [self.realm isEqualToString:account.realm];
     result &= (!self.username && !account.username) || [self.username isEqualToString:account.username];
     return result;
 }
@@ -133,12 +136,8 @@
         _clientInfo = cacheItem.clientInfo;
         _alternativeAccountId = cacheItem.alternativeAccountId;
         _localAccountId = cacheItem.localAccountId;
-
-        NSString *environment = cacheItem.environment;
-        NSString *tenant = cacheItem.realm;
-        
-        __auto_type authorityUrl = [NSURL msidURLWithEnvironment:environment tenant:tenant];
-        _authority = [MSIDAuthorityFactory authorityFromUrl:authorityUrl context:nil error:nil];
+        _environment = cacheItem.environment;
+        _realm = cacheItem.realm;
     }
     
     return self;
@@ -147,17 +146,9 @@
 - (MSIDAccountCacheItem *)accountCacheItem
 {
     MSIDAccountCacheItem *cacheItem = [[MSIDAccountCacheItem alloc] init];
-
-    if (self.storageAuthority)
-    {
-        cacheItem.environment = self.storageAuthority.url.msidHostWithPortIfNecessary;
-    }
-    else
-    {
-        cacheItem.environment = self.authority.environment;
-    }
-
-    cacheItem.realm = self.authority.url.msidTenant;
+    
+    cacheItem.environment = self.storageEnvironment ? self.storageEnvironment : self.environment;
+    cacheItem.realm = self.realm;
     cacheItem.username = self.username;
     cacheItem.homeAccountId = self.accountIdentifier.homeAccountId;
     cacheItem.localAccountId = self.localAccountId;
@@ -167,15 +158,24 @@
     cacheItem.name = self.name;
     cacheItem.familyName = self.familyName;
     cacheItem.clientInfo = self.clientInfo;
-    
     return cacheItem;
+}
+
+- (BOOL)isHomeTenantAccount
+{
+    if (self.accountType == MSIDAccountTypeMSSTS)
+    {
+        return [self.realm isEqualToString:self.accountIdentifier.utid];
+    }
+    
+    return YES;
 }
 
 #pragma mark - Description
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"MSIDAccount authority: %@ username: %@ homeAccountId: %@ accountType: %@ localAccountId: %@",self.authority, self.username, self.accountIdentifier.homeAccountId, [MSIDAccountTypeHelpers accountTypeAsString:self.accountType], self.localAccountId];
+    return [NSString stringWithFormat:@"MSIDAccount environment: %@ storage environment %@ realm: %@ username: %@ homeAccountId: %@ accountType: %@ localAccountId: %@", self.environment, self.storageEnvironment,  self.realm, self.username, self.accountIdentifier.homeAccountId, [MSIDAccountTypeHelpers accountTypeAsString:self.accountType], self.localAccountId];
 }
 
 @end

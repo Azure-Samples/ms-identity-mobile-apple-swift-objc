@@ -115,9 +115,15 @@ extern NSString *const MSID_FAMILY_NAME_CACHE_KEY;
 extern NSString *const MSID_NAME_CACHE_KEY;
 extern NSString *const MSID_ALTERNATIVE_ACCOUNT_ID_KEY;
 extern NSString *const MSID_SESSION_KEY_CACHE_KEY;
+extern NSString *const MSID_ACCOUNT_CACHE_KEY;
+extern NSString *const MSID_LAST_MOD_TIME_CACHE_KEY;
+extern NSString *const MSID_LAST_MOD_APP_CACHE_KEY;
 
 extern NSString *const MSID_ACCESS_TOKEN_CACHE_TYPE;
+extern NSString *const MSID_ACCOUNT_CACHE_TYPE;
 extern NSString *const MSID_REFRESH_TOKEN_CACHE_TYPE;
+extern NSString *const MSID_APPLICATION_METADATA_CACHE_TYPE;
+extern NSString *const MSID_ACCOUNT_METADATA_CACHE_TYPE;
 extern NSString *const MSID_LEGACY_TOKEN_CACHE_TYPE;
 extern NSString *const MSID_ID_TOKEN_CACHE_TYPE;
 extern NSString *const MSID_LEGACY_ID_TOKEN_CACHE_TYPE;
@@ -125,6 +131,7 @@ extern NSString *const MSID_PRT_TOKEN_CACHE_TYPE;
 extern NSString *const MSID_GENERAL_TOKEN_CACHE_TYPE;
 extern NSString *const MSID_GENERAL_CACHE_ITEM_TYPE;
 extern NSString *const MSID_APP_METADATA_CACHE_TYPE;
+extern NSString *const MSID_APP_METADATA_AUTHORITY_MAP_TYPE;
 
 extern NSString *const MSID_OPENID_CONFIGURATION_SUFFIX;
 extern NSString *const MSID_PREFERRED_USERNAME_MISSING;
