@@ -107,6 +107,10 @@ extension ViewController {
         
         self.webViewParamaters = MSALWebviewParameters(parentViewController: self)
     }
+    
+    func initWebViewParams() {
+        self.webViewParamaters = MSALWebviewParameters(parentViewController: self)
+    }
 }
 
 
