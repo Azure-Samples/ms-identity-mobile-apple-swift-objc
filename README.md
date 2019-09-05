@@ -1,4 +1,4 @@
---- 
+---
 Services: active-directory
 platforms: iOS
 author: brandwe
@@ -14,35 +14,18 @@ endpoint: Microsoft identity platform
 | [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-ios)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [API Reference](https://azuread.github.io/docs/objc/) | [Support](README.md#community-help-and-support)
 | --- | --- | --- | --- |
 
-The MSAL preview library for iOS and macOS gives your app the ability to begin using the [Microsoft Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
+The MSAL library for iOS gives your app the ability to begin using the [Microsoft identity platform](https://aka.ms/aaddev) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com/) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
 
-* How to get a token
-* How to refresh a token
-* How to call the Microsoft Graph API
-* How to sign a user out of your application
+- How to get a token
+- How to refresh a token
+- How to call the Microsoft Graph API
+- How to sign a user out of your application
 
 ## Scenario
 
 This app is a multi-tenant app meaning it can be used by any Azure AD tenant or Microsoft Account.  It demonstrates how a developer can build apps to connect with enterprise users and access their Azure + O365 data via the Microsoft Graph.  During the auth flow, end users will be required to sign in and consent to the permissions of the application, and in some cases may require an admin to consent to the app.  The majority of the logic in this sample shows how to auth an end user and make a basic call to the Microsoft Graph.
 
 ![Topology](./images/iosintro.png)
-
-## Example
-
-```swift
-    if let application = try? MSALPublicClientApplication.init(clientId: <your-client-id-here>) {
-        application.acquireToken(forScopes: kScopes) { (result, error) in
-            if result != nil {
-                    // Set up your app for the user
-            } else {
-                print(error?.localizedDescription)
-            }
-        }
-    }
-    else {
-            print("Unable to create application.")
-        } 
-```
 
 ## How to run this sample
 
@@ -60,6 +43,18 @@ git clone https://github.com/Azure-Samples/active-directory-ios-swift-native-v2.
 ```
 or download and extract the repository.zip file, and navigate to 'MSALiOS.xcworkspace' from the active-directory-ios-swift-native-v2 folder
 
+## 1B: Installation
+
+Load the podfile using cocoapods. This will create a new XCode Workspace you will load.
+
+From terminal navigate to the directory where the podfile is located
+
+```
+$ pod install
+...
+$ open MSALiOS.xcworkspace
+```
+
 ## Step 2: (Optional) 1A: Register your App  
 The app comes pre-configured for testing.  If you would like to register your own app, please follow the steps below.
 
@@ -76,23 +71,12 @@ To create an app,
     - Name your app
     - Under **Supported account types**, select **Accounts in any organizational directory and personal Microsoft accounts**
     - Select **Register** to finish.
-3. After the app is created, you'll land on your app management page. Click **Authentication**, and look at the Redirect URI suggestions. Select the first item, which will be in this format: `msal<clientID>://auth`.
+3. After the app is created, you'll land on your app management page. Click **Authentication**, and add new Redirect URI with type **Public client (mobile & desktop)**. Enter redirect URI in format: `msauth.<app.bundle.id>://auth`. Replace <app.bundle.id> with the **Bundle Identifier** for your application.
 4. Hit the **Save** button in the top left, to save these updates. 
 
-## 1B: Installation
+## 1B: Configure your application
 
-Load the podfile using cocoapods. This will create a new XCode Workspace you will load.
-
-From terminal navigate to the directory where the podfile is located
-
-```
-$ pod install
-...
-$ open MSALiOS.xcworkspace
-```
-## 1C: Configure your application
-
-1. Add your application's redirect URI scheme to added in the portal to your `info.plist` file. It will be in the format of `msal<client-id>`
+1. Add your application's redirect URI scheme to added in the portal to your `info.plist` file. It will be in the format of `msauth.<app.bundle.id>`
 ```xml
     <key>CFBundleURLTypes</key>
     <array>
@@ -103,7 +87,7 @@ $ open MSALiOS.xcworkspace
             <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>msal+your-client-id-here</string>
+                <string>msauth.<app.bundle.id></string>
             </array>
         </dict>
     </array>

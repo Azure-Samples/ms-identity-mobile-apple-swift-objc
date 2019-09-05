@@ -40,17 +40,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // The MSAL Logger should be set as early as possible in the app launch sequence, before any MSAL
         // requests are made.
         
-        /** When capturing log messages from MSAL you only need to capture either messages where
-         containsPII == YES or containsPII == NO, as log messages are duplicated between the
-         two, however the containsPII version might contain Personally Identifiable Information (PII)
-         about the user being logged in.
-         */
-        
         MSALGlobalConfig.loggerConfig.setLogCallback { (logLevel, message, containsPII) in
             
-            if (!containsPII) {
-                
-                print("%@", message!)
+            // If PiiLoggingEnabled is set YES, this block will potentially contain sensitive information (Personally Identifiable Information), but not all messages will contain it.
+            // containsPII == YES indicates if a particular message contains PII.
+            // You might want to capture PII only in debug builds, or only if you take necessary actions to handle PII properly according to legal requirements of the region
+            if let displayableMessage = message {
+                if (!containsPII) {
+                    #if DEBUG
+                    // NB! This sample uses print just for testing purposes
+                    // You should only ever log to NSLog in debug mode to prevent leaking potentially sensitive information
+                    print(displayableMessage)
+                    #endif
+                }
             }
         }
 
