@@ -57,7 +57,7 @@ To run this sample, you'll need:
 From Terminal:
 
 ```terminal
-git clone https://github.com/Azure-Samples/active-directory-ios-swift-native-v2.git
+git clone https://github.com/Azure-Samples/ms-identity-mobile-apple-swift-objc.git
 ```
 or download and extract the repository.zip file, and navigate to 'MSALiOS.xcworkspace' from the active-directory-ios-swift-native-v2 folder
 
