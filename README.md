@@ -12,10 +12,10 @@ urlFragment: active-directory-ios-swift-native-v2
 
 ![Build Badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/523/badge)
 
-| [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-ios)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [API Reference](https://azuread.github.io/docs/objc/) | [Support](README.md#community-help-and-support)
+| [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-ios)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [API Reference](https://azuread.github.io/docs/objc/) | [Support](README.md#feedback,community-help,-and-support)
 | --- | --- | --- | --- |
 
-The MSAL preview library for iOS and macOS gives your app the ability to begin using the [Microsoft Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
+The MSAL library for iOS and macOS gives your app the ability to begin using the [Microsoft Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
 
 * How to get a token
 * How to refresh a token
@@ -24,7 +24,7 @@ The MSAL preview library for iOS and macOS gives your app the ability to begin u
 
 ## Scenario
 
-This app is a multi-tenant app meaning it can be used by any Azure AD tenant or Microsoft Account.  It demonstrates how a developer can build apps to connect with enterprise users and access their Azure + O365 data via the Microsoft Graph.  During the auth flow, end users will be required to sign in and consent to the permissions of the application, and in some cases may require an admin to consent to the app.  The majority of the logic in this sample shows how to auth an end user and make a basic call to the Microsoft Graph.
+This app is a multi-tenant app meaning it can be used within any Azure AD tenant and also supports signing in with Microsoft Account.  It demonstrates how a developer can build apps to connect with enterprise users and access their Azure + O365 data via the Microsoft Graph.  During the auth flow, end users will be required to sign in and consent to the permissions of the application, and in some cases may require an admin to consent to the app.  The majority of the logic in this sample shows how to auth an end user and make a basic call to the Microsoft Graph.
 
 ![Topology](./images/iosintro.png)
 
@@ -52,7 +52,9 @@ To run this sample, you'll need:
 * Xcode
 * An internet connection
 
-## Step 1: Clone or download this repository
+## Step 1: 
+
+## 1A: Clone or download this repository
 
 From Terminal:
 
@@ -60,25 +62,6 @@ From Terminal:
 git clone https://github.com/Azure-Samples/active-directory-ios-swift-native-v2.git
 ```
 or download and extract the repository.zip file, and navigate to 'MSALiOS.xcworkspace' from the active-directory-ios-swift-native-v2 folder
-
-## Step 2: (Optional) 1A: Register your App  
-The app comes pre-configured for testing.  If you would like to register your own app, please follow the steps below.
-
-To Register,
-1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account.
-
-2. In the left-hand navigation pane, select the **Azure Active Directory** service, and then select **App registrations**
-
-3. You will need to have a native client application registered with Microsoft using the [App registrations](https://go.microsoft.com/fwlink/?linkid=2083908) experience.
-
-To create an app,  
-1. Click the **New registration** button on the top left of the page.
-2. On the app registration page,
-    - Name your app
-    - Under **Supported account types**, select **Accounts in any organizational directory and personal Microsoft accounts**
-    - Select **Register** to finish.
-3. After the app is created, you'll land on your app management page. Click **Authentication**, and look at the Redirect URI suggestions. Select the first item, which will be in this format: `msal<clientID>://auth`.
-4. Hit the **Save** button in the top left, to save these updates. 
 
 ## 1B: Installation
 
@@ -91,80 +74,81 @@ $ pod install
 ...
 $ open MSALiOS.xcworkspace
 ```
-## 1C: Configure your application
 
-1. Add your application's redirect URI scheme to added in the portal to your `info.plist` file. It will be in the format of `msal<client-id>`
+
+
+## Step 2: (Optional) 
+
+## 2A: Register your App  
+
+This app comes pre-configured for testing.  If you would like to register your own app, please follow the steps below.
+
+To Register an app:
+
+1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account.
+2. In the left-hand navigation pane, select the **Azure Active Directory** blade, and then select **App registrations**.
+3. Click on the **New registration** button at the top left of the page.
+4. On the app registration page,
+   - Name your app
+   - Under **Supported account types**, select **Accounts in any organizational directory (Any Azure AD directory - Multitenant) and personal Microsoft accounts (e.g. Skype, Xbox)**
+   - Click **Register** to finish.
+5. After the app is created, you'll land on your app management page. Take note of the **Application (client) ID** as this would be needed for the step 1C below.
+6. Click **Authentication**, and add new Redirect URI with type **Public client (mobile & desktop)**. Enter redirect URI in format: `msauth.<app_bundle_id>://auth`. Replace <app_bundle_id> with the **Bundle Identifier** for your application. 
+7. Hit the **Save** button in the top left, to save these updates.
+
+## 2B: Configure your application
+
+1. Update your application's redirect URI scheme in the  `Info.plist` file by replacing `msauth.com.microsoft.identitysample.MSALiOS` . Redirect URI scheme follows the format `msauth.[app_bundle_id]`. Make sure to substitue [app_bundle_id] with the **Bundle Identifier** for your application. 
 ```xml
-    <key>CFBundleURLTypes</key>
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLSchemes</key>
     <array>
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLName</key>
-            <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>msal+your-client-id-here</string>
-            </array>
-        </dict>
+      <string>msauth.com.microsoft.identitysample.MSALiOS</string>
     </array>
+  </dict>
+</array>
 ```
 
 2. Configure your application defaults
 
-In the `ViewControler.swift` file, update the `kClientID` variable with your client ID.
+In the `ViewControler.swift` file, update the `kClientID` variable with your Application (client) ID.
 
 ```swift
-    // Update the below to your client ID you received in the portal. The below is for running the demo only
+    // Update the below with the client ID you received in the portal. 
     
-    let kClientID = "<your-client-id-here>"
+    let kClientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
 ```
 
 ## Step 3: Run the sample
 
-Click the Run Button in the top menu or go to Product from the menu tab and select Run.
+1. Click the Run Button in the top menu or go to Product from the menu tab and click Run.
+2. Once the sample app launches, click on the 'Call Microsoft Graph API' button to go through the sign in flow and see the results from Microsoft Graph.
 
 ## Feedback, Community Help, and Support
 
-We use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) with the community to 
-provide support. We highly recommend you ask your questions on Stack Overflow first and browse 
-existing issues to see if someone has asked your question before. 
+We use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) with the community to provide support. We highly recommend you ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before. 
 
-If you find and bug or have a feature request, please raise the issue 
-on [GitHub Issues](../../issues). 
+If you find a bug or have a feature request, please raise the issue on [GitHub Issues](../../issues). 
 
-To provide a recommendation, visit 
-our [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
+To provide a recommendation, visit our [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
 
 ## Contribute
 
-We enthusiastically welcome contributions and feedback. You can clone the repo and start 
-contributing now. Read our [Contribution Guide](Contributing.md) for more information.
+We enthusiastically welcome contributions and feedback. You can clone the repo and start contributing now. Read our [Contribution Guide](Contributing.md) for more information.
 
-This project has adopted the 
-[Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). 
-For more information see 
-the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact 
-[opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). 
+
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Security Library
 
-This library controls how users sign-in and access services. We recommend you always take the 
-latest version of our library in your app when possible. We 
-use [semantic versioning](http://semver.org) so you can control the risk associated with updating 
-your app. As an example, always downloading the latest minor version number (e.g. x.*y*.x) ensures 
-you get the latest security and feature enhanements but our API surface remains the same. You 
-can always see the latest version and release notes under the Releases tab of GitHub.
+This library controls how users sign-in and access services. We recommend you always take the latest version of our library in your app when possible. We use [semantic versioning](http://semver.org) so you can control the risk associated with updating your app. As an example, always downloading the latest minor version number (e.g. x.*y*.x) ensures you get the latest security and feature enhanements but our API surface remains the same. You can always see the latest version and release notes under the Releases tab of GitHub.
 
 ## Security Reporting
 
-If you find a security issue with our libraries or services please report it 
-to [secure@microsoft.com](mailto:secure@microsoft.com) with as much detail as possible. Your 
-submission may be eligible for a bounty through the [Microsoft Bounty](http://aka.ms/bugbounty) 
-program. Please do not post security issues to GitHub Issues or any other public site. We will 
-contact you shortly upon receiving the information. We encourage you to get notifications of when 
-security incidents occur by 
-visiting [this page](https://technet.microsoft.com/en-us/security/dd252948) and subscribing 
-to Security Advisory Alerts.
+If you find a security issue with our libraries or services please report it to [secure@microsoft.com](mailto:secure@microsoft.com) with as much detail as possible. Your submission may be eligible for a bounty through the [Microsoft Bounty](http://aka.ms/bugbounty) 
+program. Please do not post security issues to GitHub Issues or any other public site. We will contact you shortly upon receiving the information. We encourage you to get notifications of when security incidents occur by visiting [this page](https://technet.microsoft.com/en-us/security/dd252948) and subscribing to Security Advisory Alerts.
 
 Copyright (c) Microsoft Corporation.  All rights reserved. Licensed under the MIT License (the "License");
