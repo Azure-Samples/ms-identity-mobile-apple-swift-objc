@@ -42,6 +42,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     
     var accessToken = String()
     var applicationContext : MSALPublicClientApplication?
+    var webViewParamaters : MSALWebviewParameters?
 
     var loggingText: UITextView!
     var signOutButton: UIButton!
@@ -60,14 +61,14 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         do {
             try self.initMSAL()
         } catch let error {
-            self.loggingText.text = "Unable to create Application Context \(error)"
+            self.updateLogging(text: "Unable to create Application Context \(error)")
         }
     }
 
     override func viewWillAppear(_ animated: Bool) {
 
         super.viewWillAppear(animated)
-        signOutButton.isEnabled = !self.accessToken.isEmpty
+        self.updateSignOutButton(enabled: !self.accessToken.isEmpty)
     }
 }
 
@@ -95,7 +96,7 @@ extension ViewController {
     func initMSAL() throws {
         
         guard let authorityURL = URL(string: kAuthority) else {
-            self.loggingText.text = "Unable to create authority URL"
+            self.updateLogging(text: "Unable to create authority URL")
             return
         }
         
@@ -103,6 +104,12 @@ extension ViewController {
         
         let msalConfiguration = MSALPublicClientApplicationConfig(clientId: kClientID, redirectUri: nil, authority: authority)
         self.applicationContext = try MSALPublicClientApplication(configuration: msalConfiguration)
+        
+        self.webViewParamaters = MSALWebviewParameters(parentViewController: self)
+    }
+    
+    func initWebViewParams() {
+        self.webViewParamaters = MSALWebviewParameters(parentViewController: self)
     }
 }
 
@@ -130,8 +137,9 @@ extension ViewController {
     func acquireTokenInteractively() {
         
         guard let applicationContext = self.applicationContext else { return }
+        guard let webViewParameters = self.webViewParamaters else { return }
         
-        let parameters = MSALInteractiveTokenParameters(scopes: kScopes)
+        let parameters = MSALInteractiveTokenParameters(scopes: kScopes, webviewParameters: webViewParameters)
         
         applicationContext.acquireToken(with: parameters) { (result, error) in
             
@@ -291,8 +299,8 @@ extension ViewController {
              */
             
             try applicationContext.remove(account)
-            self.loggingText.text = ""
-            self.signOutButton.isEnabled = false
+            self.updateLogging(text: "")
+            self.updateSignOutButton(enabled: false)
             self.accessToken = ""
             
         } catch let error as NSError {
