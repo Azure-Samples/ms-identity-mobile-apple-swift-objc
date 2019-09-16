@@ -66,3 +66,6 @@ fastlane/test_output
 Pods/
 Podfile.lock
 *.xcworkspace
+
+#DSStore
+.DS_Store
