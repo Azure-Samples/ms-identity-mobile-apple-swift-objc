@@ -1,12 +1,13 @@
 ---
-Services: active-directory
-platforms: iOS
-author: brandwe
-level: 100
-client: iOS Mobile App
-service: Microsoft Graph
-endpoint: Microsoft identity platform
+page_type: sample
+languages:
+- swift
+products:
+- azure
+description: "The MSAL preview library for iOS and macOS gives your app the ability to begin using the Microsoft Cloud by supporting Microsoft Azure Active Directory and Microsoft Accounts in a converged experience using industry standard OAuth2 and OpenID Connect."
+urlFragment: active-directory-ios-swift-native-v2
 ---
+
 # MSAL iOS Swift Microsoft Graph API Sample 
 
 ![Build Badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/523/badge)
