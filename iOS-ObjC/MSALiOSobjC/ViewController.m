@@ -91,6 +91,8 @@ NSString * const graphURI = @"https://graph.microsoft.com/v1.0/me/";
             [self updateLoggingText: error.description];
             return;
         }
+        
+        webViewParamaters = [[MSALWebviewParameters alloc] initWithParentViewController:self];
     }
     
     - (void)didReceiveMemoryWarning{
@@ -163,10 +165,10 @@ NSString * const graphURI = @"https://graph.microsoft.com/v1.0/me/";
         [application acquireTokenSilentWithParameters:parameters completionBlock:^(MSALResult *result, NSError *error)
          {
              if (error != nil && error.domain == MSALErrorDomain && error.code == MSALErrorInteractionRequired){
-                         dispatch_async(dispatch_get_main_queue(), ^{
-                             [self acquireTokenInteractively];
-                             return;
-                         });
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [self acquireTokenInteractively];
+                     return;
+                 });
              }
              
              [self updateResultView:result];
@@ -178,20 +180,19 @@ NSString * const graphURI = @"https://graph.microsoft.com/v1.0/me/";
     
     -(void)acquireTokenInteractively{
         NSArray *scopes = @[@"https://graph.microsoft.com/user.read"];
-        MSALInteractiveTokenParameters *parameters = [[MSALInteractiveTokenParameters alloc] initWithScopes:scopes];
-        
+        MSALInteractiveTokenParameters *parameters = [[MSALInteractiveTokenParameters alloc] initWithScopes:scopes webviewParameters:webViewParamaters];
         
         void (^completionBlock)(MSALResult *result, NSError *error) = ^(MSALResult *result, NSError *error) {
-                if (result)
-                {
-                    [self updateResultView: result];
-                    [self updateSignoutButton: YES] ;
-                    [self contentWithToken:[result accessToken]];
-                }
-                else
-                {
-                    [self updateResultViewError:error];
-                }
+            if (result)
+            {
+                [self updateResultView: result];
+                [self updateSignoutButton: YES] ;
+                [self contentWithToken:[result accessToken]];
+            }
+            else
+            {
+                [self updateResultViewError:error];
+            }
         };
         
         [application acquireTokenWithParameters:parameters completionBlock:completionBlock];

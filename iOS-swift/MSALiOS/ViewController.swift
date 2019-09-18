@@ -105,7 +105,7 @@ extension ViewController {
         let msalConfiguration = MSALPublicClientApplicationConfig(clientId: kClientID, redirectUri: nil, authority: authority)
         self.applicationContext = try MSALPublicClientApplication(configuration: msalConfiguration)
         
-        self.webViewParamaters = MSALWebviewParameters(parentViewController: self)
+        self.initWebViewParams()
     }
     
     func initWebViewParams() {
