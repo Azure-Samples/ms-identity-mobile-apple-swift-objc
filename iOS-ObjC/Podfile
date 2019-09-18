@@ -6,6 +6,6 @@ target 'MSALiOSobjC' do
   use_frameworks!
 
   # Pods for MSALiOSobjC
-  pod 'MSAL', '~> 0.5.0'
+  pod 'MSAL', '~> 0.7.1'
 
 end

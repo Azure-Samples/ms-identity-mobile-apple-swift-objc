@@ -29,22 +29,19 @@
 #import "ViewController.h"
 #import <MSAL/MSAL.h>
 
-/// 😃 A View Controller that will respond to the events of the Storyboard.
+// Update the below to your client ID you received in the portal. The below is for running the demo only
+NSString * const clientId = @"66855f8a-60cd-445e-a9bb-8cd8eadbd3fa";
+// Additional variables for Auth and Graph API
+NSString * const authorityString = @"https://login.microsoftonline.com/common";
+NSString * const graphURI = @"https://graph.microsoft.com/v1.0/me/";
 
-@interface ViewController ()
-    
+@interface ViewController (){
+    MSALPublicClientApplication *application;
+    MSALWebviewParameters *webViewParamaters;
+}
     @end
 
 @implementation ViewController
-    
-    MSALPublicClientApplication *application;
-    
-    // Update the below to your client ID you received in the portal. The below is for running the demo only
-    NSString *clientId = @"66855f8a-60cd-445e-a9bb-8cd8eadbd3fa";
-    // Additional variables for Auth and Graph API
-//    NSString *redirectUri = @"msalad952fe6-c650-467b-abd6-def8f2c28a8e://auth";
-    NSString *authorityString = @"https://login.microsoftonline.com/common";
-    NSString *graphURI = @"https://graph.microsoft.com/v1.0/me/";
     
     /**
      Setup public client application in viewDidLoad
@@ -57,7 +54,7 @@
     }
     
     // MARK: Initialization
-
+    
     -(void) initMSAL{
         
         /**
@@ -79,26 +76,19 @@
         
         NSError *error = nil;
         
-        NSURL *authorityURL = [NSURL URLWithString:(authorityString)];
+        NSURL *authorityURL = [NSURL URLWithString:authorityString];
         
-        MSALAuthority *authority = [MSALAuthority authorityWithURL:authorityURL error:nil];
-        
+        MSALAuthority *authority = [MSALAADAuthority authorityWithURL:authorityURL error:nil];
         
         MSALPublicClientApplicationConfig *pcaConfig = [[MSALPublicClientApplicationConfig alloc] initWithClientId:clientId
-                                                                                                       redirectUri:NULL
+                                                                                                       redirectUri:Nil
                                                                                                          authority:authority];
         
         application = [[MSALPublicClientApplication alloc] initWithConfiguration:pcaConfig error:&error];
         
         if (application == nil)
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error initializing application"
-                                                            message:error.description
-                                                           delegate:self
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
-            
+            [self updateLoggingText: error.description];
             return;
         }
     }
@@ -126,7 +116,7 @@
          */
         
         [application removeAccount:account error:nil];
-        _signout.enabled = false;
+        [self updateSignoutButton: NO];
         [_resultTextView setText:@""];
     }
     
@@ -162,7 +152,7 @@
          - completionBlock:     The completion block that will be called when the authentication
          flow completes, or encounters an error.
          */
-        NSArray *scopes = @[@"https://graph.microsoft.com/user.read"];
+        NSArray * const scopes = @[@"https://graph.microsoft.com/user.read"];
         
         MSALSilentTokenParameters *parameters = [[MSALSilentTokenParameters alloc] initWithScopes:scopes account:account];
         
@@ -172,21 +162,15 @@
         
         [application acquireTokenSilentWithParameters:parameters completionBlock:^(MSALResult *result, NSError *error)
          {
-             if (error != nil){
-                 if (error.domain == MSALErrorDomain) {
-                     if (error.code == MSALErrorInteractionRequired){
+             if (error != nil && error.domain == MSALErrorDomain && error.code == MSALErrorInteractionRequired){
                          dispatch_async(dispatch_get_main_queue(), ^{
                              [self acquireTokenInteractively];
                              return;
                          });
-                     }
-                 }
              }
              
              [self updateResultView:result];
-             dispatch_async(dispatch_get_main_queue(), ^{
-                 _signout.enabled = true ;
-             });
+             [self updateSignoutButton: YES];
              [self contentWithToken:[result accessToken]];
          }];
         
@@ -198,23 +182,16 @@
         
         
         void (^completionBlock)(MSALResult *result, NSError *error) = ^(MSALResult *result, NSError *error) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
                 if (result)
                 {
-                    [self updateResultView:result];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        _signout.enabled = true ;
-                    });
+                    [self updateResultView: result];
+                    [self updateSignoutButton: YES] ;
                     [self contentWithToken:[result accessToken]];
                 }
                 else
                 {
                     [self updateResultViewError:error];
                 }
-                
-            });
         };
         
         [application acquireTokenWithParameters:parameters completionBlock:completionBlock];
@@ -230,7 +207,6 @@
         // Specify the Graph API endpoint
         NSURL *graphURL = [NSURL URLWithString:(graphURI)];
         NSMutableURLRequest *graphRequest = [NSMutableURLRequest requestWithURL:graphURL];
-        NSString *authValue = [NSString stringWithFormat:@"Bearer %@", token];
         // Set the Authorization header for the request. We use Bearer tokens, so we specify Bearer + the token we got from the result
         [graphRequest addValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
         
@@ -239,30 +215,14 @@
         NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:graphRequest
                                                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                         NSLog(@"%@",data);
-                                                        if (error)
-                                                        [self updateResultViewError:error];
-                                                        else {
-                                                            NSDictionary *json  = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-                                                            NSLog(@"%@",json);
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                [self.resultTextView setText:[json description]];
-                                                            });
+                                                        if (error){
+                                                            [self updateResultViewError:error];
+                                                        }else {
+                                                            [self updateResultText:data];
                                                         }
                                                     }];
         [dataTask resume];
         
-    }
-    
-    -(void) updateResultView: (MSALResult*) result{
-        NSString *resultText = [NSString stringWithFormat:@"{\n\taccessToken = %@\n\texpiresOn = %@\n\ttenantId = %@\n\tuser = %@\n\tscopes = %@\n\tauthority = %@\n}",
-                                result.accessToken, result.expiresOn, result.tenantProfile.tenantId, result.account, result.scopes, result.authority];
-        [_resultTextView setText:resultText];
-        
-    }
-    
-    -(void) updateResultViewError: (NSError*) error{
-        NSString *resultErrorText = [NSString stringWithFormat:@"%@", error];
-        [_resultTextView setText:resultErrorText];
     }
     
     // MARK: Get account and removing cache
@@ -274,5 +234,44 @@
         return [accounts firstObject];
     }
     
+    -(void) updateResultView: (MSALResult*) result{
+        NSString *resultText = [NSString stringWithFormat:@"{\n\taccessToken = %@\n\texpiresOn = %@\n\ttenantId = %@\n\tuser = %@\n\tscopes = %@\n\tauthority = %@\n}",
+                                result.accessToken, result.expiresOn, result.tenantProfile.tenantId, result.account, result.scopes, result.authority];
+        [self updateLoggingText: resultText];
+        
+    }
+    
+    -(void) updateResultText: (NSData*) data{
+        NSDictionary *json  = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        NSLog(@"%@",json);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.resultTextView setText:[json description]];
+        });
+    }
+    
+    -(void) updateResultViewError: (NSError*) error{
+        NSString *resultErrorText = [NSString stringWithFormat:@"%@", error];
+        [self updateLoggingText: resultErrorText];
+    }
+    
+    -(void) updateLoggingText: (NSString*) text{
+        if (NSThread.isMainThread){
+            [_resultTextView setText:text];
+        } else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.resultTextView setText:text];
+            });
+        }
+    }
+    
+    -(void) updateSignoutButton: (BOOL) enabled{
+        if (NSThread.isMainThread){
+            _signout.enabled = enabled ;
+        } else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self->_signout.enabled = enabled;
+            });
+        }
+    }
     
     @end

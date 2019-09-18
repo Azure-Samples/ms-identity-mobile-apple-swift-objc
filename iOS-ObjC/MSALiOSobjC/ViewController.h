@@ -32,6 +32,6 @@
     @property (weak, nonatomic) IBOutlet UIButton *signout;
     @property (weak, nonatomic) IBOutlet UIButton *callGraph;
     @property (weak, nonatomic) IBOutlet UITextView *resultTextView;
-        
+            
 @end
 
