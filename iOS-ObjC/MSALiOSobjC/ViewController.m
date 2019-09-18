@@ -179,7 +179,7 @@ NSString * const graphURI = @"https://graph.microsoft.com/v1.0/me/";
     }
     
     -(void)acquireTokenInteractively{
-        NSArray *scopes = @[@"https://graph.microsoft.com/user.read"];
+        NSArray * const scopes = @[@"https://graph.microsoft.com/user.read"];
         MSALInteractiveTokenParameters *parameters = [[MSALInteractiveTokenParameters alloc] initWithScopes:scopes webviewParameters:webViewParamaters];
         
         void (^completionBlock)(MSALResult *result, NSError *error) = ^(MSALResult *result, NSError *error) {
