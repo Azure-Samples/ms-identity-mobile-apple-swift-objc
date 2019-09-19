@@ -17,33 +17,16 @@ urlFragment: active-directory-ios-swift-native-v2
 
 The MSAL library for iOS and macOS gives your app the ability to begin using the [Microsoft Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
 
-* How to get a token
-* How to refresh a token
-* How to call the Microsoft Graph API
-* How to sign a user out of your application
+- How to get a token
+- How to refresh a token
+- How to call the Microsoft Graph API
+- How to sign a user out of your application
 
 ## Scenario
 
 This app is a multi-tenant app meaning it can be used within any Azure AD tenant and also supports signing in with Microsoft Account.  It demonstrates how a developer can build apps to connect with enterprise users and access their Azure + O365 data via the Microsoft Graph.  During the auth flow, end users will be required to sign in and consent to the permissions of the application, and in some cases may require an admin to consent to the app.  The majority of the logic in this sample shows how to auth an end user and make a basic call to the Microsoft Graph.
 
 ![Topology](./images/iosintro.png)
-
-## Example
-
-```swift
-    if let application = try? MSALPublicClientApplication.init(clientId: <your-client-id-here>) {
-        application.acquireToken(forScopes: kScopes) { (result, error) in
-            if result != nil {
-                    // Set up your app for the user
-            } else {
-                print(error?.localizedDescription)
-            }
-        }
-    }
-    else {
-            print("Unable to create application.")
-        } 
-```
 
 ## How to run this sample
 
@@ -75,8 +58,6 @@ $ pod install
 $ open MSALiOS.xcworkspace
 ```
 
-
-
 ## Step 2: (Optional) 
 
 ## 2A: Register your App  
@@ -99,6 +80,7 @@ To Register an app:
 ## 2B: Configure your application
 
 1. Update your application's redirect URI scheme in the  `Info.plist` file by replacing `msauth.com.microsoft.identitysample.MSALiOS` . Redirect URI scheme follows the format `msauth.[app_bundle_id]`. Make sure to substitue [app_bundle_id] with the **Bundle Identifier** for your application. 
+
 ```xml
 <key>CFBundleURLTypes</key>
 <array>
