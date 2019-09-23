@@ -15,7 +15,7 @@ urlFragment: active-directory-ios-swift-native-v2
 | [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-ios)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [API Reference](https://azuread.github.io/docs/objc/) | [Support](README.md#feedback,community-help,-and-support)
 | --- | --- | --- | --- |
 
-The MSAL library for iOS and macOS gives your app the ability to begin using the [Microsoft Cloud](https://cloud.microsoft.com) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
+The MSAL library for iOS gives your app the ability to begin using the [Microsoft identity platform](https://aka.ms/aaddev) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
 
 - How to get a token
 - How to refresh a token
@@ -73,7 +73,7 @@ To Register an app:
    - Name your app
    - Under **Supported account types**, select **Accounts in any organizational directory (Any Azure AD directory - Multitenant) and personal Microsoft accounts (e.g. Skype, Xbox)**
    - Click **Register** to finish.
-5. After the app is created, you'll land on your app management page. Take note of the **Application (client) ID** as this would be needed for the step 1C below.
+5. After the app is created, you'll land on your app management page. Take note of the **Application (client) ID** as this would be needed for the step 2B below.
 6. Click **Authentication**, and add new Redirect URI with type **Public client (mobile & desktop)**. Enter redirect URI in format: `msauth.<app_bundle_id>://auth`. Replace <app_bundle_id> with the **Bundle Identifier** for your application. 
 7. Hit the **Save** button in the top left, to save these updates.
 
@@ -98,7 +98,7 @@ To Register an app:
 In the `ViewControler.swift` file, update the `kClientID` variable with your Application (client) ID.
 
 ```swift
-    // Update the below with the client ID you received in the portal. 
+    // Update the client ID below with the one you received in the portal. Below ID is for running the sample app only.
     
     let kClientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
 ```
@@ -117,8 +117,6 @@ If you find a bug or have a feature request, please raise the issue on [GitHub I
 To provide a recommendation, visit our [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
 
 ## Contribute
-
-We enthusiastically welcome contributions and feedback. You can clone the repo and start contributing now. Read our [Contribution Guide](Contributing.md) for more information.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). 
 
