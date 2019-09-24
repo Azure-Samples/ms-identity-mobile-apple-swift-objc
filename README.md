@@ -5,7 +5,7 @@ languages:
 products:
 - azure
 description: "The MSAL preview library for iOS and macOS gives your app the ability to begin using the Microsoft Cloud by supporting Microsoft Azure Active Directory and Microsoft Accounts in a converged experience using industry standard OAuth2 and OpenID Connect."
-urlFragment: active-directory-ios-swift-native-v2
+urlFragment: ios-ms-graph-api
 ---
 
 # MSAL iOS Swift Microsoft Graph API Sample 
