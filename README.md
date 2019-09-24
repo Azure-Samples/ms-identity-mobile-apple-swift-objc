@@ -87,7 +87,7 @@ To Register an app:
   <dict>
     <key>CFBundleURLSchemes</key>
     <array>
-      <string>msauth.com.microsoft.identitysample.MSALiOS</string>
+      <string>msauth.[app_bundle_id]</string>
     </array>
   </dict>
 </array>
