@@ -138,8 +138,9 @@ extension ViewController {
         
         guard let applicationContext = self.applicationContext else { return }
         guard let webViewParameters = self.webViewParamaters else { return }
-        
+
         let parameters = MSALInteractiveTokenParameters(scopes: kScopes, webviewParameters: webViewParameters)
+        parameters.promptType = .selectAccount;
         
         applicationContext.acquireToken(with: parameters) { (result, error) in
             
