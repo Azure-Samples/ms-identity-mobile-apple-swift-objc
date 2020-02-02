@@ -175,11 +175,6 @@ extension ViewController {
         }
     }
     
-    @objc func signin(_ sender: UIButton) {
-        
-        acquireTokenInteractively()
-    }
-    
     func acquireTokenInteractively() {
         
         guard let applicationContext = self.applicationContext else { return }
