@@ -47,6 +47,10 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     var loggingText: UITextView!
     var signOutButton: UIButton!
     var callGraphButton: UIButton!
+    var usernameLabel: UILabel!
+    
+    var currentAccount: MSALAccount?
+    var accountProvider: AppAccountProviding?
 
     /**
         Setup public client application in viewDidLoad
@@ -63,12 +67,16 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         } catch let error {
             self.updateLogging(text: "Unable to create Application Context \(error)")
         }
+        
+        if #available(iOS 13.0, *) {
+            self.getDeviceMode()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
 
         super.viewWillAppear(animated)
-        self.updateSignOutButton(enabled: !self.accessToken.isEmpty)
+        self.loadCurrentAccount()
     }
 }
 
@@ -113,6 +121,35 @@ extension ViewController {
     }
 }
 
+// MARK: Shared device
+
+@available(iOS 13.0, *)
+extension ViewController {
+    
+    func getDeviceMode() {
+        
+        self.applicationContext?.getDeviceInformation(with: nil, completionBlock: { (deviceInformation, error) in
+            
+            guard let deviceInfo = deviceInformation else {
+                self.updateLogging(text: "Device info nor returned. Error: \(String(describing: error))")
+                return
+            }
+            
+            let isSharedDevice = deviceInfo.deviceMode == .shared
+            let modeString = isSharedDevice ? "shared" : "private"
+            self.updateLogging(text: "Received device info. Device is in the \(modeString) mode.")
+            
+            if isSharedDevice {
+                self.accountProvider = AppSharedModeAccountProvider()
+            } else {
+                self.accountProvider = AppAccountProvider()
+            }
+            
+            self.loadCurrentAccount()
+        })
+    }
+}
+
 
 // MARK: Acquiring and using token
 
@@ -124,14 +161,23 @@ extension ViewController {
     
     @objc func callGraphAPI(_ sender: UIButton) {
         
-        guard let currentAccount = self.currentAccount() else {
-            // We check to see if we have a current logged in account.
-            // If we don't, then we need to sign someone in.
-            acquireTokenInteractively()
-            return
+        self.loadCurrentAccount { (account) in
+            
+            guard let currentAccount = account else {
+                
+                // We check to see if we have a current logged in account.
+                // If we don't, then we need to sign someone in.
+                self.acquireTokenInteractively()
+                return
+            }
+            
+            self.acquireTokenSilently(currentAccount)
         }
+    }
+    
+    @objc func signin(_ sender: UIButton) {
         
-        acquireTokenSilently(currentAccount)
+        acquireTokenInteractively()
     }
     
     func acquireTokenInteractively() {
@@ -158,7 +204,7 @@ extension ViewController {
             
             self.accessToken = result.accessToken
             self.updateLogging(text: "Access token is \(self.accessToken)")
-            self.updateSignOutButton(enabled: true)
+            self.updateCurrentAccount(account: result.account)
             self.getContentWithToken()
         }
     }
@@ -215,7 +261,6 @@ extension ViewController {
             
             self.accessToken = result.accessToken
             self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
-            self.updateSignOutButton(enabled: true)
             self.getContentWithToken()
         }
     }
@@ -258,27 +303,42 @@ extension ViewController {
 // MARK: Get account and removing cache
 
 extension ViewController {
-    func currentAccount() -> MSALAccount? {
+    
+    typealias AccountCompletion = (MSALAccount?) -> Void
+
+    func loadCurrentAccount(completion: AccountCompletion? = nil) {
         
-        guard let applicationContext = self.applicationContext else { return nil }
+        guard let applicationContext = self.applicationContext else { return }
+        guard let accountProvider = self.accountProvider else { return }
         
-        // We retrieve our current account by getting the first account from cache
-        // In multi-account applications, account should be retrieved by home account identifier or username instead
-        
-        do {
+        accountProvider.loadCurrentAccount(app: applicationContext) { (account, error) in
             
-            let cachedAccounts = try applicationContext.allAccounts()
-            
-            if !cachedAccounts.isEmpty {
-                return cachedAccounts.first
+            if let error = error {
+                self.updateLogging(text: "Couldn't query current account with error: \(error)")
+                return
             }
             
-        } catch let error as NSError {
+            if let currentAccount = account {
+                
+                self.updateLogging(text: "Found a signed in account \(String(describing: currentAccount.username)). Updating data for that account...")
+                
+                self.updateCurrentAccount(account: currentAccount)
+                
+                if let completion = completion {
+                    completion(self.currentAccount)
+                }
+                
+                return
+            }
             
-            self.updateLogging(text: "Didn't find any accounts in cache: \(error)")
+            self.updateLogging(text: "Account signed out. Updating UX")
+            self.accessToken = ""
+            self.updateCurrentAccount(account: nil)
+            
+            if let completion = completion {
+                completion(nil)
+            }
         }
-        
-        return nil
     }
     
     /**
@@ -289,7 +349,7 @@ extension ViewController {
         
         guard let applicationContext = self.applicationContext else { return }
         
-        guard let account = self.currentAccount() else { return }
+        guard let account = self.currentAccount else { return }
         
         do {
             
@@ -299,14 +359,21 @@ extension ViewController {
              - account:    The account to remove from the cache
              */
             
-            try applicationContext.remove(account)
-            self.updateLogging(text: "")
-            self.updateSignOutButton(enabled: false)
-            self.accessToken = ""
+            let signoutParameters = MSALSignoutParameters(webviewParameters: self.webViewParamaters!)
+            signoutParameters.signoutFromBrowser = false
             
-        } catch let error as NSError {
+            applicationContext.signout(with: account, signoutParameters: signoutParameters, completionBlock: {(success, error) in
+                
+                if let error = error {
+                    self.updateLogging(text: "Couldn't sign out account with error: \(error)")
+                    return
+                }
+                
+                self.updateLogging(text: "Sign out completed successfully")
+                self.accessToken = ""
+                self.updateCurrentAccount(account: nil)
+            })
             
-            self.updateLogging(text: "Received error signing account out: \(error)")
         }
     }
 }
@@ -316,6 +383,20 @@ extension ViewController {
 extension ViewController {
     
     func initUI() {
+        
+        usernameLabel = UILabel()
+        usernameLabel.translatesAutoresizingMaskIntoConstraints = false
+        usernameLabel.text = ""
+        usernameLabel.textColor = .darkGray
+        usernameLabel.textAlignment = .right
+        
+        self.view.addSubview(usernameLabel)
+        
+        usernameLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 50.0).isActive = true
+        usernameLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10.0).isActive = true
+        usernameLabel.widthAnchor.constraint(equalToConstant: 300.0).isActive = true
+        usernameLabel.heightAnchor.constraint(equalToConstant: 50.0).isActive = true
+        
         // Add call Graph button
         callGraphButton  = UIButton()
         callGraphButton.translatesAutoresizingMaskIntoConstraints = false
@@ -325,7 +406,7 @@ extension ViewController {
         self.view.addSubview(callGraphButton)
         
         callGraphButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        callGraphButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 50.0).isActive = true
+        callGraphButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 120.0).isActive = true
         callGraphButton.widthAnchor.constraint(equalToConstant: 300.0).isActive = true
         callGraphButton.heightAnchor.constraint(equalToConstant: 50.0).isActive = true
         
@@ -352,7 +433,7 @@ extension ViewController {
         
         loggingText.topAnchor.constraint(equalTo: signOutButton.bottomAnchor, constant: 10.0).isActive = true
         loggingText.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 10.0).isActive = true
-        loggingText.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: 10.0).isActive = true
+        loggingText.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -10.0).isActive = true
         loggingText.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 10.0).isActive = true
     }
     
@@ -375,5 +456,22 @@ extension ViewController {
                 self.signOutButton.isEnabled = enabled
             }
         }
+    }
+    
+    func updateAccountLabel() {
+        
+        guard let currentAccount = self.currentAccount else {
+            self.usernameLabel.text = "Signed out"
+            return
+        }
+        
+        self.usernameLabel.text = currentAccount.username
+    }
+    
+    func updateCurrentAccount(account: MSALAccount?) {
+        self.currentAccount = account
+        UserDefaults.standard.setValue(account?.identifier, forKey: "current_account")
+        self.updateAccountLabel()
+        self.updateSignOutButton(enabled: account != nil)
     }
 }

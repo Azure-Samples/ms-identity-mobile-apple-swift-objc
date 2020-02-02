@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		4DC17E926BAC0BBF780DD200 /* Pods_MSALiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD5263E088346F01270DB01B /* Pods_MSALiOS.framework */; };
+		B25315B223E6A2D100432133 /* AppAccountProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25315B123E6A2D100432133 /* AppAccountProviding.swift */; };
+		B25315B423E6A32600432133 /* AppSharedModeAccountProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25315B323E6A32600432133 /* AppSharedModeAccountProvider.swift */; };
+		B25315B623E6A44400432133 /* AppAccountProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25315B523E6A44400432133 /* AppAccountProvider.swift */; };
 		FBA79EA11E9A038700179A54 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EA01E9A038700179A54 /* AppDelegate.swift */; };
 		FBA79EA31E9A038700179A54 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBA79EA21E9A038700179A54 /* ViewController.swift */; };
 		FBA79EA61E9A038700179A54 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBA79EA41E9A038700179A54 /* Main.storyboard */; };
@@ -17,6 +20,9 @@
 
 /* Begin PBXFileReference section */
 		AD5263E088346F01270DB01B /* Pods_MSALiOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MSALiOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B25315B123E6A2D100432133 /* AppAccountProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAccountProviding.swift; sourceTree = "<group>"; };
+		B25315B323E6A32600432133 /* AppSharedModeAccountProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSharedModeAccountProvider.swift; sourceTree = "<group>"; };
+		B25315B523E6A44400432133 /* AppAccountProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAccountProvider.swift; sourceTree = "<group>"; };
 		C7CBF881BF504F0A15F7FD5C /* Pods-MSALiOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MSALiOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS.debug.xcconfig"; sourceTree = "<group>"; };
 		DF06CB9178C218430A5EDADB /* Pods-MSALiOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MSALiOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-MSALiOS/Pods-MSALiOS.release.xcconfig"; sourceTree = "<group>"; };
 		FBA79E9D1E9A038700179A54 /* MSALiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MSALiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,6 +101,9 @@
 				FBA79EA71E9A038700179A54 /* Assets.xcassets */,
 				FBA79EA91E9A038700179A54 /* LaunchScreen.storyboard */,
 				FBA79EAC1E9A038700179A54 /* Info.plist */,
+				B25315B123E6A2D100432133 /* AppAccountProviding.swift */,
+				B25315B323E6A32600432133 /* AppSharedModeAccountProvider.swift */,
+				B25315B523E6A44400432133 /* AppAccountProvider.swift */,
 			);
 			path = MSALiOS;
 			sourceTree = "<group>";
@@ -227,7 +236,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBA79EA31E9A038700179A54 /* ViewController.swift in Sources */,
+				B25315B623E6A44400432133 /* AppAccountProvider.swift in Sources */,
 				FBA79EA11E9A038700179A54 /* AppDelegate.swift in Sources */,
+				B25315B423E6A32600432133 /* AppSharedModeAccountProvider.swift in Sources */,
+				B25315B223E6A2D100432133 /* AppAccountProviding.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,11 +388,11 @@
 				DEVELOPMENT_TEAM = UBF8T346G9;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = MSALiOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.identitysample.MSALiOS;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = MSALiOS;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.2;
@@ -397,11 +409,11 @@
 				DEVELOPMENT_TEAM = UBF8T346G9;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = MSALiOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.microsoft.identitysample.MSALiOS;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = MSALiOS;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.2;
 			};
