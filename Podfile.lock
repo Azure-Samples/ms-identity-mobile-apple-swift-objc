@@ -1,26 +1,18 @@
 PODS:
-  - MSAL (1.0.7):
-    - MSAL/app-lib (= 1.0.7)
-  - MSAL/app-lib (1.0.7)
+  - MSAL (1.1.0):
+    - MSAL/app-lib (= 1.1.0)
+  - MSAL/app-lib (1.1.0)
 
 DEPENDENCIES:
-  - MSAL (from `https://github.com/AzureAD/microsoft-authentication-library-for-objc`, branch `dev`)
+  - MSAL (~> 1.1.0)
 
-EXTERNAL SOURCES:
-  MSAL:
-    :branch: dev
-    :git: https://github.com/AzureAD/microsoft-authentication-library-for-objc
-    :submodules: true
-
-CHECKOUT OPTIONS:
-  MSAL:
-    :commit: 3b8b10707d83f0d772b0c35916b7ab45f42abc3d
-    :git: https://github.com/AzureAD/microsoft-authentication-library-for-objc
-    :submodules: true
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - MSAL
 
 SPEC CHECKSUMS:
-  MSAL: e4c1cbcf59e04073b427ce9fbfc0346b54abb62e
+  MSAL: 917b8c60ac97dcf50ac5ff987f9f971fb665f7c0
 
-PODFILE CHECKSUM: 51aad5a06ae7442f1788624bc265963e09b29154
+PODFILE CHECKSUM: 472f8eaa19902d9f4ed8556554a7fed88779abfc
 
 COCOAPODS: 1.7.5

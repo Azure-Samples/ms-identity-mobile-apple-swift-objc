@@ -31,8 +31,11 @@ import MSAL
 class AppSharedModeAccountProvider: AppAccountProviding {
     
     func loadCurrentAccount(app: MSALPublicClientApplication, completion: AccountCompletion?) {
+        
+        let msalParameters = MSALParameters()
+        msalParameters.completionBlockQueue = DispatchQueue.main
                 
-        app.getCurrentAccount(with: nil, completionBlock: { (currentAccount, previousAccount, error) in
+        app.getCurrentAccount(with: msalParameters, completionBlock: { (currentAccount, previousAccount, error) in
             
             if let completion = completion {
                 completion(currentAccount, error)

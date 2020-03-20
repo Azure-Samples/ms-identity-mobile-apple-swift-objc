@@ -42,6 +42,7 @@ class AppAccountProvider: AppAccountProviding {
         }
         
         let enumerationParams = MSALAccountEnumerationParameters(identifier: currentAccountIdentifier)
+        enumerationParams.completionBlockQueue = DispatchQueue.main
         
         app.accountsFromDevice(for: enumerationParams) { (accounts, error) in
             
