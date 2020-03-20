@@ -67,14 +67,18 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
             self.updateLogging(text: "Unable to create Application Context \(error)")
         }
         
-        if #available(iOS 13.0, *) {
-            self.getDeviceMode()
-        }
+        self.platformViewDidLoadSetup()
+    }
+    
+    func platformViewDidLoadSetup() {
+        
+        self.getDeviceMode()
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(appCameToForeGround(notification:)),
                                                name: UIApplication.willEnterForegroundNotification,
                                                object: nil)
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -120,8 +124,7 @@ extension ViewController {
         
         let msalConfiguration = MSALPublicClientApplicationConfig(clientId: kClientID, redirectUri: nil, authority: authority)
         self.applicationContext = try MSALPublicClientApplication(configuration: msalConfiguration)
-        
-        self.webViewParamaters = MSALWebviewParameters(parentViewController: self)
+        self.initWebViewParams()
     }
     
     func initWebViewParams() {
@@ -131,30 +134,34 @@ extension ViewController {
 
 // MARK: Shared device
 
-@available(iOS 13.0, *)
 extension ViewController {
     
     func getDeviceMode() {
         
-        self.applicationContext?.getDeviceInformation(with: nil, completionBlock: { (deviceInformation, error) in
-            
-            guard let deviceInfo = deviceInformation else {
-                self.updateLogging(text: "Device info nor returned. Error: \(String(describing: error))")
-                return
-            }
-            
-            let isSharedDevice = deviceInfo.deviceMode == .shared
-            let modeString = isSharedDevice ? "shared" : "private"
-            self.updateLogging(text: "Received device info. Device is in the \(modeString) mode.")
-            
-            if isSharedDevice {
-                self.accountProvider = AppSharedModeAccountProvider()
-            } else {
-                self.accountProvider = AppAccountProvider()
-            }
-            
+        if #available(iOS 13.0, *) {
+            self.applicationContext?.getDeviceInformation(with: nil, completionBlock: { (deviceInformation, error) in
+                
+                guard let deviceInfo = deviceInformation else {
+                    self.updateLogging(text: "Device info not returned. Error: \(String(describing: error))")
+                    return
+                }
+                
+                let isSharedDevice = deviceInfo.deviceMode == .shared
+                let modeString = isSharedDevice ? "shared" : "private"
+                self.updateLogging(text: "Received device info. Device is in the \(modeString) mode.")
+                
+                if isSharedDevice {
+                    self.accountProvider = AppSharedModeAccountProvider()
+                } else {
+                    self.accountProvider = AppAccountProvider()
+                }
+                
+                self.loadCurrentAccount()
+            })
+        } else {
+            self.accountProvider = AppAccountProvider()
             self.loadCurrentAccount()
-        })
+        }
     }
 }
 
@@ -189,7 +196,7 @@ extension ViewController {
         guard let webViewParameters = self.webViewParamaters else { return }
 
         let parameters = MSALInteractiveTokenParameters(scopes: kScopes, webviewParameters: webViewParameters)
-        parameters.promptType = .selectAccount;
+        parameters.promptType = .selectAccount
         
         applicationContext.acquireToken(with: parameters) { (result, error) in
             
@@ -264,6 +271,7 @@ extension ViewController {
             
             self.accessToken = result.accessToken
             self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
+            self.updateSignOutButton(enabled: true)
             self.getContentWithToken()
         }
     }
