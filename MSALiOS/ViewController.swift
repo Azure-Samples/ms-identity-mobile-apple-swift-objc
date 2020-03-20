@@ -71,11 +71,20 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         if #available(iOS 13.0, *) {
             self.getDeviceMode()
         }
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(appCameToForeGround(notification:)),
+                                               name: UIApplication.willEnterForegroundNotification,
+                                               object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
 
         super.viewWillAppear(animated)
+        self.loadCurrentAccount()
+    }
+    
+    @objc func appCameToForeGround(notification: Notification) {
         self.loadCurrentAccount()
     }
 }
