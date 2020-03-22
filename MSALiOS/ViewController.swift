@@ -49,7 +49,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     var usernameLabel: UILabel!
     
     var currentAccount: MSALAccount?
-    var accountProvider: AppAccountProviding?
 
     /**
         Setup public client application in viewDidLoad
@@ -67,13 +66,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
             self.updateLogging(text: "Unable to create Application Context \(error)")
         }
         
+        self.loadCurrentAccount()
         self.platformViewDidLoadSetup()
     }
     
     func platformViewDidLoadSetup() {
-        
-        self.getDeviceMode()
-        
+                
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(appCameToForeGround(notification:)),
                                                name: UIApplication.willEnterForegroundNotification,
@@ -136,7 +134,7 @@ extension ViewController {
 
 extension ViewController {
     
-    func getDeviceMode() {
+    @objc func getDeviceMode(_ sender: UIButton) {
         
         if #available(iOS 13.0, *) {
             self.applicationContext?.getDeviceInformation(with: nil, completionBlock: { (deviceInformation, error) in
@@ -149,18 +147,9 @@ extension ViewController {
                 let isSharedDevice = deviceInfo.deviceMode == .shared
                 let modeString = isSharedDevice ? "shared" : "private"
                 self.updateLogging(text: "Received device info. Device is in the \(modeString) mode.")
-                
-                if isSharedDevice {
-                    self.accountProvider = AppSharedModeAccountProvider()
-                } else {
-                    self.accountProvider = AppAccountProvider()
-                }
-                
-                self.loadCurrentAccount()
             })
         } else {
-            self.accountProvider = AppAccountProvider()
-            self.loadCurrentAccount()
+            self.updateLogging(text: "Running on older iOS. GetDeviceInformation API is unavailable.")
         }
     }
 }
@@ -325,16 +314,21 @@ extension ViewController {
     func loadCurrentAccount(completion: AccountCompletion? = nil) {
         
         guard let applicationContext = self.applicationContext else { return }
-        guard let accountProvider = self.accountProvider else { return }
         
-        accountProvider.loadCurrentAccount(app: applicationContext) { (account, error) in
+        let msalParameters = MSALParameters()
+        msalParameters.completionBlockQueue = DispatchQueue.main
+                
+        // Note that this sample showcases an app that signs in a single account at a time
+        // If you're building a more complex app that signs in multiple accounts at the same time, you'll need to use a different account retrieval API that specifies account identifier
+        // For example, see "accountsFromDeviceForParameters:completionBlock:" - https://azuread.github.io/microsoft-authentication-library-for-objc/Classes/MSALPublicClientApplication.html#/c:objc(cs)MSALPublicClientApplication(im)accountsFromDeviceForParameters:completionBlock:
+        applicationContext.getCurrentAccount(with: msalParameters, completionBlock: { (currentAccount, previousAccount, error) in
             
             if let error = error {
                 self.updateLogging(text: "Couldn't query current account with error: \(error)")
                 return
             }
             
-            if let currentAccount = account {
+            if let currentAccount = currentAccount {
                 
                 self.updateLogging(text: "Found a signed in account \(String(describing: currentAccount.username)). Updating data for that account...")
                 
@@ -354,7 +348,7 @@ extension ViewController {
             if let completion = completion {
                 completion(nil)
             }
-        }
+        })
     }
     
     /**
@@ -440,6 +434,18 @@ extension ViewController {
         signOutButton.widthAnchor.constraint(equalToConstant: 150.0).isActive = true
         signOutButton.heightAnchor.constraint(equalToConstant: 50.0).isActive = true
         
+        let deviceModeButton = UIButton()
+        deviceModeButton.translatesAutoresizingMaskIntoConstraints = false
+        deviceModeButton.setTitle("Get device info", for: .normal);
+        deviceModeButton.setTitleColor(.blue, for: .normal);
+        deviceModeButton.addTarget(self, action: #selector(getDeviceMode(_:)), for: .touchUpInside)
+        self.view.addSubview(deviceModeButton)
+        
+        deviceModeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        deviceModeButton.topAnchor.constraint(equalTo: signOutButton.bottomAnchor, constant: 10.0).isActive = true
+        deviceModeButton.widthAnchor.constraint(equalToConstant: 150.0).isActive = true
+        deviceModeButton.heightAnchor.constraint(equalToConstant: 50.0).isActive = true
+        
         // Add logging textfield
         loggingText = UITextView()
         loggingText.isUserInteractionEnabled = false
@@ -447,7 +453,7 @@ extension ViewController {
         
         self.view.addSubview(loggingText)
         
-        loggingText.topAnchor.constraint(equalTo: signOutButton.bottomAnchor, constant: 10.0).isActive = true
+        loggingText.topAnchor.constraint(equalTo: deviceModeButton.bottomAnchor, constant: 10.0).isActive = true
         loggingText.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 10.0).isActive = true
         loggingText.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -10.0).isActive = true
         loggingText.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 10.0).isActive = true
@@ -486,7 +492,6 @@ extension ViewController {
     
     func updateCurrentAccount(account: MSALAccount?) {
         self.currentAccount = account
-        UserDefaults.standard.setValue(account?.identifier, forKey: "current_account")
         self.updateAccountLabel()
         self.updateSignOutButton(enabled: account != nil)
     }
