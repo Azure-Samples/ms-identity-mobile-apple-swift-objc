@@ -27,6 +27,12 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>msauth</string>
+		<string>msauthv2</string>
+		<string>msauthv3</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -49,12 +55,6 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>msauth</string>
-		<string>msauthv2</string>
-		<string>msauthv3</string>
 	</array>
 </dict>
 </plist>

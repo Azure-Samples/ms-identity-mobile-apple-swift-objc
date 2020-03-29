@@ -1,18 +1,18 @@
 PODS:
-  - MSAL (1.0.7):
-    - MSAL/app-lib (= 1.0.7)
-  - MSAL/app-lib (1.0.7)
+  - MSAL (1.1.0):
+    - MSAL/app-lib (= 1.1.0)
+  - MSAL/app-lib (1.1.0)
 
 DEPENDENCIES:
-  - MSAL
+  - MSAL (~> 1.1.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - MSAL
 
 SPEC CHECKSUMS:
-  MSAL: e4c1cbcf59e04073b427ce9fbfc0346b54abb62e
+  MSAL: 917b8c60ac97dcf50ac5ff987f9f971fb665f7c0
 
-PODFILE CHECKSUM: 27b86088d6269d05d5a779778e844591cd997e42
+PODFILE CHECKSUM: 472f8eaa19902d9f4ed8556554a7fed88779abfc
 
 COCOAPODS: 1.7.5
