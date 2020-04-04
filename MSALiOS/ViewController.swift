@@ -126,7 +126,7 @@ extension ViewController {
     }
     
     func initWebViewParams() {
-        self.webViewParamaters = MSALWebviewParameters(parentViewController: self)
+        self.webViewParamaters = MSALWebviewParameters(authPresentationViewController: self)
     }
 }
 

@@ -1,5 +1,5 @@
 use_frameworks!
  
 target 'MSALiOS' do
-  pod 'MSAL', '~> 1.1.0'
+  pod 'MSAL', :git => 'https://github.com/AzureAD/microsoft-authentication-library-for-objc', :branch => 'oldalton/fixed_initwithparentcontroller_api', :submodules => true
 end
