@@ -35,7 +35,7 @@ To run this sample, you'll need:
 * Xcode
 * An internet connection
 
-## Step 1: 
+## Step 1:
 
 ## 1A: Clone or download this repository
 
@@ -60,7 +60,7 @@ $ open MSALiOS.xcworkspace
 
 ## Step 2: Register your App (Optional) 
 
-This app comes pre-configured for testing.  If you would like to register your own app, please follow the steps below.
+This app comes pre-configured for testing. If you would like to register your own app, please follow the steps below.
 
 1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account.
 2. In the left-hand navigation pane, select the **Azure Active Directory** blade, and then select **App registrations**.
@@ -72,24 +72,72 @@ This app comes pre-configured for testing.  If you would like to register your o
 5. After the app is created, you'll land on your app management page. Take note of the **Application (client) ID** as this would be needed for the step 2B below.
 6. Click **Authentication**, and add new Redirect URI with type **Public client (mobile & desktop)**. Enter redirect URI in format: `msauth.<app_bundle_id>://auth`. Replace <app_bundle_id> with the **Bundle Identifier** for your application. 
 7. Hit the **Save** button in the top left, to save these updates.
-8. Click **Make these changes for me** and then download the code sample for iOS 
+8. Click **Make these changes for me** and then download the code sample for iOS
 
 ## Step 3: Run the sample
 
 1. Click the Run Button in the top menu or go to Product from the menu tab and click Run.
 2. Once the sample app launches, click on the 'Call Microsoft Graph API' button to go through the sign in flow and see the results from Microsoft Graph.
 
+## How to add MSAL libarary into your existing Xcode project
+
+## Step 1: Configure your application Info.plist
+
+Add URI scheme in the  `Info.plist`. Redirect URI scheme follows the format `msauth.[app_bundle_id]`. Make sure to substitue [app_bundle_id] with the **Bundle Identifier** for your application.
+
+```xml
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>msauth.[app_bundle_id]</string>
+    </array>
+  </dict>
+</array>
+```
+
+## Step 2: Configure your application defaults
+
+In your app, add the `client` variable with your Application (client) ID.
+
+```objective-c
+// For example, you can declare a client id in this way. Below ID is just an sample.
+    	
+let clientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
+```
+
+In your app, add the `authority` variable with your Azure AD and Microsoft Graph endpoints for your national cloud. For global access, use following values:
+
+```objective-c
+let graphEndpoint = "https://graph.microsoft.com/"
+let authority = "https://login.microsoftonline.com/common"
+```
+
+Other endpoints are documented [here](https://docs.microsoft.com/en-us/graph/deployments#app-registration-and-token-service-root-endpoints). For example, to run the sample with AzureAD Germany, use following:
+
+```objective-c
+let graphEndpoint = "https://graph.microsoft.de/"
+let authority = "https://login.microsoftonline.de/common"
+```
+
+## Step 3: Configure Xcode project settings
+
+Add a new keychain group to your project **Signing & Capabilities**. The keychain group should be `com.microsoft.adalcache` on iOS and `com.microsoft.identity.universalstorage` on macOS.
+
+![Xcode UI displaying how the the keychain group should be set up](./images/iosintro-keychainShare.png)
+
 ## Feedback, Community Help, and Support
 
-We use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) with the community to provide support. We highly recommend you ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before. 
+We use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) with the community to provide support. We highly recommend you ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before.
 
-If you find a bug or have a feature request, please raise the issue on [GitHub Issues](../../issues). 
+If you find a bug or have a feature request, please raise the issue on [GitHub Issues](../../issues).
 
 To provide a recommendation, visit our [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
 
 ## Contribute
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). 
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
