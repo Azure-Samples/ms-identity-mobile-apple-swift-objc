@@ -9,7 +9,7 @@
 		"x-ms-name": "ios-swift-native-v2",
 		"x-ms-version": "2.0",
 		"replyUrlsWithType": [{
-			"url": "msauth{AppId}://auth",
+			"url": "msauth.<bundleId>://auth",
 			"type": "InstalledClient"
 		}],
 		"requiredResourceAccess": [{
