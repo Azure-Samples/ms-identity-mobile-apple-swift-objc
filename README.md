@@ -72,7 +72,7 @@ This app comes pre-configured for testing. If you would like to register your ow
 5. After the app is created, you'll land on your app management page. Take note of the **Application (client) ID** as this would be needed for the step 2B below.
 6. Click **Authentication**, and add new Redirect URI with type **Public client (mobile & desktop)**. Enter redirect URI in format: `msauth.<app_bundle_id>://auth`. Replace <app_bundle_id> with the **Bundle Identifier** for your application. 
 7. Hit the **Save** button in the top left, to save these updates.
-8. Click **Make these changes for me** and then download the code sample for iOS
+8. Click **Make this change for me** and then download the code sample for iOS
 
 ## Step 3: Run the sample
 
