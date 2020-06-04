@@ -101,7 +101,7 @@ Add URI scheme in the  `Info.plist`. Redirect URI scheme follows the format `msa
 
 In your app, add the `client` variable with your Application (client) ID.
 
-```objective-c
+```swift
 // For example, you can declare a client id in this way. Below ID is just an sample.
     	
 let clientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
@@ -109,14 +109,14 @@ let clientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
 
 In your app, add the `authority` variable with your Azure AD and Microsoft Graph endpoints for your national cloud. For global access, use following values:
 
-```objective-c
+```swift
 let graphEndpoint = "https://graph.microsoft.com/"
 let authority = "https://login.microsoftonline.com/common"
 ```
 
 Other endpoints are documented [here](https://docs.microsoft.com/en-us/graph/deployments#app-registration-and-token-service-root-endpoints). For example, to run the sample with AzureAD Germany, use following:
 
-```objective-c
+```swift
 let graphEndpoint = "https://graph.microsoft.de/"
 let authority = "https://login.microsoftonline.de/common"
 ```
