@@ -99,31 +99,31 @@ Add URI scheme in the  `Info.plist`. Redirect URI scheme follows the format `msa
 
 ## Step 2: Configure your application defaults
 
-In your app, add the `client` variable with your Application (client) ID.
+In your app, add the `kClientID` variable with your Application (client) ID.
 
 ```swift
-// For example, you can declare a client id in this way. Below ID is just an sample.
+// For example, you can declare a client id in this way. Below ID is just a sample.
     	
-let clientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
+let kClientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
 ```
 
-In your app, add the `authority` variable with your Azure AD and Microsoft Graph endpoints for your national cloud. For global access, use following values:
+Add variables with your Azure AD authority and Microsoft Graph endpoint for your national cloud.
 
 ```swift
-let graphEndpoint = "https://graph.microsoft.com/"
-let authority = "https://login.microsoftonline.com/common"
+let kGraphEndpoint = "https://graph.microsoft.com/"
+let kAuthority = "https://login.microsoftonline.com/common"
 ```
 
 Other endpoints are documented [here](https://docs.microsoft.com/en-us/graph/deployments#app-registration-and-token-service-root-endpoints). For example, to run the sample with AzureAD Germany, use following:
 
 ```swift
-let graphEndpoint = "https://graph.microsoft.de/"
-let authority = "https://login.microsoftonline.de/common"
+let kGraphEndpoint = "https://graph.microsoft.de/"
+let kAuthority = "https://login.microsoftonline.de/common"
 ```
 
 ## Step 3: Configure Xcode project settings
 
-Add a new keychain group to your project **Signing & Capabilities**. The keychain group should be `com.microsoft.adalcache` on iOS and `com.microsoft.identity.universalstorage` on macOS.
+Add a new keychain group to your project **Signing & Capabilities**. The keychain group should be `com.microsoft.adalcache` on iOS.
 
 ![Xcode UI displaying how the the keychain group should be set up](./images/iosintro-keychainShare.png)
 
