@@ -36,6 +36,12 @@
 				"replaceTokens": {
 					"bundleId": "com.microsoft.identitysample.MSALiOS"
 				}
+			},
+			{
+				"settingFile": "/MSALiOS.xcodeproj/project.pbxproj",
+				"replaceTokens": {
+					"bundleId": "com.microsoft.identitysample.MSALiOS"
+				}
 			}
 		]
 	}]
