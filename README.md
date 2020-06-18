@@ -8,14 +8,14 @@ description: "The MSAL preview library for iOS and macOS gives your app the abil
 urlFragment: ios-ms-graph-api
 ---
 
-# MSAL iOS Swift Microsoft Graph API Sample 
+# MSAL iOS Swift Microsoft Graph API Sample
 
 ![Build Badge](https://identitydivision.visualstudio.com/_apis/public/build/definitions/a7934fdd-dcde-4492-a406-7fad6ac00e17/523/badge)
 
 | [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-ios)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [API Reference](https://azuread.github.io/docs/objc/) | [Support](README.md#feedback,community-help,-and-support)
 | --- | --- | --- | --- |
 
-The MSAL library for iOS gives your app the ability to begin using the [Microsoft identity platform](https://aka.ms/aaddev) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycles your application should experience, including:
+The MSAL library for iOS gives your app the ability to begin using the [Microsoft identity platform](https://aka.ms/aaddev) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycle your application should experience, including:
 
 - How to get a token
 - How to refresh a token
@@ -35,7 +35,7 @@ To run this sample, you'll need:
 * Xcode
 * An internet connection
 
-## Step 1: 
+## Step 1:
 
 ## 1A: Clone or download this repository
 
@@ -58,13 +58,9 @@ $ pod install
 $ open MSALiOS.xcworkspace
 ```
 
-## Step 2: (Optional) 
+## Step 2: Register your App (Optional)
 
-## 2A: Register your App  
-
-This app comes pre-configured for testing.  If you would like to register your own app, please follow the steps below.
-
-To Register an app:
+This app comes pre-configured for testing. If you would like to register your own app, please follow the steps below.
 
 1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account.
 2. In the left-hand navigation pane, select the **Azure Active Directory** blade, and then select **App registrations**.
@@ -76,10 +72,18 @@ To Register an app:
 5. After the app is created, you'll land on your app management page. Take note of the **Application (client) ID** as this would be needed for the step 2B below.
 6. Click **Authentication**, and add new Redirect URI with type **Public client (mobile & desktop)**. Enter redirect URI in format: `msauth.<app_bundle_id>://auth`. Replace <app_bundle_id> with the **Bundle Identifier** for your application. 
 7. Hit the **Save** button in the top left, to save these updates.
+8. Click **Make this change for me** and then download the code sample for iOS
 
-## 2B: Configure your application
+## Step 3: Run the sample
 
-1. Update your application's redirect URI scheme in the  `Info.plist` file by replacing `msauth.com.microsoft.identitysample.MSALiOS` . Redirect URI scheme follows the format `msauth.[app_bundle_id]`. Make sure to substitue [app_bundle_id] with the **Bundle Identifier** for your application. 
+1. Click the Run Button in the top menu or go to Product from the menu tab and click Run.
+2. Once the sample app launches, click on the 'Call Microsoft Graph API' button to go through the sign in flow and see the results from Microsoft Graph.
+
+## How to add MSAL library into your existing Xcode project
+
+## Step 1: Configure your application Info.plist
+
+Add URI scheme in the  `Info.plist`. Redirect URI scheme follows the format `msauth.[app_bundle_id]`. Make sure to substitute [app_bundle_id] with the **Bundle Identifier** for your application.
 
 ```xml
 <key>CFBundleURLTypes</key>
@@ -93,52 +97,53 @@ To Register an app:
 </array>
 ```
 
-2. Configure your application defaults
+## Step 2: Configure your application defaults
 
-In the `ViewControler.swift` file, update the `kClientID` variable with your Application (client) ID.
+In your app, add the `kClientID` variable with your Application (client) ID.
 
 ```swift
-    // Update the client ID below with the one you received in the portal. Below ID is for running the sample app only.
-    
-    let kClientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
+// For example, you can declare a client id in this way. Below ID is just a sample.
+    	
+let kClientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
 ```
 
-In the `ViewControler.swift` file, update the `kAuthority` variable with your Azure AD and Microsoft Graph endpoints for your national cloud. For global access, use following values:
+Add variables with your Azure AD authority and Microsoft Graph endpoint for your national cloud.
 
-```objective-c
+```swift
 let kGraphEndpoint = "https://graph.microsoft.com/"
 let kAuthority = "https://login.microsoftonline.com/common"
 ```
 
 Other endpoints are documented [here](https://docs.microsoft.com/en-us/graph/deployments#app-registration-and-token-service-root-endpoints). For example, to run the sample with AzureAD Germany, use following:
 
-```objective-c
+```swift
 let kGraphEndpoint = "https://graph.microsoft.de/"
 let kAuthority = "https://login.microsoftonline.de/common"
 ```
 
-## Step 3: Run the sample
+## Step 3: Configure Xcode project settings
 
-1. Click the Run Button in the top menu or go to Product from the menu tab and click Run.
-2. Once the sample app launches, click on the 'Call Microsoft Graph API' button to go through the sign in flow and see the results from Microsoft Graph.
+Add a new keychain group to your project **Signing & Capabilities**. The keychain group should be `com.microsoft.adalcache` on iOS.
+
+![Xcode UI displaying how the the keychain group should be set up](./images/iosintro-keychainShare.png)
 
 ## Feedback, Community Help, and Support
 
-We use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) with the community to provide support. We highly recommend you ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before. 
+We use [Stack Overflow](http://stackoverflow.com/questions/tagged/msal) with the community to provide support. We highly recommend you ask your questions on Stack Overflow first and browse existing issues to see if someone has asked your question before.
 
-If you find a bug or have a feature request, please raise the issue on [GitHub Issues](../../issues). 
+If you find a bug or have a feature request, please raise the issue on [GitHub Issues](../../issues).
 
 To provide a recommendation, visit our [User Voice page](https://feedback.azure.com/forums/169401-azure-active-directory).
 
 ## Contribute
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). 
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Security Library
 
-This library controls how users sign-in and access services. We recommend you always take the latest version of our library in your app when possible. We use [semantic versioning](http://semver.org) so you can control the risk associated with updating your app. As an example, always downloading the latest minor version number (e.g. x.*y*.x) ensures you get the latest security and feature enhanements but our API surface remains the same. You can always see the latest version and release notes under the Releases tab of GitHub.
+This library controls how users sign-in and access services. We recommend you always take the latest version of our library in your app when possible. We use [semantic versioning](http://semver.org) so you can control the risk associated with updating your app. As an example, always downloading the latest minor version number (e.g. x.*y*.x) ensures you get the latest security and feature enhancements but our API surface remains the same. You can always see the latest version and release notes under the Releases tab of GitHub.
 
 ## Security Reporting
 
