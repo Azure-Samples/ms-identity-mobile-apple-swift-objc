@@ -204,10 +204,10 @@ extension ViewController {
                 return
             }
             
-            self.accessToken = result.accessToken
-            self.updateLogging(text: "Access token is \(self.accessToken)")
+            //self.accessToken = result.accessToken
+            //self.updateLogging(text: "Access token is \(self.accessToken)")
             self.updateCurrentAccount(account: result.account)
-            self.getContentWithToken()
+            //self.getContentWithToken()
         }
     }
     
@@ -227,44 +227,50 @@ extension ViewController {
          - completionBlock:     The completion block that will be called when the authentication
          flow completes, or encounters an error.
          */
-        
-        let parameters = MSALSilentTokenParameters(scopes: kScopes, account: account)
-        
-        applicationContext.acquireTokenSilent(with: parameters) { (result, error) in
-            
-            if let error = error {
-                
-                let nsError = error as NSError
-                
-                // interactionRequired means we need to ask the user to sign-in. This usually happens
-                // when the user's Refresh Token is expired or if the user has changed their password
-                // among other possible reasons.
-                
-                if (nsError.domain == MSALErrorDomain) {
+        var x = 0;
+        sleep(3)
+        while (x < 20)
+        {
+            let parameters = MSALSilentTokenParameters(scopes: kScopes, account: self.currentAccount!)
+            DispatchQueue.main.async {
+                applicationContext.acquireTokenSilent(with: parameters) { (result, error) in
                     
-                    if (nsError.code == MSALError.interactionRequired.rawValue) {
+                    if let error = error {
                         
-                        DispatchQueue.main.async {
-                            self.acquireTokenInteractively()
+                        let nsError = error as NSError
+                        
+                        // interactionRequired means we need to ask the user to sign-in. This usually happens
+                        // when the user's Refresh Token is expired or if the user has changed their password
+                        // among other possible reasons.
+                        
+                        if (nsError.domain == MSALErrorDomain) {
+                            
+                            if (nsError.code == MSALError.interactionRequired.rawValue) {
+                                
+                                DispatchQueue.main.async {
+                                    self.acquireTokenInteractively()
+                                }
+                                return
+                            }
                         }
+                        
+                        self.updateLogging(text: "Could not acquire token silently: \(error)")
                         return
                     }
+                    
+                    guard let result = result else {
+                        
+                        self.updateLogging(text: "Could not acquire token: No result returned")
+                        return
+                    }
+                    
+                    self.accessToken = result.accessToken
+                    self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
+                    self.updateSignOutButton(enabled: true)
+                    self.getContentWithToken()
                 }
-                
-                self.updateLogging(text: "Could not acquire token silently: \(error)")
-                return
             }
-            
-            guard let result = result else {
-                
-                self.updateLogging(text: "Could not acquire token: No result returned")
-                return
-            }
-            
-            self.accessToken = result.accessToken
-            self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
-            self.updateSignOutButton(enabled: true)
-            self.getContentWithToken()
+            x=x+1;
         }
     }
     
@@ -324,6 +330,13 @@ extension ViewController {
         // Note that this sample showcases an app that signs in a single account at a time
         // If you're building a more complex app that signs in multiple accounts at the same time, you'll need to use a different account retrieval API that specifies account identifier
         // For example, see "accountsFromDeviceForParameters:completionBlock:" - https://azuread.github.io/microsoft-authentication-library-for-objc/Classes/MSALPublicClientApplication.html#/c:objc(cs)MSALPublicClientApplication(im)accountsFromDeviceForParameters:completionBlock:
+        do {
+            let acc = try applicationContext.account(forUsername: "amepatil@microsoft.com")
+            self.updateCurrentAccount(account: acc)
+        } catch {
+        
+        }
+        return
         applicationContext.getCurrentAccount(with: msalParameters, completionBlock: { (currentAccount, previousAccount, error) in
             
             if let error = error {
@@ -413,7 +426,7 @@ extension ViewController {
         // Add call Graph button
         callGraphButton  = UIButton()
         callGraphButton.translatesAutoresizingMaskIntoConstraints = false
-        callGraphButton.setTitle("Call Microsoft Graph API", for: .normal)
+        callGraphButton.setTitle("Acquire tokens.", for: .normal)
         callGraphButton.setTitleColor(.blue, for: .normal)
         callGraphButton.addTarget(self, action: #selector(callGraphAPI(_:)), for: .touchUpInside)
         self.view.addSubview(callGraphButton)
