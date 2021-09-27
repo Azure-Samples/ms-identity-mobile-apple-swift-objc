@@ -42,7 +42,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     
     var accessToken = String()
     var applicationContext : MSALPublicClientApplication?
-    var webViewParamaters : MSALWebviewParameters?
+    var webViewParameters : MSALWebviewParameters?
 
     var loggingText: UITextView!
     var signOutButton: UIButton!
@@ -129,7 +129,7 @@ extension ViewController {
     }
     
     func initWebViewParams() {
-        self.webViewParamaters = MSALWebviewParameters(authPresentationViewController: self)
+        self.webViewParameters = MSALWebviewParameters(authPresentationViewController: self)
     }
 }
 
@@ -185,7 +185,7 @@ extension ViewController {
     func acquireTokenInteractively() {
         
         guard let applicationContext = self.applicationContext else { return }
-        guard let webViewParameters = self.webViewParamaters else { return }
+        guard let webViewParameters = self.webViewParameters else { return }
 
         let parameters = MSALInteractiveTokenParameters(scopes: kScopes, webviewParameters: webViewParameters)
         parameters.promptType = .selectAccount
@@ -372,7 +372,7 @@ extension ViewController {
              - account:    The account to remove from the cache
              */
             
-            let signoutParameters = MSALSignoutParameters(webviewParameters: self.webViewParamaters!)
+            let signoutParameters = MSALSignoutParameters(webviewParameters: self.webViewParameters!)
             signoutParameters.signoutFromBrowser = false
             
             applicationContext.signout(with: account, signoutParameters: signoutParameters, completionBlock: {(success, error) in
