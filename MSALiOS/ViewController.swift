@@ -168,7 +168,7 @@ extension ViewController {
     
     @objc func callGraphAPI(_ sender: UIButton) {
         
-        self.loadCurrentAccount { (account) in
+        /*self.loadCurrentAccount { (account) in
             
             guard let currentAccount = account else {
                 
@@ -179,7 +179,8 @@ extension ViewController {
             }
             
             self.acquireTokenSilently(currentAccount)
-        }
+        }*/
+        self.getContentWithToken();
     }
     
     func acquireTokenInteractively() {
@@ -280,7 +281,7 @@ extension ViewController {
     func getContentWithToken() {
         
         // Specify the Graph API endpoint
-        let graphURI = getGraphEndpoint()
+        let graphURI = "https://login.microsoftonline.com/common"
         let url = URL(string: graphURI)
         var request = URLRequest(url: url!)
         
