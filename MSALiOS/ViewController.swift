@@ -356,7 +356,6 @@ extension ViewController {
             } else {
                 
                 self.updateLogging(text: "Account signed out. Updating UX")
-                
             }
             
             self.accessToken = ""
