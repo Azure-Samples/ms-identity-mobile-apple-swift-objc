@@ -50,6 +50,8 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     var usernameLabel: UILabel!
     
     var currentAccount: MSALAccount?
+    
+    var currentDeviceMode: MSALDeviceMode?
 
     /**
         Setup public client application in viewDidLoad
@@ -68,6 +70,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         }
         
         self.loadCurrentAccount()
+        self.refreshDeviceMode()
         self.platformViewDidLoadSetup()
     }
     
@@ -344,7 +347,17 @@ extension ViewController {
                 return
             }
             
-            self.updateLogging(text: "Account signed out. Updating UX")
+            // If testing with Microsoft's shared device mode, see the account that has been signed out from another app. More details here:
+            // https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-ios-shared-devices
+            if let previousAccount = previousAccount {
+                
+                self.updateLogging(text: "The account with username \(String(describing: previousAccount.username)) has been signed out.")
+                
+            } else {
+                
+                self.updateLogging(text: "Account signed out. Updating UX")
+            }
+            
             self.accessToken = ""
             self.updateCurrentAccount(account: nil)
             
@@ -373,7 +386,15 @@ extension ViewController {
              */
             
             let signoutParameters = MSALSignoutParameters(webviewParameters: self.webViewParamaters!)
-            signoutParameters.signoutFromBrowser = false
+            
+            // If testing with Microsoft's shared device mode, trigger signout from browser. More details here:
+            // https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-ios-shared-devices
+            
+            if (self.currentDeviceMode == .shared) {
+                signoutParameters.signoutFromBrowser = true
+            } else {
+                signoutParameters.signoutFromBrowser = false
+            }
             
             applicationContext.signout(with: account, signoutParameters: signoutParameters, completionBlock: {(success, error) in
                 
@@ -391,6 +412,23 @@ extension ViewController {
     }
 }
 
+// MARK: Shared Device Helpers
+extension ViewController {
+    
+    func refreshDeviceMode() {
+        
+        if #available(iOS 13.0, *) {
+            self.applicationContext?.getDeviceInformation(with: nil, completionBlock: { (deviceInformation, error) in
+                
+                guard let deviceInfo = deviceInformation else {
+                    return
+                }
+                
+                self.currentDeviceMode = deviceInfo.deviceMode
+            })
+        }
+    }
+}
 
 // MARK: UI Helpers
 extension ViewController {
