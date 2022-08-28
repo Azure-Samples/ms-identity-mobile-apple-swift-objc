@@ -3,6 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -126,7 +127,9 @@
 		FBA79E951E9A038700179A54 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 0830;
+				LastUpgradeCheck = 1340;
 				ORGANIZATIONNAME = Microsoft;
 				TargetAttributes = {
 					FBA79E9C1E9A038700179A54 = {
@@ -251,6 +254,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		E2E4A22128BBADC800DD6ACC /* Debug copy */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
