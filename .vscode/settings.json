@@ -1,5 +1,8 @@
 {
     "yaml.schemas": {
-        "https://gitlab.com/appsemble/appsemble/-/raw/HEAD/packages/cli/assets/appsemblerc.schema.json": "vscode-vfs://github%2B7b2276223a312c22726566223a7b2274797065223a352c226964223a226d6173746572227d7d/lilsunny243/ms-identity-mobile-apple-swift-objc/.github/dependabot.yml"
+        "https://gitlab.com/appsemble/appsemble/-/raw/HEAD/packages/cli/assets/appsemblerc.schema.json": [
+            "vscode-vfs://github%2B7b2276223a312c22726566223a7b2274797065223a352c226964223a226d6173746572227d7d/lilsunny243/ms-identity-mobile-apple-swift-objc/.github/dependabot.yml",
+            "vscode-vfs://github%2B7b2276223a312c22726566223a7b2274797065223a352c226964223a226d6173746572227d7d/lilsunny243/ms-identity-mobile-apple-swift-objc/.vscode/settings.json"
+        ]
     }
 }
