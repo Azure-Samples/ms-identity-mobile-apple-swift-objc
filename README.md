@@ -4,7 +4,7 @@ languages:
 - swift
 products:
 - azure
-description: "The MSAL preview library for iOS and macOS gives your app the ability to begin using the Microsoft Cloud by supporting Microsoft Azure Active Directory and Microsoft Accounts in a converged experience using industry standard OAuth2 and OpenID Connect."
+description: "The MSAL preview library for iOS and macOS gives your app the ability to begin using the Microsoft Cloud by supporting Microsoft Entra ID and Microsoft Accounts in a converged experience using industry standard OAuth2 and OpenID Connect."
 urlFragment: ios-ms-graph-api
 ---
 
@@ -15,7 +15,7 @@ urlFragment: ios-ms-graph-api
 | [Getting Started](https://docs.microsoft.com/azure/active-directory/develop/guidedsetups/active-directory-ios)| [Library](https://github.com/AzureAD/microsoft-authentication-library-for-objc) | [API Reference](https://azuread.github.io/docs/objc/) | [Support](README.md#feedback,community-help,-and-support)
 | --- | --- | --- | --- |
 
-The MSAL library for iOS gives your app the ability to begin using the [Microsoft identity platform](https://aka.ms/aaddev) by supporting [Microsoft Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycle your application should experience, including:
+The MSAL library for iOS gives your app the ability to begin using the [Microsoft identity platform](https://aka.ms/aaddev) by supporting [Microsoft Entra ID](https://azure.microsoft.com/en-us/services/active-directory/) and [Microsoft Accounts](https://account.microsoft.com) in a converged experience using industry standard OAuth2 and OpenID Connect. This sample demonstrates all the normal lifecycle your application should experience, including:
 
 - How to get a token
 - How to refresh a token
@@ -24,7 +24,7 @@ The MSAL library for iOS gives your app the ability to begin using the [Microsof
 
 ## Scenario
 
-This app is a multi-tenant app meaning it can be used within any Azure AD tenant and also supports signing in with Microsoft Account.  It demonstrates how a developer can build apps to connect with enterprise users and access their Azure + O365 data via the Microsoft Graph.  During the auth flow, end users will be required to sign in and consent to the permissions of the application, and in some cases may require an admin to consent to the app.  The majority of the logic in this sample shows how to auth an end user and make a basic call to the Microsoft Graph.
+This app is a multi-tenant app meaning it can be used within any Microsoft Entra tenant and also supports signing in with Microsoft Account.  It demonstrates how a developer can build apps to connect with enterprise users and access their Azure + O365 data via the Microsoft Graph.  During the auth flow, end users will be required to sign in and consent to the permissions of the application, and in some cases may require an admin to consent to the app.  The majority of the logic in this sample shows how to auth an end user and make a basic call to the Microsoft Graph.
 
 ![Topology](./images/iosintro.png)
 
@@ -62,12 +62,12 @@ $ open MSALiOS.xcworkspace
 
 This app comes pre-configured for testing. If you would like to register your own app, please follow the steps below.
 
-1. Sign in to the [Azure portal](https://portal.azure.com) using either a work or school account.
-2. In the left-hand navigation pane, select the **Azure Active Directory** blade, and then select **App registrations**.
+1. Sign in to the [Microsoft admin center](https://portal.azure.com) using either a work or school account.
+2. In the left-hand navigation pane, select the **Microsoft Entra ID** blade, and then select **App registrations**.
 3. Click on the **New registration** button at the top left of the page.
 4. On the app registration page,
    - Name your app
-   - Under **Supported account types**, select **Accounts in any organizational directory (Any Azure AD directory - Multitenant) and personal Microsoft accounts (e.g. Skype, Xbox)**
+   - Under **Supported account types**, select **Accounts in any organizational directory (Any Microsoft Entra ID directory - Multitenant) and personal Microsoft accounts (e.g. Skype, Xbox)**
    - Click **Register** to finish.
 5. After the app is created, you'll land on your app management page. Take note of the **Application (client) ID** as this would be needed for the step 2B below.
 6. Click **Authentication**, and add new Redirect URI with type **Public client (mobile & desktop)**. Enter redirect URI in format: `msauth.<app_bundle_id>://auth`. Replace <app_bundle_id> with the **Bundle Identifier** for your application. 
@@ -107,7 +107,7 @@ In your app, add the `kClientID` variable with your Application (client) ID.
 let kClientID = "66855f8a-60cd-445e-a9bb-8cd8eadbd3fa"
 ```
 
-Add variables with your Azure AD authority and Microsoft Graph endpoint for your national cloud.
+Add variables with your Microsoft Entra authority and Microsoft Graph endpoint for your national cloud.
 
 ```swift
 let kGraphEndpoint = "https://graph.microsoft.com/"
