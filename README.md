@@ -3,7 +3,7 @@ page_type: sample
 languages:
 - swift
 products:
-- azure
+- microsoft-entra-id
 description: "The MSAL preview library for iOS and macOS gives your app the ability to begin using the Microsoft Cloud by supporting Microsoft Entra ID and Microsoft Accounts in a converged experience using industry standard OAuth2 and OpenID Connect."
 urlFragment: ios-ms-graph-api
 ---
