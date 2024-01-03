@@ -62,7 +62,7 @@ $ open MSALiOS.xcworkspace
 
 This app comes pre-configured for testing. If you would like to register your own app, please follow the steps below.
 
-1. Sign in to the [Microsoft admin center](https://portal.azure.com) using either a work or school account.
+1. Sign in to the [Microsoft Entra Admin Center](https://portal.azure.com) using either a work or school account.
 2. In the left-hand navigation pane, select the **Microsoft Entra ID** blade, and then select **App registrations**.
 3. Click on the **New registration** button at the top left of the page.
 4. On the app registration page,
