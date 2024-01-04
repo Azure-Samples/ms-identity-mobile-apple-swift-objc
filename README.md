@@ -114,7 +114,7 @@ let kGraphEndpoint = "https://graph.microsoft.com/"
 let kAuthority = "https://login.microsoftonline.com/common"
 ```
 
-Other endpoints are documented [here](https://docs.microsoft.com/en-us/graph/deployments#app-registration-and-token-service-root-endpoints). For example, to run the sample with AzureAD Germany, use following:
+Other endpoints are documented [here](https://docs.microsoft.com/en-us/graph/deployments#app-registration-and-token-service-root-endpoints). For example, to run the sample with Azure Germany, use following:
 
 ```swift
 let kGraphEndpoint = "https://graph.microsoft.de/"
